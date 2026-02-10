@@ -1,0 +1,60 @@
+# Environnements Python
+venv/
+env/
+ENV/
+.venv/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+
+# Fichiers de documents
+data/documents/*
+data/chiffres/*
+data/temp/*
+!data/documents/.gitkeep
+!data/chiffres/.gitkeep
+!data/temp/.gitkeep
+
+# Base de données
+*.db
+*.sqlite
+*.sqlite3
+
+# Fichiers de configuration sensibles
+.env
+*.key
+*.pem
+config/credentials.json
+config/token.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+*.cache
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Modèles NLP (téléchargés localement)
+models/
+*.model

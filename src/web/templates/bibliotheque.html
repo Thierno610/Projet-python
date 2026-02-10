@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Vault - SafeDoc Archive{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-end mb-2">
+            <div>
+                <h1 class="h3 mb-1">Vault de Données</h1>
+                <p class="text-muted small">Gestionnaire d'archives chiffrées AES-256</p>
+            </div>
+            <div class="text-end">
+                <p class="x-small text-muted mb-1 text-uppercase fw-bold">Index d'intégrité</p>
+                <div class="d-flex gap-1">
+                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
+                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
+                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
+                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
+                    <span class="x-small text-emerald ms-2 fw-bold">OPTIMAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Row -->
+    <div class="col-12">
+        <div class="slate-card p-3">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Recherche spectrale</label>
+                    <div class="position-relative">
+                        <i class="fas fa-search position-absolute text-muted"
+                            style="left: 12px; top: 12px; font-size: 0.8rem;"></i>
+                        <input type="text" class="form-control form-control-sm ps-5" id="recherche"
+                            placeholder="Nom, ID, contenu..." value="{{ recherche or '' }}"
+                            style="background: #09090b; border-color: #27272a;">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Classement</label>
+                    <select class="form-select form-select-sm" id="categorie"
+                        style="background: #09090b; border-color: #27272a;">
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {% if cat==cat_filtre %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Tag Node</label>
+                    <select class="form-select form-select-sm" id="etiquette"
+                        style="background: #09090b; border-color: #27272a;">
+                        {% for et in etiquettes %}
+                        <option value="{{ et }}" {% if et==tag_filtre %}selected{% endif %}>{{ et }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button"
+                        class="btn btn-indigo btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+                        onclick="appliquerFiltres()">
+                        <i class="fas fa-sync-alt small"></i>
+                        <span>ACTUALISER</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Table -->
+    <div class="col-12">
+        <div class="slate-card overflow-hidden">
+            <div class="p-3 border-bottom border-slate bg-opacity-10" style="background: rgba(255,255,255,0.02);">
+                <span class="x-small text-muted text-uppercase fw-bold">{{ documents|length }} Objets détectés dans le
+                    vault</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle"
+                    style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.02);">
+                    <thead>
+                        <tr class="x-small text-muted text-uppercase border-bottom border-slate">
+                            <th class="ps-4 py-3 fw-bold" style="width: 40%;">Document Reference</th>
+                            <th class="py-3 fw-bold">Classification</th>
+                            <th class="py-3 fw-bold">Metadata</th>
+                            <th class="py-3 fw-bold">Status</th>
+                            <th class="pe-4 py-3 fw-bold text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if documents %}
+                        {% for doc in documents %}
+                        <tr class="border-bottom border-slate">
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="icon-box rounded border border-slate d-flex align-items-center justify-content-center"
+                                        style="width: 32px; height: 32px; background: #18181b;">
+                                        <i class="fas fa-file-pdf text-muted small"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-bold small text-light">{{ doc.nom }}</p>
+                                        <p class="mb-0 x-small text-muted">ID: #SD-{{ "%04d"|format(doc.id) }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span
+                                    class="badge rounded-pill px-2 py-1 x-small fw-normal border border-indigo text-indigo"
+                                    style="background: rgba(99, 102, 241, 0.05);">
+                                    {{ doc.categorie }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column gap-1">
+                                    <span class="x-small text-muted"><i class="fas fa-calendar me-1"></i> {{
+                                        doc.date_upload.strftime('%d %b %Y') }}</span>
+                                    <span class="x-small text-muted"><i class="fas fa-hdd me-1"></i> {{
+                                        "%.2f"|format(doc.taille_fichier / 1024 / 1024) }} MB</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pulse-dot bg-emerald"></span>
+                                    <span class="x-small text-emerald fw-bold">SECURE</span>
+                                </div>
+                            </td>
+                            <td class="pe-4 py-3 text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
+                                        class="btn btn-icon-slate btn-sm" title="Analyser">
+                                        <i class="fas fa-microchip"></i>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('supprimer_document', doc_id=doc.id) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm('⚠️ Alerte de sécurité : Confirmer la purge définitive ?');">
+                                        <button type="submit" class="btn btn-icon-slate btn-sm text-danger"
+                                            title="Purger">
+                                            <i class="fas fa-broom"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-5 text-center">
+                                <div class="py-4">
+                                    <i class="fas fa-box-open fs-1 text-muted mb-3 opacity-20"></i>
+                                    <h5 class="text-muted">Vault Vide</h5>
+                                    <p class="x-small text-muted">Aucun objet détecté avec les filtres actuels.</p>
+                                    <a href="{{ url_for('upload') }}"
+                                        class="btn btn-indigo btn-sm mt-2 px-4">INITIALISER UN SCAN</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function appliquerFiltres() {
+        const recherche = document.getElementById('recherche').value;
+        const categorie = document.getElementById('categorie').value;
+        const etiquette = document.getElementById('etiquette').value;
+
+        const params = new URLSearchParams();
+        if (recherche) params.append('recherche', recherche);
+        if (categorie !== 'Toutes') params.append('categorie', categorie);
+        if (etiquette !== 'Toutes') params.append('etiquette', etiquette);
+
+        window.location.href = '{{ url_for("bibliotheque") }}?' + params.toString();
+    }
+
+    document.getElementById('recherche').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') appliquerFiltres();
+    });
+
+    document.getElementById('categorie').addEventListener('change', appliquerFiltres);
+    document.getElementById('etiquette').addEventListener('change', appliquerFiltres);
+</script>
+{% endblock %}

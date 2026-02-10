@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Tags - SafeDoc Classification{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h1 class="h3 mb-1">Système d'Étiquetage</h1>
+                <p class="text-muted small">Gestion des metadata de classification (SD-Tag Core)</p>
+            </div>
+            <div class="d-flex gap-2 text-end">
+                <div class="slate-card px-3 py-2 border-0" style="background: rgba(99, 102, 241, 0.05);">
+                    <p class="x-small text-muted mb-0 text-uppercase fw-bold">Labels Actifs</p>
+                    <p class="h5 mb-0 text-indigo">{{ etiquettes|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="slate-card p-4">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Initialiser un Tag</h5>
+            <form method="POST" action="{{ url_for('etiquettes') }}">
+                <input type="hidden" name="action" value="creer">
+
+                <div class="mb-4">
+                    <label for="nom" class="form-label x-small text-muted text-uppercase fw-bold">Désignation</label>
+                    <input type="text" class="form-control form-control-dark" id="nom" name="nom"
+                        placeholder="Ex: CONFIDENTIEL" required style="background: #18181b; border-color: #27272a;">
+                </div>
+
+                <div class="mb-4">
+                    <label for="couleur" class="form-label x-small text-muted text-uppercase fw-bold">Codage Couleur
+                        (Hex)</label>
+                    <div class="d-flex gap-3 align-items-center bg-dark p-2 rounded"
+                        style="background: #18181b !important; border: 1px solid #27272a;">
+                        <input type="color" class="form-control form-control-color border-0" id="couleur" name="couleur"
+                            value="#6366f1"
+                            style="width: 40px; height: 40px; background: transparent; cursor: pointer;">
+                        <span id="color-hex-display" class="x-small text-muted font-monospace">#6366f1</span>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="btn btn-indigo w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fas fa-plus small"></i>
+                    <span>DÉPLOYER LE TAG</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-4 p-3 rounded slate-card border-0" style="background: rgba(16, 185, 129, 0.05);">
+            <div class="d-flex gap-2">
+                <i class="fas fa-info-circle text-emerald small mt-1"></i>
+                <p class="x-small text-muted mb-0">Les étiquettes permettent une organisation granulaire et une
+                    recherche accélérée par l'IA de classification.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="slate-card p-0">
+            <div class="p-3 border-bottom border-slate bg-opacity-10" style="background: rgba(255,255,255,0.02);">
+                <span class="x-small text-muted text-uppercase fw-bold">Registre des Classifications</span>
+            </div>
+
+            <div class="p-4">
+                {% if etiquettes %}
+                <div class="row g-3">
+                    {% for etiquette in etiquettes %}
+                    <div class="col-md-6">
+                        <div class="p-3 rounded border border-slate d-flex align-items-center justify-content-between"
+                            style="background: #18181b;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="color-node"
+                                    style="width: 12px; height: 12px; border-radius: 2px; --node-color: {{ etiquette.couleur }}; background: var(--node-color); box-shadow: 0 0 10px var(--node-color);">
+                                </div>
+                                <div>
+                                    <p class="mb-0 fw-bold small text-light">{{ etiquette.nom }}</p>
+                                    <p class="mb-0 x-small text-muted font-monospace">{{ etiquette.couleur }}</p>
+                                </div>
+                            </div>
+                            <form method="POST" action="{{ url_for('etiquettes') }}"
+                                onsubmit="return confirm('⚠️ Alerte : La suppression de ce tag affectera tous les documents liés. Confirmer ?');">
+                                <input type="hidden" name="action" value="supprimer">
+                                <input type="hidden" name="etiquette_id" value="{{ etiquette.id }}">
+                                <button type="submit" class="btn btn-icon-slate btn-sm text-muted hover-danger">
+                                    <i class="fas fa-trash x-small"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-bookmark fs-1 text-muted mb-3 opacity-20"></i>
+                    <h5 class="text-muted">Aucun Tag Défini</h5>
+                    <p class="x-small text-muted">Initialisez votre structure de classement via le panneau latéral.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('couleur').addEventListener('input', function (e) {
+        document.getElementById('color-hex-display').textContent = e.target.value;
+    });
+</script>
+{% endblock %}

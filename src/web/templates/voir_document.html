@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}{{ document.nom }} - Analysis Node{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h1 class="h3 mb-1">Analyse du Document</h1>
+                <p class="text-muted small">ID de session : #ANALYSIS-{{ "%04x"|format(document.id) }} (Node Access
+                    Restricted)</p>
+            </div>
+            <div class="text-end">
+                <a href="{{ url_for('bibliotheque') }}" class="btn btn-icon-slate btn-sm">
+                    <i class="fas fa-arrow-left small me-2"></i>RETOUR VAULT
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <!-- Main Document Info -->
+        <div class="slate-card p-4 mb-4">
+            <div class="d-flex align-items-start justify-content-between mb-4">
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="icon-box-large rounded border border-slate d-flex align-items-center justify-content-center"
+                        style="width: 48px; height: 48px; background: #18181b;">
+                        <i class="fas fa-file-invoice text-indigo fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="h5 mb-0 fw-bold">{{ document.nom }}</h2>
+                        <span class="badge text-indigo bg-opacity-10 border border-indigo px-2 py-1 x-small mt-1"
+                            style="background: rgba(99, 102, 241, 0.05);">{{ document.categorie }}</span>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <p class="x-small text-muted mb-0 text-uppercase fw-bold">Statut d'intégrité</p>
+                    <span class="x-small text-emerald fw-bold d-flex align-items-center justify-content-end gap-1">
+                        <span class="pulse-dot bg-emerald" style="width: 6px; height: 6px;"></span> VERIFIED
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <p class="x-small text-muted text-uppercase mb-1 fw-bold">Horodatage d'archivage</p>
+                    <p class="small text-light mb-0">{{ document.date_ajoute.strftime('%d %B %Y | %H:%M') }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="x-small text-muted text-uppercase mb-1 fw-bold">Signatures Numériques</p>
+                    <p class="small text-light mb-0">AES-256 / SHA-256</p>
+                </div>
+            </div>
+
+            {% if document.metadonnees %}
+            <div class="mt-5 pt-4 border-top border-slate">
+                <h5 class="small text-muted text-uppercase fw-bold mb-3">Métadonnées Extraites (AI Scan)</h5>
+                <div class="row g-2">
+                    {% for key, value in document.metadonnees.items() %}
+                    <div class="col-md-6">
+                        <div class="p-2 px-3 rounded d-flex justify-content-between align-items-center"
+                            style="background: #18181b; border: 1px solid #27272a;">
+                            <span class="x-small text-muted text-uppercase">{{ key }}</span>
+                            <span class="small fw-bold text-light">{{ value }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Security & Tags Sidebar -->
+    <div class="col-lg-5">
+        <div class="slate-card p-4 mb-4">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Protocole de Classification</h5>
+            <form method="POST" action="{{ url_for('mettre_a_jour_etiquettes', doc_id=document.id) }}">
+                <div class="tags-grid mb-4">
+                    <div class="row g-2">
+                        {% for etiquette in etiquettes_dispo %}
+                        <div class="col-6">
+                            <label
+                                class="tag-selector-technical w-100 d-flex align-items-center gap-2 p-2 rounded cursor-pointer border border-slate"
+                                style="background: #18181b; transition: all 0.2s ease;">
+                                <input type="checkbox" name="etiquettes" value="{{ etiquette.nom }}"
+                                    class="form-check-input ms-0 mt-0 border-slate"
+                                    style="background: transparent; width: 14px; height: 14px;" {% if etiquette in
+                                    document.etiquettes %}checked{% endif %}>
+                                <div class="color-dot"
+                                    style="width: 8px; height: 8px; border-radius: 50%; background: {{ etiquette.couleur }};">
+                                </div>
+                                <span class="x-small text-muted fw-bold">{{ etiquette.nom }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-indigo btn-sm w-100 py-2">
+                    <i class="fas fa-save small me-2"></i>ACTUALISER SYSTEME
+                </button>
+            </form>
+        </div>
+
+        <div class="slate-card p-4" style="border-left: 3px solid var(--emerald-green);">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Déchiffrement Périphérique</h5>
+            <div class="p-3 mb-4 rounded" style="background: rgba(16, 185, 129, 0.05);">
+                <p class="x-small text-muted mb-0">Contenu sécurisé. Une clé de session est requise pour extraire le
+                    binaire original.</p>
+            </div>
+            <form method="POST" action="{{ url_for('telecharger_document', doc_id=document.id) }}">
+                <div class="mb-3">
+                    <label for="mot_de_passe_chiffrement" class="x-small text-muted text-uppercase fw-bold mb-2">Clé de
+                        Déchiffrement</label>
+                    <input type="password" class="form-control form-control-dark" id="mot_de_passe_chiffrement"
+                        name="mot_de_passe_chiffrement" placeholder="SESSION_KEY_••••" style="background: #09090b;">
+                </div>
+                <button type="submit"
+                    class="btn btn-emerald w-100 py-2 d-flex align-items-center justify-content-center gap-2 border-0">
+                    <i class="fas fa-unlock small"></i>
+                    <span>DOWNLOAD DECRYPTED</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

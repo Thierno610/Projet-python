@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDoc – Coffre-fort numérique</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- SafeDoc CSS Stabilisé -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/safedoc_stable.css') }}">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-shield-alt"></i>
+                <span class="ms-2">SafeDoc</span>
+            </a>
+            <span class="navbar-text">
+                <span class="badge bg-secondary me-3">
+                    <span id="user-level">Chargement...</span>
+                </span>
+                <i class="fas fa-user me-2"></i>
+                <span id="user-name">Chargement...</span>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar v2 -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <!-- User Context (Subtle) -->
+                <div class="px-3 mb-4 d-flex align-items-center justify-content-between">
+                    <span class="small fw-bold text-muted text-uppercase" style="letter-spacing: 0.05em;">{{
+                        user.nom_utilisateur if user else 'Session' }}</span>
+                    <span class="badge bg-opacity-10 text-indigo border-0" style="color: var(--primary-indigo);">{{
+                        user.niveau if user else 'Free' }}</span>
+                </div>
+
+                <!-- Minimalist Search -->
+                <div class="sidebar-search">
+                    <div class="position-relative">
+                        <i class="fas fa-search position-absolute text-muted"
+                            style="left: 10px; top: 10px; font-size: 0.8rem;"></i>
+                        <input type="text" class="form-control ps-5"
+                            style="background: #18181b; border: 1px solid #27272a;" placeholder="Search docs...">
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Principal</h6>
+                    <nav class="nav flex-column">
+                        <a class="nav-link {{ 'active' if page == 'dashboard' }}" href="/dashboard">
+                            <i class="fas fa-th-large"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                        <a class="nav-link {{ 'active' if page == 'upload' }}" href="/upload">
+                            <i class="fas fa-plus"></i>
+                            <span>Upload</span>
+                        </a>
+                        <a class="nav-link {{ 'active' if page == 'bibliotheque' }}" href="/bibliotheque">
+                            <i class="fas fa-database"></i>
+                            <span>Archive</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Manage</h6>
+                    <nav class="nav flex-column">
+                        <a class="nav-link {{ 'active' if page == 'etiquettes' }}" href="/etiquettes">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Labels</span>
+                        </a>
+                        <a class="nav-link {{ 'active' if page == 'statistiques' }}" href="/statistiques">
+                            <i class="fas fa-activity"></i>
+                            <span>Insights</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-footer pt-3 border-top border-slate">
+                    <div class="storage-info mb-3 d-flex flex-column gap-1">
+                        <div class="d-flex justify-content-between x-small text-muted">
+                            <span class="fw-bold">DISK USAGE</span>
+                            <span class="font-monospace text-light">{{ "%.1f"|format(stockage_mb|default(0)) }}
+                                MB</span>
+                        </div>
+                        <div class="progress" style="height: 4px; background: #0c0c0e;">
+                            <div class="progress-bar" role="progressbar" id="storage-bar"
+                                style="--usage-width: {{ pourcentage_stockage|default(0) }}%; width: var(--usage-width); background: var(--primary-indigo);"
+                                aria-valuenow="{{ pourcentage_stockage|default(0) }}" aria-valuemin="0"
+                                aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Flash Messages Container -->
+                <div id="flash-messages"></div>
+
+                <!-- Page Content -->
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/safedoc_stable.js') }}"></script>
+
+    <!-- Chatbot Component -->
+    {% include 'chatbox.html' %}
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

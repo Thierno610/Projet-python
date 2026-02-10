@@ -1,0 +1,131 @@
+<!-- Scanner Modal Component -->
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-card border-slate">
+            <div class="modal-header border-slate">
+                <h5 class="modal-title x-small text-muted text-uppercase fw-bold" id="scannerModalLabel">
+                    <i class="fas fa-camera me-2"></i>Scanner SafeDoc Node
+                </h5>
+                <button type="button" class="btn-close btn-close-white x-small" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 position-relative overflow-hidden" style="background: #000; min-height: 400px;">
+                <!-- Camera Viewport -->
+                <video id="scannerVideo" autoplay playsinline class="w-100 h-100" style="object-fit: cover;"></video>
+
+                <!-- Scanning Overlay -->
+                <div
+                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none">
+                    <div class="scanner-frame"
+                        style="width: 80%; height: 70%; border: 2px solid rgba(99, 102, 241, 0.5); border-radius: 10px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5);">
+                        <div class="scanner-laser"></div>
+                    </div>
+                </div>
+
+                <!-- Status Badge -->
+                <div class="position-absolute top-3 start-3">
+                    <span class="badge bg-emerald bg-opacity-10 text-emerald animate-pulse border-0">
+                        <i class="fas fa-circle x-small me-1"></i>LIVE_FEED
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer border-slate bg-slate bg-opacity-20 justify-content-center py-3">
+                <button type="button" id="captureBtn" class="btn btn-indigo btn-lg px-5">
+                    <i class="fas fa-expand me-2"></i>CAPTURER L'IMAGE
+                </button>
+                <canvas id="scannerCanvas" class="d-none"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .scanner-frame {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .scanner-laser {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-indigo);
+        box-shadow: 0 0 15px var(--primary-indigo);
+        animation: scanMove 2.5s infinite ease-in-out;
+    }
+
+    @keyframes scanMove {
+        0% {
+            top: 0%;
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        100% {
+            top: 100%;
+            opacity: 0;
+        }
+    }
+
+    .pointer-events-none {
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const scannerModal = document.getElementById('scannerModal');
+        const video = document.getElementById('scannerVideo');
+        const canvas = document.getElementById('scannerCanvas');
+        const captureBtn = document.getElementById('captureBtn');
+        let stream = null;
+
+        scannerModal.addEventListener('shown.bs.modal', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+                });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Erreur camera:", err);
+                alert("Accès caméra refusé ou non supporté.");
+                bootstrap.Modal.getInstance(scannerModal).hide();
+            }
+        });
+
+        scannerModal.addEventListener('hidden.bs.modal', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+        });
+
+        captureBtn.addEventListener('click', () => {
+            // Play shutter sound if possible
+
+            // Prepare canvas
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert to blob and send to form or API
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+            // Custom event to handle the scan result in upload.html
+            const event = new CustomEvent('documentScanned', { detail: { image: dataUrl } });
+            document.dispatchEvent(event);
+
+            bootstrap.Modal.getInstance(scannerModal).hide();
+        });
+    });
+</script>

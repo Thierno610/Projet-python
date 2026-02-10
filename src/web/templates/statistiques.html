@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Insights - SafeDoc Analytics{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h1 class="h3 mb-1">Système d'Analytique</h1>
+                <p class="text-muted small">Moteur de télémétrie SafeDoc v2.4</p>
+            </div>
+            <div class="text-end">
+                <span class="badge text-indigo bg-opacity-10 border border-indigo px-3 py-2"
+                    style="background: rgba(99, 102, 241, 0.05);">REAL-TIME DATA</span>
+            </div>
+        </div>
+    </div>
+
+    {% if documents %}
+    <!-- Metric Nodes -->
+    <div class="col-md-4">
+        <div class="slate-card p-4">
+            <p class="x-small text-muted text-uppercase fw-bold mb-1">Index de Volume</p>
+            <div class="d-flex align-items-baseline gap-2">
+                <span class="h2 mb-0 fw-bold">{{ documents|length }}</span>
+                <span class="text-muted small">OBJETS</span>
+            </div>
+            <div class="mt-3 progress" style="height: 2px; background: #18181b;">
+                <div class="progress-bar bg-indigo" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="slate-card p-4">
+            <p class="x-small text-muted text-uppercase fw-bold mb-1">Densité de Types</p>
+            <div class="d-flex align-items-baseline gap-2">
+                <span class="h2 mb-0 fw-bold">{{ types_categories }}</span>
+                <span class="text-muted small">CLUSTERS</span>
+            </div>
+            <div class="mt-3 progress" style="height: 2px; background: #18181b;">
+                <div class="progress-bar bg-emerald" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="slate-card p-4">
+            <p class="x-small text-muted text-uppercase fw-bold mb-1">Payload Total</p>
+            <div class="d-flex align-items-baseline gap-2">
+                <span class="h2 mb-0 fw-bold">{{ "%.1f"|format(poids_total) }}</span>
+                <span class="text-muted small">MB CHIFIFRÉS</span>
+            </div>
+            <div class="mt-3 progress" style="height: 2px; background: #18181b;">
+                <div class="progress-bar bg-indigo" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Distribution & Storage -->
+    <div class="col-lg-7">
+        <div class="slate-card p-4 h-100">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Répartition Spectre</h5>
+            <div class="d-flex flex-column gap-4">
+                {% for categorie, count in cat_counts.items() %}
+                <div>
+                    <div class="d-flex justify-content-between x-small mb-1">
+                        <span class="text-light fw-bold">{{ categorie }}</span>
+                        <span class="text-muted">{{ count }} OBJETS ({{ "%.0f"|format((count / documents|length) * 100)
+                            }}%)</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: #0c0c0e;">
+                        <div class="progress-bar"
+                            style="width: {{ (count / documents|length) * 100 }}%; background: var(--primary-indigo);">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="slate-card p-4 h-100">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Allocation de Bande Passante</h5>
+            <div class="text-center py-4">
+                <div class="position-relative d-inline-block">
+                    <svg width="150" height="150" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#18181b" stroke-width="8"></circle>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--primary-indigo)" stroke-width="8"
+                            stroke-dasharray="{{ user.pourcentage_stockage() * 2.82 }} 282"
+                            transform="rotate(-90 50 50)"></circle>
+                    </svg>
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <h3 class="mb-0">{{ "%.1f"|format(user.pourcentage_stockage()) }}%</h3>
+                        <p class="x-small text-muted mb-0">USED</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 rounded mt-2"
+                style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.1);">
+                <p class="x-small text-muted mb-0">Quota restant : <span class="text-light fw-bold">{{
+                        "%.1f"|format((user.obtenir_limite_stockage() - user.stockage_utilise) / 1024 / 1024) }}
+                        MB</span></p>
+            </div>
+            {% if not user.est_premium() %}
+            <a href="{{ url_for('premium') }}" class="btn btn-emerald btn-sm w-100 mt-4 py-2 border-0">
+                <i class="fas fa-bolt small"></i> UPGRADE CAPACITY
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Activity Graph -->
+    <div class="col-12">
+        <div class="slate-card p-4">
+            <h5 class="small text-muted text-uppercase fw-bold mb-4">Flux d'Activité Temporelle</h5>
+            <div style="height: 300px;">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="col-12">
+        <div class="slate-card py-5 text-center">
+            <div class="py-5">
+                <i class="fas fa-chart-line fs-1 text-muted mb-3 opacity-20"></i>
+                <h5 class="text-muted">Données Insuffisantes</h5>
+                <p class="x-small text-muted">Le moteur d'analyse requiert des documents pour générer la télémétrie.</p>
+                <a href="{{ url_for('upload') }}" class="btn btn-indigo btn-sm mt-3 px-4">INITIALISER UN SCAN</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if documents %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const documents = {{ documents| tojson }};
+    const activityData = {};
+
+    documents.forEach(doc => {
+        const date = new Date(doc.date_upload);
+        const monthYear = date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
+        activityData[monthYear] = (activityData[monthYear] || 0) + 1;
+    });
+
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(activityData),
+            datasets: [{
+                label: 'Documents Ingested',
+                data: Object.values(activityData),
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#6366f1',
+                pointBorderColor: '#09090b',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#71717a', font: { size: 10 } },
+                    grid: { display: false }
+                },
+                y: {
+                    ticks: { color: '#71717a', font: { size: 10 }, stepSize: 1 },
+                    grid: { color: 'rgba(255, 255, 255, 0.03)' }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

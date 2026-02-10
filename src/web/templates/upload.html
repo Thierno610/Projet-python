@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Ingestion - SafeDoc AI{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header Section -->
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h1 class="h3 mb-1">Ingestion de données</h1>
+                <p class="text-muted small">Passerelle de sécurité SafeDoc v2.4 (AES-256 Enabled)</p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge text-indigo bg-opacity-10 border border-indigo px-3 py-2"
+                    style="background: rgba(99, 102, 241, 0.05);">OCR ACTIVE</span>
+                <span class="badge text-emerald bg-opacity-10 border border-emerald px-3 py-2"
+                    style="background: rgba(16, 185, 129, 0.05);">ENCRYPTION READY</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Upload Area -->
+    <div class="col-lg-8">
+        <div class="slate-card h-100 p-4">
+            <form method="POST" enctype="multipart/form-data" id="upload-form">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="upload-zone text-center p-4 border-dashed rounded-3 h-100"
+                            style="border: 2px dashed var(--border-color); background: #0c0c0e;">
+                            <input type="file" id="file" name="file" class="d-none"
+                                accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp">
+                            <input type="hidden" id="scanned_file" name="scanned_file">
+                            <label for="file" class="cursor-pointer mb-0">
+                                <i class="fas fa-cloud-upload-alt text-indigo fs-4 mb-2"></i>
+                                <p class="small fw-bold mb-1">Téléverser un fichier</p>
+                                <p class="text-muted x-small mb-0">PDF, JPG, PNG...</p>
+                                <div id="file-name-preview" class="mt-2 text-indigo x-small fw-bold d-none"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button"
+                            class="btn bg-slate border border-slate w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 py-4"
+                            data-bs-toggle="modal" data-bs-target="#scannerModal"
+                            style="background: rgba(99, 102, 241, 0.05);">
+                            <i class="fas fa-camera text-indigo fs-4"></i>
+                            <div>
+                                <p class="small fw-bold mb-1">Scanner via Caméra</p>
+                                <p class="text-muted x-small mb-0">Capture directe & OCR</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-12">
+                        <label for="nom_personnalise"
+                            class="form-label small text-muted text-uppercase fw-bold">Identification du
+                            document</label>
+                        <input type="text" class="form-control form-control-dark" id="nom_personnalise"
+                            name="nom_personnalise" placeholder="Laissez vide pour le nom d'origine"
+                            style="background: #18181b; border-color: #27272a;">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit"
+                        class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fas fa-lock small"></i>
+                        <span>SÉCURISER ET ARCHIVER</span>
+                    </button>
+                </div>
+            </form>
+            style="background: #18181b; border-color: #27272a;">
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+            <i class="fas fa-lock small"></i>
+            <span>SÉCURISER ET ARCHIVER</span>
+        </button>
+    </div>
+    </form>
+</div>
+</div>
+
+<!-- Scanner Modal Inclusion -->
+{% include 'scanner_modal.html' %}
+
+<!-- Info Sidebar -->
+<div class="col-lg-4">
+    <div class="slate-card p-4">
+        <h5 class="small text-muted text-uppercase fw-bold mb-4">Protocole d'ingestion</h5>
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex gap-3 align-items-start">
+                <div class="icon-small rounded bg-success bg-opacity-10 p-2">
+                    <i class="fas fa-shield-virus text-success small"></i>
+                </div>
+                <div>
+                    <p class="mb-0 fw-bold small">Audit de contenu</p>
+                    <p class="mb-0 text-muted x-small">Scan antivirus et détection de malwares</p>
+                </div>
+            </div>
+            <div class="d-flex gap-3 align-items-start border-top border-slate pt-3">
+                <div class="icon-small rounded bg-indigo bg-opacity-10 p-2">
+                    <i class="fas fa-microchip text-indigo small"></i>
+                </div>
+                <div>
+                    <p class="mb-0 fw-bold small">Traitement Neural</p>
+                    <p class="mb-0 text-muted x-small">Extraction OCR et catégorisation IA</p>
+                </div>
+            </div>
+            <div class="d-flex gap-3 align-items-start border-top border-slate pt-3">
+                <div class="icon-small rounded bg-emerald bg-opacity-10 p-2">
+                    <i class="fas fa-key text-emerald small"></i>
+                </div>
+                <div>
+                    <p class="mb-0 fw-bold small">Chiffrement Périphérique</p>
+                    <p class="mb-0 text-muted x-small">Encodage immédiat en AES-256 bit</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 p-3 rounded"
+            style="background: rgba(99, 102, 241, 0.05); border-left: 3px solid var(--primary-indigo);">
+            <p class="x-small mb-0 text-muted">SafeDoc Ingestion Engine garantit l'intégrité de vos données dès la
+                première seconde.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Results -->
+{% if succes and infos %}
+<div class="col-12 mt-2">
+    <div class="slate-card p-4 border animate-in" style="border-color: rgba(16, 185, 129, 0.3) !important;">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="fas fa-check-circle text-emerald"></i>
+            <h4 class="mb-0">Traitement terminé</h4>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="p-3 rounded" style="background: #18181b;">
+                    <p class="text-muted x-small text-uppercase mb-1">Catégorie</p>
+                    <p class="h5 mb-0 text-emerald">{{ infos.get('categorie', 'N/A') }}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 rounded" style="background: #18181b;">
+                    <p class="text-muted x-small text-uppercase mb-1">Confiance IA</p>
+                    <p class="h5 mb-0">{{ "%.0f"|format(infos.get('confiance_categorie', 0) * 100) }}%</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 rounded" style="background: #18181b;">
+                    <p class="text-muted x-small text-uppercase mb-1">Qualité OCR</p>
+                    <p class="h5 mb-0">{{ "%.0f"|format(infos.get('confiance_ocr', 0)) }}%</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 rounded" style="background: #18181b;">
+                    <p class="text-muted x-small text-uppercase mb-1">Taille chiffrée</p>
+                    <p class="h5 mb-0">{{ "%.2f"|format(infos.get('taille', 0) / 1024 / 1024) }} MB</p>
+                </div>
+            </div>
+        </div>
+
+        {% if infos.get('texte_extrait') %}
+        <div class="mt-4">
+            <p class="text-muted x-small text-uppercase mb-2">Aperçu métadonnées extraites</p>
+            <div class="p-3 rounded"
+                style="background: #09090b; border: 1px solid #27272a; max-height: 150px; overflow-y: auto;">
+                <pre class="x-small text-muted mb-0"
+                    style="white-space: pre-wrap;">{{ infos.texte_extrait[:300] }}{% if infos.texte_extrait|length > 300 %}...{% endif %}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="mt-4 pt-3 border-top border-slate d-flex gap-2">
+            <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-secondary btn-sm px-4">Vault</a>
+            <a href="{{ url_for('upload') }}" class="btn btn-emerald btn-sm px-4">Nouveau scan</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Handle standard file change
+    document.getElementById('file').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('file-name-preview');
+        if (file) {
+            preview.textContent = file.name;
+            preview.classList.remove('d-none');
+            document.getElementById('scanned_file').value = ""; // Clear scan if file chosen
+
+            const nomPersonnalise = document.getElementById('nom_personnalise');
+            if (!nomPersonnalise.value) {
+                const nomSansExtension = file.name.replace(/\.[^/.]+$/, "");
+                nomPersonnalise.value = nomSansExtension;
+            }
+        }
+    });
+
+    // Handle Document Scan Event
+    document.addEventListener('documentScanned', function (e) {
+        const imageData = e.detail.image;
+        const preview = document.getElementById('file-name-preview');
+        const hiddenInput = document.getElementById('scanned_file');
+        const fileInput = document.getElementById('file');
+
+        hiddenInput.value = imageData;
+        fileInput.required = false; // Scan is now the source
+
+        preview.textContent = "SCAN_CAPTURE_" + new Date().getTime() + ".jpg";
+        preview.classList.remove('d-none');
+
+        const nomPersonnalise = document.getElementById('nom_personnalise');
+        if (!nomPersonnalise.value) {
+            nomPersonnalise.value = "Scan_" + new Date().toLocaleDateString().replace(/\//g, '-');
+        }
+
+        // Optional: Auto-submit or just show preview
+        // document.getElementById('upload-form').submit();
+    });
+
+    // Form Validation
+    document.getElementById('upload-form').addEventListener('submit', function (e) {
+        const file = document.getElementById('file').files[0];
+        const scan = document.getElementById('scanned_file').value;
+
+        if (!file && !scan) {
+            e.preventDefault();
+            alert("Veuillez sélectionner un fichier ou scanner un document.");
+        }
+    });
+</script>
+{% endblock %}

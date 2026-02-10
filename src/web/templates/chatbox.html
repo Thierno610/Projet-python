@@ -1,0 +1,190 @@
+<!-- Floating Chatbox Component -->
+<div id="chatbox-wrapper" class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+    <!-- Chat Icon -->
+    <button id="chatbox-toggle"
+        class="btn btn-indigo rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+        style="width: 56px; height: 56px; border: 2px solid rgba(255,255,255,0.1);">
+        <i class="fas fa-comment-alt fs-4"></i>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatbox-window" class="slate-card d-none flex-column overflow-hidden shadow-2xl"
+        style="width: 350px; height: 500px; bottom: 80px; right: 20px; position: absolute;">
+        <!-- Header -->
+        <div
+            class="p-3 border-bottom border-slate bg-slate bg-opacity-20 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pulse-dot bg-emerald" style="width: 8px; height: 8px;"></div>
+                <span class="x-small text-muted text-uppercase fw-bold letter-spacing-1">SafeDoc AI Guide</span>
+            </div>
+            <button id="chatbox-close" class="btn btn-icon-slate btn-sm border-0">
+                <i class="fas fa-times x-small"></i>
+            </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chatbox-messages" class="flex-grow-1 p-3 overflow-auto d-flex flex-column gap-3"
+            style="background: #09090b;">
+            <div class="chat-bubble ai p-2 rounded x-small border border-slate"
+                style="background: rgba(99, 102, 241, 0.05); align-self: flex-start; max-width: 85%;">
+                Bonjour ! Je suis l'assistant SafeDoc. Comment puis-je vous aider à sécuriser vos documents aujourd'hui
+                ?
+            </div>
+        </div>
+
+        <!-- Footer / Input -->
+        <div class="p-3 border-top border-slate">
+            <div class="input-group">
+                <input type="text" id="chatbox-input"
+                    class="form-control form-control-sm bg-slate border-slate text-light x-small"
+                    placeholder="Posez une question...">
+                <button id="chatbox-send" class="btn btn-indigo btn-sm">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #chatbox-wrapper {
+        transition: all 0.3s ease;
+    }
+
+    #chatbox-window {
+        display: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    #chatbox-window.active {
+        display: flex !important;
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .chat-bubble.user {
+        background: var(--bg-slate);
+        color: var(--text-primary);
+        align-self: flex-end;
+        border: 1px solid var(--border-slate);
+    }
+
+    #chatbox-messages::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    #chatbox-messages::-webkit-scrollbar-thumb {
+        background: var(--border-slate);
+    }
+
+    .typing-dots {
+        display: flex;
+        gap: 4px;
+        padding: 4px 0;
+    }
+
+    .typing-dots span {
+        width: 4px;
+        height: 4px;
+        background: var(--text-muted);
+        border-radius: 50%;
+        animation: blink 1.4s infinite both;
+    }
+
+    .typing-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+
+        0%,
+        80%,
+        100% {
+            opacity: 0;
+        }
+
+        40% {
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('chatbox-toggle');
+        const window = document.getElementById('chatbox-window');
+        const close = document.getElementById('chatbox-close');
+        const input = document.getElementById('chatbox-input');
+        const send = document.getElementById('chatbox-send');
+        const messagesArea = document.getElementById('chatbox-messages');
+
+        toggle.addEventListener('click', () => {
+            window.classList.toggle('active');
+        });
+
+        close.addEventListener('click', () => {
+            window.classList.remove('active');
+        });
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Add user bubble
+            addBubble(text, 'user');
+            input.value = '';
+            input.disabled = true;
+            send.disabled = true;
+
+            // Typing indicator
+            const typing = addBubble('<div class="typing-dots"><span></span><span></span><span></span></div>', 'ai thinking');
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text }),
+                    signal: AbortSignal.timeout(10000) // 10s timeout
+                });
+                const data = await response.json();
+
+                typing.remove();
+                if (data.reply) {
+                    addBubble(data.reply, 'ai');
+                } else {
+                    addBubble("Désolé, une erreur technique s'est produite.", 'ai');
+                }
+            } catch (err) {
+                typing.remove();
+                addBubble("L'assistant est actuellement hors-ligne ou surchargé.", 'ai');
+            } finally {
+                input.disabled = false;
+                send.disabled = false;
+                input.focus();
+            }
+        }
+
+        function addBubble(text, type) {
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${type} p-2 rounded x-small border border-slate`;
+            bubble.style.maxWidth = '85%';
+            bubble.style.alignSelf = type.includes('user') ? 'flex-end' : 'flex-start';
+            if (type.includes('ai')) {
+                bubble.style.background = 'rgba(99, 102, 241, 0.05)';
+            }
+            bubble.innerHTML = text; // Allow HTML for dots
+            messagesArea.appendChild(bubble);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+            return bubble;
+        }
+
+        send.addEventListener('click', sendMessage);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    });
+</script>
