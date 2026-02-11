@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDoc // Entry Terminal</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Cyber-Premium Global System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/safedoc_cyber.css') }}">
+
+    <style>
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .auth-portal-grid {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+        }
+
+        @media (max-width: 991.98px) {
+            .auth-portal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glass Alert Override for Cyber Look */
+        .glass-alert {
+            background: var(--bg-surface) !important;
+            backdrop-filter: var(--glass-blur) !important;
+            border: 1px solid var(--glass-border) !important;
+            color: var(--text-primary) !important;
+            border-radius: var(--radius-lg) !important;
+            box-shadow: var(--glass-shadow) !important;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            width: 380px;
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success.glass-alert {
+            border-left: 4px solid var(--primary-emerald) !important;
+        }
+
+        .alert-danger.glass-alert {
+            border-left: 4px solid var(--primary-rose) !important;
+        }
+
+        .alert-info.glass-alert {
+            border-left: 4px solid var(--primary-indigo) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Texture -->
+    <div class="position-fixed top-0 start-0 w-100 h-100 opacity-20 pointer-events-none"
+        style="background-image: radial-gradient(circle at 20% 30%, var(--primary-indigo) 0%, transparent 70%); z-index: -1;">
+    </div>
+
+    <div id="auth-portal">
+        <!-- Flash Feedback Loop -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show glass-alert"
+            role="alert">
+            <div class="d-flex align-items-center gap-3">
+                <i
+                    class="fas fa-{{ 'check-circle' if category == 'success' else 'triangle-exclamation' if category == 'error' else 'info-circle' }} fs-5 text-{{ 'emerald' if category == 'success' else 'rose' if category == 'error' else 'indigo' }}"></i>
+                <div class="small fw-bold">{{ message }}</div>
+            </div>
+            <button type="button" class="btn-close btn-close-white x-small" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Core Engine Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

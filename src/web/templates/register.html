@@ -1,0 +1,158 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+<div class="auth-portal-grid animate-in">
+    <!-- Side: Identity Matrix Visual -->
+    <div class="position-relative overflow-hidden d-none d-lg-flex flex-column justify-content-center p-5 vh-100"
+        style="background: linear-gradient(135deg, #011c18 0%, #02040a 100%);">
+        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10"
+            style="background-image: radial-gradient(var(--primary-emerald) 1px, transparent 1px); background-size: 30px 30px;">
+        </div>
+
+        <div class="text-center position-relative z-1 d-flex flex-column h-100">
+            <div class="mb-5 pt-4">
+                <div
+                    class="bg-emerald-glow rounded-circle p-4 d-inline-flex mb-4 border-emerald-glow shadow-glow-emerald">
+                    <i class="fas fa-user-shield text-white display-3"></i>
+                </div>
+            </div>
+
+            <div class="my-auto">
+                <h2 class="display-6 fw-800 text-white mb-4 tracking-tighter shadow-sm">Initialisez votre<br>Coffre
+                    Numérique.</h2>
+                <p class="text-white-50 max-w-400 mx-auto lead opacity-75">Rejoignez le réseau d'élite SafeDoc.
+                    Sécurisez votre héritage avec l'indexation neuronale et des protocoles de stockage fragmentés.</p>
+            </div>
+
+            <div
+                class="mt-auto pt-5 pb-4 d-flex justify-content-center gap-4 opacity-40 font-monospace x-small tracking-widest text-uppercase">
+                <div class="text-center mx-2"><i class="fas fa-dna d-block mb-2 fs-5 text-emerald"></i>ID_HANDSHAKE
+                </div>
+                <div class="text-center mx-2"><i
+                        class="fas fa-brain d-block mb-2 fs-5 text-emerald"></i>MAPPING_NEURONAL</div>
+                <div class="text-center mx-2"><i class="fas fa-server d-block mb-2 fs-5 text-emerald"></i>SPAWN_COFFRE
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side: Registration Node -->
+    <div
+        class="d-flex align-items-center justify-content-center p-4 p-md-5 vh-100 overflow-y-auto bg-main border-start border-slate">
+        <div class="w-100" style="max-width: 420px;">
+            <div class="glass-card p-5 animate-in" style="animation-delay: 0.1s;">
+                <div class="text-center mb-5">
+                    <h2 class="h3 fw-800 text-white mb-2 tracking-tight">Enregistrement d'Identité</h2>
+                    <p class="x-small text-muted text-uppercase fw-800 tracking-widest opacity-50">Générer Nouveau Nœud
+                        de Sécurité</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('register') }}" class="needs-validation">
+                    <div class="mb-4">
+                        <label for="username"
+                            class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Identifiant
+                            Souhaité</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white-5 border-slate text-muted border-end-0 px-3">
+                                <i class="fas fa-user-astronaut x-small"></i>
+                            </span>
+                            <input type="text"
+                                class="form-control bg-white-5 border-slate text-white py-3 ps-0 font-monospace border-start-0"
+                                id="username" name="username" required placeholder="NOM_UTILISATEUR">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email"
+                            class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Adresse de
+                            Relais (Email)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white-5 border-slate text-muted border-end-0 px-3">
+                                <i class="fas fa-at x-small"></i>
+                            </span>
+                            <input type="email"
+                                class="form-control bg-white-5 border-slate text-white py-3 ps-0 font-monospace border-start-0"
+                                id="email" name="email" required placeholder="liaison@safedoc.net">
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label for="password"
+                            class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Clé de Passe
+                            Maître</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white-5 border-slate text-muted border-end-0 px-3">
+                                <i class="fas fa-vault x-small"></i>
+                            </span>
+                            <input type="password"
+                                class="form-control bg-white-5 border-slate text-white py-3 ps-0 font-monospace border-start-0"
+                                id="password" name="password" required placeholder="8+ SYMBOLES REQUIS">
+                        </div>
+                        <div class="mt-3 d-flex gap-1 px-1">
+                            <div class="password-node flex-grow-1"
+                                style="height: 3px; background: var(--primary-emerald); box-shadow: 0 0 10px var(--primary-emerald);">
+                            </div>
+                            <div class="password-node flex-grow-1 opacity-20" style="height: 3px; background: #fff;">
+                            </div>
+                            <div class="password-node flex-grow-1 opacity-20" style="height: 3px; background: #fff;">
+                            </div>
+                            <div class="password-node flex-grow-1 opacity-20" style="height: 3px; background: #fff;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit"
+                            class="btn btn-emerald py-3 rounded-pill fw-800 tracking-widest shadow-glow-emerald">INITIALISER_PROTOCOLE</button>
+                    </div>
+
+                    <div class="text-center mt-5 pt-3 border-top border-slate">
+                        <p class="text-muted x-small mb-1 font-monospace">DÉJÀ ENREGISTRÉ ?</p>
+                        <a href="{{ url_for('login') }}"
+                            class="text-emerald x-small fw-800 text-decoration-none tracking-widest uppercase">Retour au
+                            Terminal</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="text-center mt-4 opacity-40">
+                <p class="text-muted x-small font-monospace tracking-tighter">
+                    <i class="fas fa-microchip me-2"></i> CHIFFREMENT_DE_BOUT_EN_BOUT_ACTIF : AES_256
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-emerald-glow {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .border-emerald-glow {
+        border-color: rgba(16, 185, 129, 0.3) !important;
+    }
+
+    .shadow-glow-emerald {
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-emerald {
+        background: var(--primary-emerald);
+        color: white;
+        border: none;
+        transition: var(--transition-premium);
+    }
+
+    .btn-emerald:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .text-emerald {
+        color: var(--primary-emerald) !important;
+    }
+</style>
+{% endblock %}

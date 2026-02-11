@@ -69,14 +69,15 @@ def lancer_application():
         from src.web.app_flask_optimized import app
         print("🚀 Lancement de SafeDoc...")
         print("=" * 50)
-        print("🌐 URL: http://localhost:5000")
+        print("🌐 URL: http://127.0.0.1:5001")
+        print("💡 CONSEIL: Utilisez http://127.0.0.1:5001 si localhost ne répond pas")
         print("🔒 SafeDoc - Coffre-fort Numérique Intelligent")
         print("=" * 50)
         print("⚠️  Mode développement - Ne pas utiliser en production")
         print("🛑 Appuyez sur Ctrl+C pour arrêter")
         print("=" * 50)
         
-        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+        app.run(debug=True, host='0.0.0.0', port=5001, use_reloader=True)
         
     except ImportError as e:
         print(f"❌ Erreur d'import: {e}")
@@ -86,11 +87,11 @@ def lancer_application():
         from src.web.app_flask_simple import app
         print("🚀 Lancement de SafeDoc (Mode Démonstration)...")
         print("=" * 50)
-        print("🌐 URL: http://localhost:5000")
+        print("🌐 URL: http://127.0.0.1:5000")
         print("🔒 SafeDoc - Coffre-fort Numérique Intelligent")
         print("=" * 50)
         
-        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+        app.run(debug=True, host='0.0.0.0', port=5001, use_reloader=True)
 
 if __name__ == '__main__':
     print("🔒 SafeDoc - Initialisation...")

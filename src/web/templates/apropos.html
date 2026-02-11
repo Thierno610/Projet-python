@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}About - SafeDoc Ecosystem{% endblock %}
+
+{% block content %}
+<div class="row g-4 animate-in">
+    <!-- Header Hero: The Cyber-Ecosystem -->
+    <div class="col-12">
+        <div class="glass-card p-5 text-center position-relative overflow-hidden border-indigo-glow"
+            style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.05) 100%);">
+            <div class="position-relative z-1 py-4">
+                <div class="bg-indigo-glow mx-auto mb-4 rounded-circle d-flex align-items-center justify-content-center border-indigo-glow shadow-glow"
+                    style="width: 100px; height: 100px;">
+                    <i class="fas fa-shield-halved text-white fs-1"></i>
+                </div>
+                <h1 class="display-5 fw-800 text-white mb-3 tracking-tight">The SafeDoc Ecosystem</h1>
+                <p class="lead text-muted mx-auto font-monospace x-small tracking-widest text-uppercase opacity-75"
+                    style="max-width: 600px;">
+                    Defined by Security. Driven by Intelligence.
+                </p>
+                <div class="mt-4 d-flex justify-content-center gap-3">
+                    <span class="x-small text-indigo fw-bold tracking-widest"><i
+                            class="fas fa-satellite me-2"></i>VERSION: 4.0.0</span>
+                    <span class="x-small text-emerald fw-bold tracking-widest"><i
+                            class="fas fa-check-circle me-2"></i>STATUS: OPERATIONAL</span>
+                </div>
+            </div>
+            <!-- Decorative atmospheric elements -->
+            <div class="position-absolute top-50 start-50 translate-middle"
+                style="width: 500px; height: 500px; background: radial-gradient(circle, var(--primary-indigo) 0%, transparent 70%); filter: blur(100px); opacity: 0.1; z-index: 0;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Directives -->
+    <div class="col-lg-8">
+        <div class="glass-card p-5 h-100">
+            <h4 class="fw-800 text-white mb-4 d-flex align-items-center gap-3">
+                <i class="fas fa-microchip text-indigo opacity-50"></i>
+                <span class="tracking-tight">Core Directives</span>
+            </h4>
+            <div class="mb-5">
+                <p class="text-white-50 lead opacity-75">
+                    SafeDoc bridges the gap between chaotic physical fragmentation and the absolute precision of digital
+                    sovereignty. We architect environments where assets are not just stored, but protected by the laws
+                    of mathematics.
+                </p>
+            </div>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="p-4 rounded-4 bg-white-5 border-slate border-indigo-hover transition-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <i class="fas fa-vault text-indigo fs-4"></i>
+                            <h6 class="fw-800 text-white mb-0 tracking-widest uppercase">Zero-Access Vault</h6>
+                        </div>
+                        <p class="x-small text-muted mb-0 font-monospace opacity-75">Deploying military-grade AES-256
+                            entropy. Your keys, your data, absolute exclusion of external entities.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 rounded-4 bg-white-5 border-slate border-emerald-hover transition-premium">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <i class="fas fa-brain text-emerald fs-4"></i>
+                            <h6 class="fw-800 text-white mb-0 tracking-widest uppercase">Neural Indexing</h6>
+                        </div>
+                        <p class="x-small text-muted mb-0 font-monospace opacity-75">Advanced OCR and NLP synthesis for
+                            autonomous asset categorization and deep-search capabilities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visionary Origin -->
+    <div class="col-lg-4">
+        <div class="glass-card p-5 h-100 border-indigo-glow" style="background: rgba(99, 102, 241, 0.03);">
+            <div class="text-center">
+                <div class="bg-indigo-glow d-inline-flex p-4 rounded-circle mb-4 border-indigo-glow">
+                    <i class="fas fa-compass text-indigo display-5"></i>
+                </div>
+                <h5 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Origin Protocol</h5>
+
+                <h4 class="fw-800 text-white mb-1">Dr. Castro</h4>
+                <p class="x-small text-indigo font-monospace tracking-tighter opacity-75 mb-4">ARCHITECT_IN_CHIEF</p>
+
+                <div class="p-4 rounded-4 bg-black-20 border-slate position-relative">
+                    <i class="fas fa-quote-left position-absolute top-0 start-0 m-3 opacity-10"></i>
+                    <p class="small text-white-50 italic mb-0 opacity-75">
+                        "The future of human knowledge depends on our ability to cryptographically ensure the integrity
+                        of our individual and collective records."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Architecture Team -->
+    <div class="col-12">
+        <div class="glass-card p-5">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h4 class="fw-800 text-white mb-0 d-flex align-items-center gap-3">
+                    <i class="fas fa-users-gear text-indigo opacity-50"></i>
+                    <span class="tracking-tight">Architecture Team</span>
+                </h4>
+                <div class="x-small text-muted font-monospace opacity-50 text-end d-none d-sm-block">
+                    DEP: COMPUTER_SCIENCE<br>UNI: LABÉ_CONSTEL
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for membre in [
+                {'nom': 'Thierno Mouctar DIALLO', 'role': 'Lead Architect', 'icon': 'fa-code'},
+                {'nom': 'Aboubacar YOULA', 'role': 'Security Specialist', 'icon': 'fa-user-lock'},
+                {'nom': 'Moussa SIDIBE', 'role': 'Interface Designer', 'icon': 'fa-bezier-curve'},
+                {'nom': 'Oumar SOUMAH', 'role': 'Core Engineer', 'icon': 'fa-server'}
+                ] %}
+                <div class="col-md-3">
+                    <div
+                        class="member-card p-4 rounded-4 border-slate bg-white-5 text-center transition-premium hover-lift">
+                        <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center bg-black-20 border-slate"
+                            style="width: 70px; height: 70px;">
+                            <i class="fas {{ membre.icon }} text-muted"></i>
+                        </div>
+                        <h6 class="fw-800 text-white mb-1 tracking-tight">{{ membre.nom }}</h6>
+                        <p class="x-small text-indigo font-monospace tracking-widest opacity-75 mb-0">{{
+                            membre.role|upper }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Dependency Grid -->
+    <div class="col-12 mb-5">
+        <div class="glass-card p-5">
+            <h4 class="fw-800 text-white mb-5 d-flex align-items-center gap-3">
+                <i class="fas fa-layer-group text-emerald opacity-50"></i>
+                <span class="tracking-tight">Core Dependencies</span>
+            </h4>
+            <div class="tech-grid">
+                <div
+                    class="tech-tag d-flex align-items-center gap-3 p-3 rounded-pill border-slate bg-white-5 font-monospace x-small text-white-50">
+                    <i class="fab fa-python text-indigo"></i> PYTHON_RUNTIME
+                </div>
+                <div
+                    class="tech-tag d-flex align-items-center gap-3 p-3 rounded-pill border-slate bg-white-5 font-monospace x-small text-white-50">
+                    <i class="fas fa-eye text-emerald"></i> OCR_SYNTHESIS
+                </div>
+                <div
+                    class="tech-tag d-flex align-items-center gap-3 p-3 rounded-pill border-slate bg-white-5 font-monospace x-small text-white-50">
+                    <i class="fas fa-brain text-indigo"></i> NLP_ENGINE
+                </div>
+                <div
+                    class="tech-tag d-flex align-items-center gap-3 p-3 rounded-pill border-slate bg-white-5 font-monospace x-small text-white-50">
+                    <i class="fas fa-shield-halved text-rose"></i> AES_256_PROT
+                </div>
+                <div
+                    class="tech-tag d-flex align-items-center gap-3 p-3 rounded-pill border-slate bg-white-5 font-monospace x-small text-white-50">
+                    <i class="fas fa-database text-emerald"></i> SQL_CORE
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .tech-tag {
+        transition: var(--transition-premium);
+        cursor: default;
+    }
+
+    .tech-tag:hover {
+        border-color: rgba(99, 102, 241, 0.3) !important;
+        background: rgba(99, 102, 241, 0.05);
+        color: white !important;
+    }
+
+    .member-card:hover {
+        background: rgba(99, 102, 241, 0.05) !important;
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+</style>
+{% endblock %}

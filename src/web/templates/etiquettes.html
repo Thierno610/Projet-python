@@ -3,92 +3,111 @@
 {% block title %}Tags - SafeDoc Classification{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <!-- Header Section -->
+<div class="row g-4 animate-in">
+    <!-- Header Section: Semantic Engine -->
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-                <h1 class="h3 mb-1">Système d'Étiquetage</h1>
-                <p class="text-muted small">Gestion des metadata de classification (SD-Tag Core)</p>
+                <h1 class="h3 mb-1 fw-800 tracking-tight">Classification Engine</h1>
+                <p class="text-muted small d-flex align-items-center gap-2">
+                    <span class="font-monospace opacity-50">METADATA_NODE: SD-TAG_v4</span>
+                    <span class="pulse-dot bg-indigo"></span>
+                    <span class="x-small text-indigo fw-bold tracking-widest text-uppercase">Sub-Routine Active</span>
+                </p>
             </div>
             <div class="d-flex gap-2 text-end">
-                <div class="slate-card px-3 py-2 border-0" style="background: rgba(99, 102, 241, 0.05);">
-                    <p class="x-small text-muted mb-0 text-uppercase fw-bold">Labels Actifs</p>
-                    <p class="h5 mb-0 text-indigo">{{ etiquettes|length }}</p>
+                <div class="glass-card px-4 py-2 border-indigo-glow" style="background: rgba(99, 102, 241, 0.05);">
+                    <p class="x-small text-indigo mb-0 text-uppercase fw-800 tracking-widest">Active_Labels</p>
+                    <p class="h4 mb-0 text-white fw-800 font-monospace">{{ etiquettes|length }}</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Tag Generation Node -->
     <div class="col-lg-4">
-        <div class="slate-card p-4">
-            <h5 class="small text-muted text-uppercase fw-bold mb-4">Initialiser un Tag</h5>
+        <div class="glass-card p-5 h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 p-3 opacity-5">
+                <i class="fas fa-plus-circle fa-4x text-white"></i>
+            </div>
+
+            <h5 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Initialize New Label</h5>
+
             <form method="POST" action="{{ url_for('etiquettes') }}">
                 <input type="hidden" name="action" value="creer">
 
                 <div class="mb-4">
-                    <label for="nom" class="form-label x-small text-muted text-uppercase fw-bold">Désignation</label>
-                    <input type="text" class="form-control form-control-dark" id="nom" name="nom"
-                        placeholder="Ex: CONFIDENTIEL" required style="background: #18181b; border-color: #27272a;">
+                    <label for="nom" class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Label
+                        Designation</label>
+                    <input type="text" class="form-control bg-white-5 border-slate text-white py-3 font-monospace"
+                        id="nom" name="nom" placeholder="e.g. CLASSIFIED_Z" required>
                 </div>
 
-                <div class="mb-4">
-                    <label for="couleur" class="form-label x-small text-muted text-uppercase fw-bold">Codage Couleur
-                        (Hex)</label>
-                    <div class="d-flex gap-3 align-items-center bg-dark p-2 rounded"
-                        style="background: #18181b !important; border: 1px solid #27272a;">
-                        <input type="color" class="form-control form-control-color border-0" id="couleur" name="couleur"
-                            value="#6366f1"
-                            style="width: 40px; height: 40px; background: transparent; cursor: pointer;">
-                        <span id="color-hex-display" class="x-small text-muted font-monospace">#6366f1</span>
+                <div class="mb-5">
+                    <label for="couleur"
+                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Chroma
+                        Signature</label>
+                    <div class="d-flex gap-3 align-items-center bg-black-20 p-3 rounded-3 border-slate">
+                        <div class="position-relative" style="width: 48px; height: 48px;">
+                            <input type="color"
+                                class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                                id="couleur" name="couleur" value="#818cf8">
+                            <div id="color-preview" class="w-100 h-100 rounded-circle border-slate shadow-glow"
+                                style="background: #818cf8; border-width: 2px;"></div>
+                        </div>
+                        <span id="color-hex-display"
+                            class="small text-white font-monospace fw-800 tracking-widest opacity-75">#818CF8</span>
                     </div>
                 </div>
 
-                <button type="submit"
-                    class="btn btn-indigo w-100 py-2 d-flex align-items-center justify-content-center gap-2">
-                    <i class="fas fa-plus small"></i>
-                    <span>DÉPLOYER LE TAG</span>
+                <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow">
+                    DEPLOY_METADATA_NODE
                 </button>
             </form>
-        </div>
 
-        <div class="mt-4 p-3 rounded slate-card border-0" style="background: rgba(16, 185, 129, 0.05);">
-            <div class="d-flex gap-2">
-                <i class="fas fa-info-circle text-emerald small mt-1"></i>
-                <p class="x-small text-muted mb-0">Les étiquettes permettent une organisation granulaire et une
-                    recherche accélérée par l'IA de classification.</p>
+            <div class="mt-5 p-3 rounded-3 bg-emerald-glow border-emerald-glow opacity-75">
+                <div class="d-flex gap-3 align-items-center">
+                    <i class="fas fa-info-circle text-emerald"></i>
+                    <p class="x-small text-muted mb-0 font-monospace">Neural tags optimize AI-driven asset indexing and
+                        global telemetry filter efficiency.</p>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Registry Node -->
     <div class="col-lg-8">
-        <div class="slate-card p-0">
-            <div class="p-3 border-bottom border-slate bg-opacity-10" style="background: rgba(255,255,255,0.02);">
-                <span class="x-small text-muted text-uppercase fw-bold">Registre des Classifications</span>
+        <div class="glass-card p-0 h-100 overflow-hidden d-flex flex-column">
+            <div class="p-4 border-bottom border-slate bg-white-5 d-flex justify-content-between align-items-center">
+                <span class="x-small text-muted text-uppercase fw-800 tracking-widest">Classification Registry</span>
+                <span
+                    class="badge bg-black-20 text-muted px-3 py-2 rounded-pill font-monospace x-small border-slate">LOCAL_DB_SYNCED</span>
             </div>
 
-            <div class="p-4">
+            <div class="p-5 flex-grow-1 overflow-auto">
                 {% if etiquettes %}
-                <div class="row g-3">
+                <div class="row g-4">
                     {% for etiquette in etiquettes %}
-                    <div class="col-md-6">
-                        <div class="p-3 rounded border border-slate d-flex align-items-center justify-content-between"
-                            style="background: #18181b;">
-                            <div class="d-flex align-items-center gap-3">
+                    <div class="col-md-6 animate-in" style="animation-delay: {{ loop.index0 * 0.05 }}s">
+                        <div class="glass-card p-4 d-flex align-items-center justify-content-between border-slate-hover transition-premium hover-up"
+                            style="background: rgba(255, 255, 255, 0.02);">
+                            <div class="d-flex align-items-center gap-4">
                                 <div class="color-node"
-                                    style="width: 12px; height: 12px; border-radius: 2px; --node-color: {{ etiquette.couleur }}; background: var(--node-color); box-shadow: 0 0 10px var(--node-color);">
+                                    style="width: 16px; height: 16px; border-radius: 4px; background: {{ etiquette.couleur }}; box-shadow: 0 0 15px {{ etiquette.couleur }}88;">
                                 </div>
                                 <div>
-                                    <p class="mb-0 fw-bold small text-light">{{ etiquette.nom }}</p>
-                                    <p class="mb-0 x-small text-muted font-monospace">{{ etiquette.couleur }}</p>
+                                    <p class="mb-0 fw-800 text-white tracking-tight">{{ etiquette.nom|upper }}</p>
+                                    <p class="mb-0 x-small text-muted font-monospace opacity-50 tracking-widest">{{
+                                        etiquette.couleur|upper }}</p>
                                 </div>
                             </div>
                             <form method="POST" action="{{ url_for('etiquettes') }}"
-                                onsubmit="return confirm('⚠️ Alerte : La suppression de ce tag affectera tous les documents liés. Confirmer ?');">
+                                onsubmit="return confirm('CRITICAL: Removing this metadata node will decouple all associated assets. Proceed with deletion?');">
                                 <input type="hidden" name="action" value="supprimer">
                                 <input type="hidden" name="etiquette_id" value="{{ etiquette.id }}">
-                                <button type="submit" class="btn btn-icon-slate btn-sm text-muted hover-danger">
-                                    <i class="fas fa-trash x-small"></i>
+                                <button type="submit"
+                                    class="btn btn-outline-rose btn-sm rounded-circle p-2 border-0 opacity-50 hover-100">
+                                    <i class="fas fa-trash-alt x-small"></i>
                                 </button>
                             </form>
                         </div>
@@ -97,21 +116,39 @@
                 </div>
                 {% else %}
                 <div class="text-center py-5">
-                    <i class="fas fa-bookmark fs-1 text-muted mb-3 opacity-20"></i>
-                    <h5 class="text-muted">Aucun Tag Défini</h5>
-                    <p class="x-small text-muted">Initialisez votre structure de classement via le panneau latéral.</p>
+                    <div class="bg-white-5 d-inline-flex p-5 rounded-circle mb-4 opacity-20">
+                        <i class="fas fa-tags display-1 text-muted"></i>
+                    </div>
+                    <h5 class="h4 fw-800 text-white-50">Empty Registry Feed</h5>
+                    <p class="text-muted small max-w-400 mx-auto">No classification nodes have been initialized for this
+                        vault. Define one on the portal terminal to begin neural mapping.</p>
                 </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .btn-outline-rose:hover {
+        background: rgba(244, 63, 94, 0.2);
+        color: #f43f5e;
+        opacity: 1 !important;
+    }
+</style>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    document.getElementById('couleur').addEventListener('input', function (e) {
-        document.getElementById('color-hex-display').textContent = e.target.value;
+    const colorInput = document.getElementById('couleur');
+    const colorPreview = document.getElementById('color-preview');
+    const colorHex = document.getElementById('color-hex-display');
+
+    colorInput.addEventListener('input', function (e) {
+        const value = e.target.value.toUpperCase();
+        colorPreview.style.background = value;
+        colorPreview.style.boxShadow = `0 0 15px ${value}88`;
+        colorHex.textContent = value;
     });
 </script>
 {% endblock %}

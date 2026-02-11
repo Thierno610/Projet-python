@@ -1,0 +1,252 @@
+:root {
+    /* Cyber-Premium Deep Space Palette */
+    --bg-main: #020203;
+    /* True Carbon Black */
+    --bg-surface: rgba(10, 10, 15, 0.7);
+    --bg-sidebar: rgba(5, 5, 10, 0.85);
+
+    /* Vibrant Cyber Accents */
+    --primary-indigo: #6366f1;
+    --primary-indigo-hover: #4f46e5;
+    --primary-indigo-glow: rgba(99, 102, 241, 0.35);
+    --accent-violet: #a855f7;
+    --accent-violet-glow: rgba(168, 85, 247, 0.35);
+    --accent-emerald: #10b981;
+    --accent-emerald-glow: rgba(16, 185, 129, 0.35);
+    --accent-rose: #f43f5e;
+
+    /* Text & Contrast */
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+
+    /* Floating Glass & Borders */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    --glass-blur: blur(20px);
+
+    /* Border Glows */
+    --border-indigo-glow: 0 0 15px rgba(99, 102, 241, 0.2);
+
+    /* Transitions & Dynamics */
+    --transition-premium: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    --radius-lg: 18px;
+    --radius-xl: 30px;
+}
+
+/* Base Styles */
+body {
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    letter-spacing: -0.01em;
+}
+
+/* Immersive Background Mesh */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Floating Component Architecture */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-premium);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+}
+
+/* Premium Detached Sidebar */
+.sidebar {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    bottom: 24px;
+    width: 280px;
+    background: var(--bg-sidebar);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 30px 20px;
+    z-index: 1000;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Floating Navbar */
+.navbar {
+    position: sticky;
+    top: 24px;
+    margin: 0 24px 30px calc(280px + 48px);
+    background: var(--bg-sidebar);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 12px 24px !important;
+    z-index: 999;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: calc(280px + 48px);
+    padding: 0 24px 40px 0;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: var(--text-secondary);
+    padding: 14px 20px !important;
+    border-radius: 14px;
+    margin-bottom: 6px;
+    transition: var(--transition-premium);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 500;
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+    color: #fff;
+    background: var(--primary-indigo);
+    box-shadow: 0 10px 20px var(--primary-indigo-glow);
+}
+
+/* Cyber Typography */
+h1,
+h2,
+h3,
+.h3 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.vibrant-gradient-indigo {
+    background: linear-gradient(135deg, var(--primary-indigo) 0%, var(--accent-violet) 100%) !important;
+}
+
+/* High-End Components */
+.btn-indigo {
+    background: var(--primary-indigo);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    color: #fff;
+    transition: var(--transition-premium);
+    box-shadow: 0 5px 15px var(--primary-indigo-glow);
+}
+
+.btn-indigo:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px var(--primary-indigo-glow);
+    background: var(--primary-indigo-hover);
+}
+
+/* Cyber Form Elements */
+.form-control,
+.form-select {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    transition: var(--transition-premium) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(99, 102, 241, 0.05) !important;
+    border-color: var(--primary-indigo) !important;
+    box-shadow: 0 0 15px var(--primary-indigo-glow) !important;
+    color: #ffffff !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-style: italic;
+}
+
+.input-group-text {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Animations Hub */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.page-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Helper Classes */
+.text-indigo {
+    color: var(--primary-indigo) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.x-small {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.v-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--glass-border);
+}
+
+.badge {
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

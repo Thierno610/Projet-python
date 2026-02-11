@@ -4,12 +4,12 @@ Modèles SQLAlchemy pour utilisateurs, documents et étiquettes
 """
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Table, Text, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Table, Text, Float, Boolean, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship, Session
+from sqlalchemy.orm import sessionmaker, relationship, Session, joinedload
 from loguru import logger
 
-from config.config import DATABASE_URL
+from config.config import DATABASE_URL, FREE_TIER_LIMIT_MB, PREMIUM_TIER_LIMIT_MB
 
 Base = declarative_base()
 
@@ -29,8 +29,23 @@ class UtilisateurDB(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nom_utilisateur = Column(String(50), unique=True, nullable=False, index=True)
     hash_mot_de_passe = Column(String(255), nullable=False)
+    
+    # Profil
+    nom_complet = Column(String(100), nullable=True)
+    email = Column(String(100), nullable=True)
+    telephone = Column(String(20), nullable=True)
+    adresse = Column(Text, nullable=True)
+    photo_profil = Column(String(500), nullable=True)
+    
     niveau = Column(String(20), default='free')  # 'free' ou 'premium'
     stockage_utilise = Column(Integer, default=0)  # en octets
+    
+    # Paramètres de Personnalisation
+    theme_accent_color = Column(String(10), default='#6366f1') # Indigo par défaut
+    glass_intensity = Column(Float, default=16.0) # Intensité du blur en px
+    ai_vocal_enabled = Column(Boolean, default=False)
+    notifications_email = Column(Boolean, default=True)
+    
     date_creation = Column(DateTime, default=datetime.now)
     derniere_connexion = Column(DateTime, default=datetime.now)
     
@@ -39,6 +54,22 @@ class UtilisateurDB(Base):
     
     def __repr__(self):
         return f"<Utilisateur(id={self.id}, nom='{self.nom_utilisateur}', niveau='{self.niveau}')>"
+
+    def est_premium(self) -> bool:
+        """Vérifie si l'utilisateur est premium"""
+        return self.niveau == 'premium'
+    
+    def obtenir_limite_stockage(self) -> int:
+        """Retourne la limite de stockage en octets"""
+        limit_mb = PREMIUM_TIER_LIMIT_MB if self.est_premium() else FREE_TIER_LIMIT_MB
+        return limit_mb * 1024 * 1024
+    
+    def pourcentage_stockage(self) -> float:
+        """Retourne le pourcentage d'utilisation du stockage (0-100)"""
+        limite = self.obtenir_limite_stockage()
+        if limite <= 0:
+            return 0
+        return min(100, (self.stockage_utilise / limite) * 100)
 
 
 class DocumentDB(Base):
@@ -60,6 +91,7 @@ class DocumentDB(Base):
     type_fichier = Column(String(50), nullable=False)  # pdf, jpg, png, etc.
     texte_extrait = Column(Text, nullable=True)  # Texte OCR
     confiance_ocr = Column(Float, nullable=True)  # Confiance OCR (0-100)
+    hash_fichier = Column(String(64), nullable=True)  # SHA-256 pour vérification d'intégrité
     
     # Dates
     date_upload = Column(DateTime, default=datetime.now)
@@ -79,14 +111,51 @@ class EtiquetteDB(Base):
     __tablename__ = 'etiquettes'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nom = Column(String(100), unique=True, nullable=False, index=True)
-    couleur = Column(String(7), default='#3498db')  # Couleur hex
+    nom = Column(String(100), nullable=False, index=True)
+    couleur = Column(String(7), default='#3B82F6')  # Couleur hex
+    utilisateur_id = Column(Integer, ForeignKey('utilisateurs.id'), nullable=True) # Null = global ou système
     
     # Relations
     documents = relationship('DocumentDB', secondary=association_document_etiquette, back_populates='etiquettes')
     
     def __repr__(self):
         return f"<Etiquette(id={self.id}, nom='{self.nom}')>"
+
+
+class LogTelechargementDB(Base):
+    """Modèle pour journaliser les téléchargements et accès aux documents"""
+    __tablename__ = 'logs_telechargements'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    utilisateur_id = Column(Integer, ForeignKey('utilisateurs.id'), nullable=False)
+    document_id = Column(Integer, ForeignKey('documents.id'), nullable=False)
+    action = Column(String(50), nullable=False)  # 'download', 'view', 'decrypt_failed'
+    adresse_ip = Column(String(45), nullable=True)  # IPv4 ou IPv6
+    succes = Column(Boolean, default=True)
+    message_erreur = Column(Text, nullable=True)
+    date_action = Column(DateTime, default=datetime.now)
+    
+    def __repr__(self):
+        return f"<LogTelechargement(user={self.utilisateur_id}, doc={self.document_id}, action='{self.action}')>"
+
+
+class BiometrieDB(Base):
+    """Stocke les clés publiques WebAuthn pour la biométrie"""
+    __tablename__ = 'biometrie_creds'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    utilisateur_id = Column(Integer, ForeignKey('utilisateurs.id'), nullable=False)
+    
+    credential_id = Column(LargeBinary, unique=True, nullable=False)
+    public_key = Column(LargeBinary, nullable=False)
+    sign_count = Column(Integer, default=0)
+    device_name = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.now)
+    
+    utilisateur = relationship('UtilisateurDB', backref='biometrie')
+    
+    def __repr__(self):
+        return f"<BiometrieDB(user={self.utilisateur_id}, device='{self.device_name}')>"
 
 
 class GestionnaireBaseDeDonnees:
@@ -116,6 +185,17 @@ class GestionnaireBaseDeDonnees:
             Session SQLAlchemy
         """
         return self.SessionLocal()
+    
+    def verifier_connexion(self) -> bool:
+        """Vérifie si la connexion à la base de données est active"""
+        try:
+            with self.engine.connect() as conn:
+                from sqlalchemy import text
+                conn.execute(text("SELECT 1"))
+            return True
+        except Exception as e:
+            logger.error(f"Échec de la vérification de connexion BDD: {e}")
+            return False
     
     def creer_utilisateur(
         self,
@@ -209,7 +289,8 @@ class GestionnaireBaseDeDonnees:
         type_fichier: str,
         categorie: str = None,
         texte_extrait: str = None,
-        confiance_ocr: float = None
+        confiance_ocr: float = None,
+        hash_fichier: str = None
     ) -> Optional[DocumentDB]:
         """
         Ajoute un nouveau document
@@ -225,6 +306,7 @@ class GestionnaireBaseDeDonnees:
             categorie: Catégorie du document
             texte_extrait: Texte extrait par OCR
             confiance_ocr: Score de confiance OCR
+            hash_fichier: Hash SHA-256 du fichier original
             
         Returns:
             Document créé ou None
@@ -242,7 +324,8 @@ class GestionnaireBaseDeDonnees:
                 type_fichier=type_fichier,
                 categorie=categorie,
                 texte_extrait=texte_extrait,
-                confiance_ocr=confiance_ocr
+                confiance_ocr=confiance_ocr,
+                hash_fichier=hash_fichier
             )
             
             session.add(document)
@@ -285,7 +368,7 @@ class GestionnaireBaseDeDonnees:
         session = self.obtenir_session()
         
         try:
-            query = session.query(DocumentDB).filter_by(utilisateur_id=utilisateur_id)
+            query = session.query(DocumentDB).options(joinedload(DocumentDB.etiquettes)).filter_by(utilisateur_id=utilisateur_id)
             
             if categorie:
                 query = query.filter_by(categorie=categorie)
@@ -319,14 +402,22 @@ class GestionnaireBaseDeDonnees:
         session = self.obtenir_session()
         
         try:
-            documents = session.query(DocumentDB).filter(
-                DocumentDB.utilisateur_id == utilisateur_id,
-                (DocumentDB.nom.ilike(f'%{terme_recherche}%')) |
-                (DocumentDB.texte_extrait.ilike(f'%{terme_recherche}%'))
-            ).all()
-            
-            return documents
-            
+            from sqlalchemy import or_
+            query = session.query(DocumentDB).options(joinedload(DocumentDB.etiquettes)).filter(DocumentDB.utilisateur_id == utilisateur_id)
+            query = query.filter(or_(
+                DocumentDB.nom.ilike(f"%{terme_recherche}%"),
+                DocumentDB.texte_extrait.ilike(f"%{terme_recherche}%"),
+                DocumentDB.categorie.ilike(f"%{terme_recherche}%")
+            ))
+            return query.all()
+        finally:
+            session.close()
+
+    def obtenir_document_par_id(self, document_id: int) -> Optional[DocumentDB]:
+        """Récupère un document par son ID"""
+        session = self.obtenir_session()
+        try:
+            return session.query(DocumentDB).options(joinedload(DocumentDB.etiquettes)).filter_by(id=document_id).first()
         finally:
             session.close()
     
@@ -367,16 +458,16 @@ class GestionnaireBaseDeDonnees:
         finally:
             session.close()
 
-    def creer_etiquette(self, nom: str, couleur: str = "#3B82F6") -> Optional[EtiquetteDB]:
-        """Crée une nouvelle étiquette"""
+    def creer_etiquette(self, nom: str, couleur: str = "#3B82F6", utilisateur_id: int = None) -> Optional[EtiquetteDB]:
+        """Crée une nouvelle étiquette pour un utilisateur spécifique"""
         session = self.obtenir_session()
         try:
-            # Vérifier si elle existe déjà
-            existe = session.query(EtiquetteDB).filter_by(nom=nom).first()
+            # Vérifier si elle existe déjà pour cet utilisateur
+            existe = session.query(EtiquetteDB).filter_by(nom=nom, utilisateur_id=utilisateur_id).first()
             if existe:
                 return existe
             
-            etiquette = EtiquetteDB(nom=nom, couleur=couleur)
+            etiquette = EtiquetteDB(nom=nom, couleur=couleur, utilisateur_id=utilisateur_id)
             session.add(etiquette)
             session.commit()
             session.refresh(etiquette)
@@ -388,11 +479,17 @@ class GestionnaireBaseDeDonnees:
         finally:
             session.close()
 
-    def obtenir_toutes_etiquettes(self) -> List[EtiquetteDB]:
-        """Récupère toutes les étiquettes"""
+    def obtenir_toutes_etiquettes(self, utilisateur_id: int = None) -> List[EtiquetteDB]:
+        """Récupère toutes les étiquettes accessibles à l'utilisateur (les sienens + système)"""
         session = self.obtenir_session()
         try:
-            return session.query(EtiquetteDB).all()
+            from sqlalchemy import or_
+            return session.query(EtiquetteDB).filter(
+                or_(
+                    EtiquetteDB.utilisateur_id == utilisateur_id,
+                    EtiquetteDB.utilisateur_id == None
+                )
+            ).all()
         finally:
             session.close()
 
@@ -450,7 +547,75 @@ class GestionnaireBaseDeDonnees:
             return False
         finally:
             session.close()
+    def creer_etiquettes_par_defaut(self, utilisateur_id: int):
+        """Initialise les étiquettes standard pour un nouvel utilisateur"""
+        defaults = [
+            ("Important", "#F59E0B"),  # Amber
+            ("Urgent", "#EF4444"),     # Red
+            ("Personnel", "#8B5CF6"),  # Purple
+            ("Note", "#3B82F6")        # Blue
+        ]
+        for nom, couleur in defaults:
+            self.creer_etiquette(nom, couleur, utilisateur_id)
 
+    def obtenir_etiquette_par_nom(self, nom: str, utilisateur_id: int = None) -> Optional[EtiquetteDB]:
+        """Récupère une étiquette par son nom"""
+        session = self.obtenir_session()
+        try:
+            from sqlalchemy import or_
+            return session.query(EtiquetteDB).filter(
+                EtiquetteDB.nom == nom,
+                or_(
+                    EtiquetteDB.utilisateur_id == utilisateur_id,
+                    EtiquetteDB.utilisateur_id == None
+                )
+            ).first()
+        finally:
+            session.close()
+    
+    def ajouter_log_telechargement(
+        self,
+        utilisateur_id: int,
+        document_id: int,
+        action: str,
+        adresse_ip: str = None,
+        succes: bool = True,
+        message_erreur: str = None
+    ) -> bool:
+        """
+        Enregistre un log de téléchargement/accès
+        
+        Args:
+            utilisateur_id: ID de l'utilisateur
+            document_id: ID du document
+            action: Type d'action ('download', 'view', 'decrypt_failed')
+            adresse_ip: Adresse IP de l'utilisateur
+            succes: Si l'action a réussi
+            message_erreur: Message d'erreur si échec
+            
+        Returns:
+            True si enregistré avec succès
+        """
+        session = self.obtenir_session()
+        try:
+            log = LogTelechargementDB(
+                utilisateur_id=utilisateur_id,
+                document_id=document_id,
+                action=action,
+                adresse_ip=adresse_ip,
+                succes=succes,
+                message_erreur=message_erreur
+            )
+            session.add(log)
+            session.commit()
+            logger.info(f"Log téléchargement: user={utilisateur_id}, doc={document_id}, action={action}")
+            return True
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Erreur ajout log téléchargement: {e}")
+            return False
+        finally:
+            session.close()
 
 # Instance globale
 gestionnaire_bdd = GestionnaireBaseDeDonnees()

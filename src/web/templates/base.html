@@ -13,109 +13,258 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- SafeDoc CSS Stabilisé -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/safedoc_stable.css') }}">
+    <!-- SafeDoc Cyber-Premium CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/safedoc_cyber.css') }}">
+
+    <style>
+        :root {
+                {
+                % if user and user.theme_accent_color %
+            }
+
+            --primary-indigo: {
+                    {
+                    user.theme_accent_color
+                }
+            }
+
+            ;
+
+            --primary-indigo-hover: {
+                    {
+                    user.theme_accent_color
+                }
+            }
+
+            ;
+
+            --primary-indigo-glow: {
+                    {
+                    user.theme_accent_color
+                }
+            }
+
+            ;
+
+                {
+                % endif %
+            }
+
+                {
+                % if user and user.glass_intensity is not none %
+            }
+
+            --glass-blur: blur({
+                    {
+                    user.glass_intensity
+                }
+            }
+
+            px);
+
+            {
+            % endif %
+        }
+        }
+    </style>
+
+    <style>
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .bg-emerald {
+            background-color: #10b981;
+        }
+
+        .text-emerald {
+            color: #10b981;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .glass-sidebar {
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(10, 10, 12, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .glass-alert {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .alert-success.glass-alert {
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-danger.glass-alert {
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning.glass-alert {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info.glass-alert {
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Global fix for dropdowns in dark mode */
+        select option,
+        .form-select option,
+        .form-control option {
+            background-color: #18181b;
+            color: white;
+        }
+    </style>
 </head>
 
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/dashboard">
-                <i class="fas fa-shield-alt"></i>
-                <span class="ms-2">SafeDoc</span>
+<body class="bg-gradient-dark">
+    <!-- Global Background Ornament -->
+    <div class="bg-ornament"></div>
+
+    <!-- Navigation (Sidebar) -->
+    <div class="sidebar glass-sidebar animate-in">
+        <!-- Brand -->
+        <div class="px-3 mb-5 mt-2">
+            <a class="d-flex align-items-center gap-3 text-decoration-none" href="/dashboard">
+                <div class="bg-indigo-glow rounded-3 p-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-shield-alt text-indigo fs-4"></i>
+                </div>
+                <span class="fs-4 fw-800 text-white tracking-tight">SafeDoc</span>
             </a>
-            <span class="navbar-text">
-                <span class="badge bg-secondary me-3">
-                    <span id="user-level">Chargement...</span>
-                </span>
-                <i class="fas fa-user me-2"></i>
-                <span id="user-name">Chargement...</span>
-            </span>
         </div>
-    </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar v2 -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <!-- User Context (Subtle) -->
-                <div class="px-3 mb-4 d-flex align-items-center justify-content-between">
-                    <span class="small fw-bold text-muted text-uppercase" style="letter-spacing: 0.05em;">{{
-                        user.nom_utilisateur if user else 'Session' }}</span>
-                    <span class="badge bg-opacity-10 text-indigo border-0" style="color: var(--primary-indigo);">{{
-                        user.niveau if user else 'Free' }}</span>
+        <!-- User Context -->
+        <div class="px-3 mb-4 d-flex align-items-center justify-content-between profile-summary">
+            <span class="x-small fw-bold text-muted text-uppercase">{{ user.nom_utilisateur if user else 'Session'
+                }}</span>
+            <span class="badge vibrant-gradient-indigo px-2 py-1 x-small">{{ user.niveau if user else 'Free' }}</span>
+        </div>
+
+        <div class="mb-4">
+            <p class="x-small text-muted fw-bold ps-3 mb-3 uppercase tracking-wider opacity-50">Exploration</p>
+            <nav class="nav flex-column">
+                {% if session.get('user_id') %}
+                <a class="nav-link {{ 'active' if page == 'dashboard' }}" href="{{ url_for('dashboard') }}">
+                    <i class="fas fa-grid-2"></i>
+                    <span>Tableau de Bord IA</span>
+                </a>
+                <a class="nav-link {{ 'active' if page == 'upload' }}" href="{{ url_for('upload') }}">
+                    <i class="fas fa-arrow-up-from-bracket"></i>
+                    <span>Importation Sécurisée</span>
+                </a>
+                <a class="nav-link {{ 'active' if page == 'bibliotheque' }}" href="{{ url_for('bibliotheque') }}">
+                    <i class="fas fa-vault"></i>
+                    <span>Coffre-fort Numérique</span>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <div class="mb-4">
+            <p class="x-small text-muted fw-bold ps-3 mb-3 uppercase tracking-wider opacity-50">Gestion</p>
+            <nav class="nav flex-column">
+                <a class="nav-link {{ 'active' if page == 'etiquettes' }}" href="{{ url_for('etiquettes') }}">
+                    <i class="fas fa-tags"></i>
+                    <span>Classification</span>
+                </a>
+                <a class="nav-link {{ 'active' if page == 'profil' }}" href="{{ url_for('profil') }}">
+                    <i class="fas fa-user-astronaut"></i>
+                    <span>Profil Utilisateur</span>
+                </a>
+                <a class="nav-link {{ 'active' if page == 'parametres' }}" href="{{ url_for('parametres') }}">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <span>Expérience IA</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="mt-auto px-2">
+            <a class="nav-link text-rose opacity-75 hover-opacity-100" href="{{ url_for('logout') }}">
+                <i class="fas fa-power-off"></i>
+                <span>Déconnexion Sécurisée</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Viewboard -->
+    <div class="main-content">
+        <!-- Floating Navbar -->
+        <nav class="navbar navbar-expand-lg glass-card mt-4 mb-5">
+            <div class="container-fluid px-0">
+                <div id="ai-status" class="x-small text-muted d-none d-md-block">
+                    <span class="pulse-dot bg-emerald" style="width: 6px; height: 6px; margin-right: 8px;"></span>
+                    OPS SÉCURISÉES : ACTIVES
                 </div>
 
-                <!-- Minimalist Search -->
-                <div class="sidebar-search">
-                    <div class="position-relative">
-                        <i class="fas fa-search position-absolute text-muted"
-                            style="left: 10px; top: 10px; font-size: 0.8rem;"></i>
-                        <input type="text" class="form-control ps-5"
-                            style="background: #18181b; border: 1px solid #27272a;" placeholder="Search docs...">
-                    </div>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-section-title">Principal</h6>
-                    <nav class="nav flex-column">
-                        <a class="nav-link {{ 'active' if page == 'dashboard' }}" href="/dashboard">
-                            <i class="fas fa-th-large"></i>
-                            <span>Tableau de bord</span>
-                        </a>
-                        <a class="nav-link {{ 'active' if page == 'upload' }}" href="/upload">
-                            <i class="fas fa-plus"></i>
-                            <span>Upload</span>
-                        </a>
-                        <a class="nav-link {{ 'active' if page == 'bibliotheque' }}" href="/bibliotheque">
-                            <i class="fas fa-database"></i>
-                            <span>Archive</span>
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-section-title">Manage</h6>
-                    <nav class="nav flex-column">
-                        <a class="nav-link {{ 'active' if page == 'etiquettes' }}" href="/etiquettes">
-                            <i class="fas fa-bookmark"></i>
-                            <span>Labels</span>
-                        </a>
-                        <a class="nav-link {{ 'active' if page == 'statistiques' }}" href="/statistiques">
-                            <i class="fas fa-activity"></i>
-                            <span>Insights</span>
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="sidebar-footer pt-3 border-top border-slate">
-                    <div class="storage-info mb-3 d-flex flex-column gap-1">
-                        <div class="d-flex justify-content-between x-small text-muted">
-                            <span class="fw-bold">DISK USAGE</span>
-                            <span class="font-monospace text-light">{{ "%.1f"|format(stockage_mb|default(0)) }}
-                                MB</span>
+                <div class="ms-auto d-flex align-items-center gap-4">
+                    <div class="v-divider"></div>
+                    {% if session.get('user_id') %}
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="x-small text-muted fw-bold">{{ user.nom_utilisateur if user else 'Utilisateur'
+                            }}</span>
+                        <div class="rounded-circle border border-indigo p-1" style="width: 32px; height: 32px;">
+                            <img src="{{ user.photo_profil if user and user.photo_profil else '/static/img/default-avatar.png' }}"
+                                class="w-100 h-100 rounded-circle object-fit-cover shadow-sm">
                         </div>
-                        <div class="progress" style="height: 4px; background: #0c0c0e;">
-                            <div class="progress-bar" role="progressbar" id="storage-bar"
-                                style="--usage-width: {{ pourcentage_stockage|default(0) }}%; width: var(--usage-width); background: var(--primary-indigo);"
-                                aria-valuenow="{{ pourcentage_stockage|default(0) }}" aria-valuemin="0"
-                                aria-valuemax="100"></div>
-                        </div>
                     </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-indigo btn-sm px-3 x-small">CONNEXION</a>
+                    {% endif %}
                 </div>
             </div>
+        </nav>
 
-
-
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <!-- Flash Messages Container -->
-                <div id="flash-messages"></div>
-
-                <!-- Page Content -->
-                {% block content %}{% endblock %}
+        <!-- Flash Messages Container -->
+        <div id="flash-messages" class="mt-3 px-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show glass-alert shadow-lg"
+                role="alert">
+                <div class="d-flex align-items-center gap-3">
+                    <i
+                        class="fas fa-{{ 'check-circle' if category == 'success' else 'info-circle' if category == 'info' else 'exclamation-triangle' }} fs-5"></i>
+                    <span class="fw-medium">{{ message }}</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Page Content -->
+        <div class="px-4 page-fade-in">
+            {% block content %}{% endblock %}
         </div>
     </div>
 

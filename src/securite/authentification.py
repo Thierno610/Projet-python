@@ -27,6 +27,11 @@ class Utilisateur:
         id: int,
         nom_utilisateur: str,
         hash_mot_de_passe: str,
+        nom_complet: str = None,
+        email: str = None,
+        telephone: str = None,
+        adresse: str = None,
+        photo_profil: str = None,
         niveau: str = 'free',
         stockage_utilise: int = 0,
         date_creation: datetime = None,
@@ -34,6 +39,11 @@ class Utilisateur:
         self.id = id
         self.nom_utilisateur = nom_utilisateur
         self.hash_mot_de_passe = hash_mot_de_passe
+        self.nom_complet = nom_complet
+        self.email = email
+        self.telephone = telephone
+        self.adresse = adresse
+        self.photo_profil = photo_profil
         self.niveau = niveau  # 'free' ou 'premium'
         self.stockage_utilise = stockage_utilise  # en octets
         self.date_creation = date_creation or datetime.now()
@@ -62,6 +72,11 @@ class Utilisateur:
         return {
             'id': self.id,
             'nom_utilisateur': self.nom_utilisateur,
+            'nom_complet': self.nom_complet,
+            'email': self.email,
+            'telephone': self.telephone,
+            'adresse': self.adresse,
+            'photo_profil': self.photo_profil,
             'niveau': self.niveau,
             'stockage_utilise': self.stockage_utilise,
             'date_creation': self.date_creation.isoformat(),

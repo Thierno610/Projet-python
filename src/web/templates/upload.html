@@ -3,186 +3,266 @@
 {% block title %}Ingestion - SafeDoc AI{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <!-- Header Section -->
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-                <h1 class="h3 mb-1">Ingestion de données</h1>
-                <p class="text-muted small">Passerelle de sécurité SafeDoc v2.4 (AES-256 Enabled)</p>
-            </div>
-            <div class="d-flex gap-2">
-                <span class="badge text-indigo bg-opacity-10 border border-indigo px-3 py-2"
-                    style="background: rgba(99, 102, 241, 0.05);">OCR ACTIVE</span>
-                <span class="badge text-emerald bg-opacity-10 border border-emerald px-3 py-2"
-                    style="background: rgba(16, 185, 129, 0.05);">ENCRYPTION READY</span>
-            </div>
+<!-- Header & Delta Indicators -->
+<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
+    <div>
+        <h1 class="h2 mb-1">Importation Sécurisée</h1>
+        <p class="text-muted small mb-0 d-flex align-items-center gap-2">
+            <i class="fas fa-microchip text-indigo x-small"></i>
+            SafeDoc Gateway v4.0 — AES-256 Quantum Ready
+        </p>
+    </div>
+    <div class="d-flex gap-3">
+        <div class="glass-card px-3 py-2 border-0 bg-opacity-10" style="background: rgba(16, 185, 129, 0.05);">
+            <i class="fas fa-biohazard text-emerald x-small me-2"></i>
+            <span class="x-small text-emerald fw-bold tracking-wider">THREAT_SCAN: OK</span>
+        </div>
+        <div class="glass-card px-3 py-2 border-0 bg-opacity-10" style="background: rgba(99, 102, 241, 0.05);">
+            <i class="fas fa-brain text-indigo x-small me-2"></i>
+            <span class="x-small text-indigo fw-bold tracking-wider">NEURAL_OCR: ACTIVE</span>
         </div>
     </div>
+</div>
 
-    <!-- Main Upload Area -->
+<div class="row g-4">
+    <!-- Ingest Portal -->
     <div class="col-lg-8">
-        <div class="slate-card h-100 p-4">
+        <div class="glass-card p-4 animate-in" style="animation-delay: 0.1s;">
             <form method="POST" enctype="multipart/form-data" id="upload-form">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="upload-zone text-center p-4 border-dashed rounded-3 h-100"
-                            style="border: 2px dashed var(--border-color); background: #0c0c0e;">
+                <div class="row g-4">
+                    <!-- High-Tech Capture Zone -->
+                    <div class="col-12">
+                        <div class="upload-zone text-center p-5 border-dashed rounded-4 position-relative overflow-hidden"
+                            style="border: 2px dashed rgba(255,255,255,0.08); background: rgba(255,255,255,0.01);">
+
                             <input type="file" id="file" name="file" class="d-none"
                                 accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp">
                             <input type="hidden" id="scanned_file" name="scanned_file">
-                            <label for="file" class="cursor-pointer mb-0">
-                                <i class="fas fa-cloud-upload-alt text-indigo fs-4 mb-2"></i>
-                                <p class="small fw-bold mb-1">Téléverser un fichier</p>
-                                <p class="text-muted x-small mb-0">PDF, JPG, PNG...</p>
-                                <div id="file-name-preview" class="mt-2 text-indigo x-small fw-bold d-none"></div>
+
+                            <label for="file" class="cursor-pointer mb-0 w-100">
+                                <div class="bg-indigo-glow rounded-circle d-inline-flex p-4 mb-4">
+                                    <i class="fas fa-arrow-up-from-bracket text-indigo fs-2"></i>
+                                </div>
+                                <h5 class="fw-800 text-white mb-2">Drop Asset Here</h5>
+                                <p class="text-muted small mb-0">PDF, IMAGES, OU FICHIERS BRUTS (STOCKAGE LOCAL)</p>
+                                <div id="file-name-preview"
+                                    class="mt-4 badge bg-indigo-glow text-indigo p-2 animate-in d-none"></div>
                             </label>
+
+                            <!-- Cyber Scanner Overlay -->
+                            <div class="position-absolute top-0 end-0 p-3">
+                                <button type="button" class="btn btn-icon-indigo rounded-circle shadow-lg"
+                                    data-bs-toggle="modal" data-bs-target="#scannerModal" title="Optical Capture">
+                                    <i class="fas fa-camera small"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <button type="button"
-                            class="btn bg-slate border border-slate w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 py-4"
-                            data-bs-toggle="modal" data-bs-target="#scannerModal"
-                            style="background: rgba(99, 102, 241, 0.05);">
-                            <i class="fas fa-camera text-indigo fs-4"></i>
-                            <div>
-                                <p class="small fw-bold mb-1">Scanner via Caméra</p>
-                                <p class="text-muted x-small mb-0">Capture directe & OCR</p>
+
+                    <!-- Asset Metadata Array -->
+                    <div class="col-md-7">
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Nom du
+                            Document</label>
+                        <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                            id="nom_personnalise" name="nom_personnalise"
+                            placeholder="Laissez vide pour génération automatique">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Format
+                            de Document</label>
+                        <select class="form-select bg-white-5 border-slate text-white py-3 rounded-3"
+                            name="format_document" id="format_document" required>
+                            <option value="" disabled selected>-- Sélectionnez le format --</option>
+                            <option value="pdf" class="bg-dark">Portable Document (PDF)</option>
+                            <option value="docx" class="bg-dark">Vector Word (DOCX)</option>
+                            <option value="xlsx" class="bg-dark">Matrix Sheets (XLSX)</option>
+                            <option value="jpg" class="bg-dark">Visual Flux (JPG/PNG)</option>
+                        </select>
+                    </div>
+
+                    <!-- Taxonomy Node Selector -->
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="x-small text-muted text-uppercase fw-800 tracking-widest ps-1">Attribution des
+                                Étiquettes</label>
+                            <a href="{{ url_for('etiquettes') }}"
+                                class="x-small text-indigo text-decoration-none fw-bold">TAXONOMY_EDIT</a>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2" id="tag-container">
+                            {% for et in etiquettes %}
+                            <div class="tax-node">
+                                <input type="checkbox" name="etiquettes" value="{{ et.id }}" id="et-{{ et.id }}"
+                                    class="btn-check label-checkbox">
+                                <label
+                                    class="btn btn-glass-node d-flex align-items-center gap-3 px-3 py-2 rounded-3 border-slate"
+                                    for="et-{{ et.id }}">
+                                    <div class="node-dot"
+                                        style="background: {{ et.couleur }}; box-shadow: 0 0 10px {{ et.couleur }}80;">
+                                    </div>
+                                    <span class="x-small fw-800">{{ et.nom }}</span>
+                                </label>
                             </div>
+                            {% endfor %}
+                        </div>
+                        <p id="tag-error" class="text-rose x-small mt-3 d-none fw-bold">CRITIQUE : Étiquette requise
+                            pour l'importation.</p>
+                    </div>
+
+                    <!-- Execution Trigger -->
+                    <div class="col-12 mt-2">
+                        <button type="submit"
+                            class="btn btn-indigo w-100 py-3 rounded-3 d-flex align-items-center justify-content-center gap-3">
+                            <i class="fas fa-lock small"></i>
+                            <span class="fw-800 tracking-widest">LANCER LE PROTOCOLE D'ARCHIVAGE</span>
                         </button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
 
-                <div class="row g-3 mt-3">
-                    <div class="col-12">
-                        <label for="nom_personnalise"
-                            class="form-label small text-muted text-uppercase fw-bold">Identification du
-                            document</label>
-                        <input type="text" class="form-control form-control-dark" id="nom_personnalise"
-                            name="nom_personnalise" placeholder="Laissez vide pour le nom d'origine"
-                            style="background: #18181b; border-color: #27272a;">
+    <!-- Ingest Protocol Sidebar -->
+    <div class="col-lg-4">
+        <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.2s;">
+            <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Protocoles d'Importation</h6>
+            <div class="d-flex flex-column gap-5 py-2">
+                <div class="protocol-unit d-flex gap-4">
+                    <div class="bg-emerald-glow rounded-3 p-3 flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="fas fa-virus-slash text-emerald"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white small mb-1">Purge des Menaces</div>
+                        <p class="x-small text-muted mb-0 opacity-75">Analyse heuristique contre les logiciels
+                            malveillants.</p>
                     </div>
                 </div>
-
-                <div class="mt-4">
-                    <button type="submit"
-                        class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
-                        <i class="fas fa-lock small"></i>
-                        <span>SÉCURISER ET ARCHIVER</span>
-                    </button>
+                <div class="protocol-unit d-flex gap-4">
+                    <div class="bg-indigo-glow rounded-3 p-3 flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="fas fa-dna text-indigo"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white small mb-1">Extraction Neuronale</div>
+                        <p class="x-small text-muted mb-0 opacity-75">Transformation des motifs visuels en groupes
+                            intelligents.</p>
+                    </div>
                 </div>
-            </form>
-            style="background: #18181b; border-color: #27272a;">
+                <div class="protocol-unit d-flex gap-4">
+                    <div class="bg-indigo-glow rounded-3 p-3 flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="fas fa-key text-indigo"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white small mb-1">Chiffrement Quantique</div>
+                        <p class="x-small text-muted mb-0 opacity-75">Verrouillage des données via le standard AES-256
+                            militaire.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 p-4 rounded-4 border-slate bg-indigo-glow">
+                <p class="x-small mb-0 text-white opacity-75 fw-bold font-monospace">
+                    >> GATEWAY: STATUS_GREEN<br>
+                    >> INTEGRITY: VERIFIED<br>
+                    >> MODE: STEALTH_ENCRYPT
+                </p>
+            </div>
         </div>
     </div>
 
-    <div class="mt-4">
-        <button type="submit" class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
-            <i class="fas fa-lock small"></i>
-            <span>SÉCURISER ET ARCHIVER</span>
-        </button>
+    <!-- Results Block (Post-Ingest) -->
+    {% if succes and infos %}
+    <div class="col-12 mt-4 animate-in">
+        <div class="glass-card p-4 border-emerald-glow" style="border: 1px solid rgba(16, 185, 129, 0.3);">
+            <div class="d-flex align-items-center gap-3 mb-5 p-2 rounded-3 bg-emerald-glow d-inline-flex">
+                <i class="fas fa-check-double text-emerald"></i>
+                <h6 class="mb-0 text-emerald fw-800 tracking-widest">INGESTION_COMPLETE</h6>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-6">
+                    <div class="p-4 border-slate rounded-4 bg-white-5">
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Target Cluster</p>
+                        <h4 class="mb-0 text-white fw-800">{{ infos.get('categorie', 'N/A') }}</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="p-4 border-slate rounded-4 bg-white-5">
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Neural Linkage</p>
+                        <h4 class="mb-0 text-indigo fw-800">{{ "%.0f"|format(infos.get('confiance_categorie', 0) * 100)
+                            }}%</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="p-4 border-slate rounded-4 bg-white-5">
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">OCR Fidelity</p>
+                        <h4 class="mb-0 text-white fw-800">{{ "%.0f"|format(infos.get('confiance_ocr', 0)) }}%</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="p-4 border-slate rounded-4 bg-white-5">
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Unit Payload</p>
+                        <h4 class="mb-0 text-white fw-800">{{ "%.2f"|format(infos.get('taille', 0) / 1024 / 1024) }} MB
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-top border-slate d-flex gap-3">
+                <a href="{{ url_for('bibliotheque') }}"
+                    class="btn btn-outline-slate rounded-pill px-5 fw-bold small">VIEW VAULT</a>
+                <a href="{{ url_for('upload') }}" class="btn btn-indigo rounded-pill px-5 fw-bold small">NEXT CYCLE</a>
+            </div>
+        </div>
     </div>
-    </form>
+    {% endif %}
+</div>
+
+<style>
+    .btn-glass-node {
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--text-muted);
+        transition: var(--transition-premium);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-glass-node:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+    }
+
+    .btn-check:checked+.btn-glass-node {
+        background: var(--primary-indigo-glow);
+        border-color: var(--primary-indigo);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .node-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+{% if infos.get('texte_extrait') %}
+<div class="mt-4">
+    <p class="text-muted x-small text-uppercase mb-2">Aperçu métadonnées extraites</p>
+    <div class="p-3 rounded"
+        style="background: #09090b; border: 1px solid #27272a; max-height: 150px; overflow-y: auto;">
+        <pre class="x-small text-muted mb-0"
+            style="white-space: pre-wrap;">{{ infos.texte_extrait[:300] }}{% if infos.texte_extrait|length > 300 %}...{% endif %}</pre>
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-4 pt-3 border-top border-slate d-flex gap-2">
+    <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-secondary btn-sm px-4">Vault</a>
+    <a href="{{ url_for('upload') }}" class="btn btn-emerald btn-sm px-4">Nouveau scan</a>
 </div>
 </div>
-
-<!-- Scanner Modal Inclusion -->
-{% include 'scanner_modal.html' %}
-
-<!-- Info Sidebar -->
-<div class="col-lg-4">
-    <div class="slate-card p-4">
-        <h5 class="small text-muted text-uppercase fw-bold mb-4">Protocole d'ingestion</h5>
-        <div class="d-flex flex-column gap-3">
-            <div class="d-flex gap-3 align-items-start">
-                <div class="icon-small rounded bg-success bg-opacity-10 p-2">
-                    <i class="fas fa-shield-virus text-success small"></i>
-                </div>
-                <div>
-                    <p class="mb-0 fw-bold small">Audit de contenu</p>
-                    <p class="mb-0 text-muted x-small">Scan antivirus et détection de malwares</p>
-                </div>
-            </div>
-            <div class="d-flex gap-3 align-items-start border-top border-slate pt-3">
-                <div class="icon-small rounded bg-indigo bg-opacity-10 p-2">
-                    <i class="fas fa-microchip text-indigo small"></i>
-                </div>
-                <div>
-                    <p class="mb-0 fw-bold small">Traitement Neural</p>
-                    <p class="mb-0 text-muted x-small">Extraction OCR et catégorisation IA</p>
-                </div>
-            </div>
-            <div class="d-flex gap-3 align-items-start border-top border-slate pt-3">
-                <div class="icon-small rounded bg-emerald bg-opacity-10 p-2">
-                    <i class="fas fa-key text-emerald small"></i>
-                </div>
-                <div>
-                    <p class="mb-0 fw-bold small">Chiffrement Périphérique</p>
-                    <p class="mb-0 text-muted x-small">Encodage immédiat en AES-256 bit</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-5 p-3 rounded"
-            style="background: rgba(99, 102, 241, 0.05); border-left: 3px solid var(--primary-indigo);">
-            <p class="x-small mb-0 text-muted">SafeDoc Ingestion Engine garantit l'intégrité de vos données dès la
-                première seconde.</p>
-        </div>
-    </div>
-</div>
-
-<!-- Processing Results -->
-{% if succes and infos %}
-<div class="col-12 mt-2">
-    <div class="slate-card p-4 border animate-in" style="border-color: rgba(16, 185, 129, 0.3) !important;">
-        <div class="d-flex align-items-center gap-2 mb-4">
-            <i class="fas fa-check-circle text-emerald"></i>
-            <h4 class="mb-0">Traitement terminé</h4>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="p-3 rounded" style="background: #18181b;">
-                    <p class="text-muted x-small text-uppercase mb-1">Catégorie</p>
-                    <p class="h5 mb-0 text-emerald">{{ infos.get('categorie', 'N/A') }}</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="p-3 rounded" style="background: #18181b;">
-                    <p class="text-muted x-small text-uppercase mb-1">Confiance IA</p>
-                    <p class="h5 mb-0">{{ "%.0f"|format(infos.get('confiance_categorie', 0) * 100) }}%</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="p-3 rounded" style="background: #18181b;">
-                    <p class="text-muted x-small text-uppercase mb-1">Qualité OCR</p>
-                    <p class="h5 mb-0">{{ "%.0f"|format(infos.get('confiance_ocr', 0)) }}%</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="p-3 rounded" style="background: #18181b;">
-                    <p class="text-muted x-small text-uppercase mb-1">Taille chiffrée</p>
-                    <p class="h5 mb-0">{{ "%.2f"|format(infos.get('taille', 0) / 1024 / 1024) }} MB</p>
-                </div>
-            </div>
-        </div>
-
-        {% if infos.get('texte_extrait') %}
-        <div class="mt-4">
-            <p class="text-muted x-small text-uppercase mb-2">Aperçu métadonnées extraites</p>
-            <div class="p-3 rounded"
-                style="background: #09090b; border: 1px solid #27272a; max-height: 150px; overflow-y: auto;">
-                <pre class="x-small text-muted mb-0"
-                    style="white-space: pre-wrap;">{{ infos.texte_extrait[:300] }}{% if infos.texte_extrait|length > 300 %}...{% endif %}</pre>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="mt-4 pt-3 border-top border-slate d-flex gap-2">
-            <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-secondary btn-sm px-4">Vault</a>
-            <a href="{{ url_for('upload') }}" class="btn btn-emerald btn-sm px-4">Nouveau scan</a>
-        </div>
-    </div>
 </div>
 {% endif %}
 </div>
@@ -233,10 +313,33 @@
     document.getElementById('upload-form').addEventListener('submit', function (e) {
         const file = document.getElementById('file').files[0];
         const scan = document.getElementById('scanned_file').value;
+        const format = document.getElementById('format_document').value;
+        const tags = document.querySelectorAll('.label-checkbox:checked');
+
+        let valid = true;
+        let messages = [];
 
         if (!file && !scan) {
+            messages.push("Veuillez sélectionner un fichier ou scanner un document.");
+            valid = false;
+        }
+
+        if (!format) {
+            messages.push("Veuillez sélectionner le type du document.");
+            valid = false;
+        }
+
+        if (tags.length === 0) {
+            messages.push("Veuillez choisir au moins une étiquette.");
+            document.getElementById('tag-error').classList.remove('d-none');
+            valid = false;
+        } else {
+            document.getElementById('tag-error').classList.add('d-none');
+        }
+
+        if (!valid) {
             e.preventDefault();
-            alert("Veuillez sélectionner un fichier ou scanner un document.");
+            alert(messages.join("\n"));
         }
     });
 </script>

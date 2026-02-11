@@ -5,6 +5,7 @@ Orchestre l'upload, le traitement et le stockage des documents
 from pathlib import Path
 from typing import Tuple, Optional, Dict, Any
 from loguru import logger
+import hashlib
 
 from src.ocr.scanner import scanner_ocr
 from src.nlp.extracteur import extracteur_nlp
@@ -27,12 +28,21 @@ class GestionnaireDocuments:
         self.bdd = gestionnaire_bdd
         self.fichiers = gestionnaire_fichiers
     
+    def calculer_hash_fichier(self, chemin_fichier: Path) -> str:
+        """Calcule le hash SHA-256 d'un fichier"""
+        sha256_hash = hashlib.sha256()
+        with open(chemin_fichier, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+        return sha256_hash.hexdigest()
+    
     def traiter_document(
         self,
         chemin_fichier: Path,
         utilisateur_id: int,
         mot_de_passe: str,
-        nom_personnalise: str = None
+        nom_personnalise: str = None,
+        format_davance: str = None
     ) -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         """
         Traite un document complet: OCR, extraction, classification, chiffrement, stockage
@@ -42,6 +52,7 @@ class GestionnaireDocuments:
             utilisateur_id: ID de l'utilisateur
             mot_de_passe: Mot de passe pour le chiffrement
             nom_personnalise: Nom personnalisé (optionnel)
+            format_davance: Format spécifié manuellement (optionnel)
             
         Returns:
             Tuple (succès, message, infos_document)
@@ -108,8 +119,16 @@ class GestionnaireDocuments:
                 nom_unique
             )
             
-            # 9. Enregistrer dans la base de données
+            # 9. Calculer le hash du fichier original pour vérification d'intégrité
+            logger.info("Calcul du hash pour vérification d'intégrité...")
+            hash_fichier = self.calculer_hash_fichier(chemin_temp_doc)
+            
+            # 10. Enregistrer dans la base de données
             logger.info("Étape 5/5: Enregistrement en base de données...")
+            
+            # Déterminer le type final (manuel ou auto)
+            type_final = format_davance if format_davance else chemin_fichier.suffix.lstrip('.')
+            
             document = self.bdd.ajouter_document(
                 utilisateur_id=utilisateur_id,
                 nom=nom_fichier,
@@ -117,16 +136,17 @@ class GestionnaireDocuments:
                 chemin_original=str(chemin_temp_doc),
                 chemin_chiffre=str(chemin_chiffre_final),
                 taille_fichier=taille_fichier,
-                type_fichier=chemin_fichier.suffix.lstrip('.'),
+                type_fichier=type_final,
                 categorie=categorie,
                 texte_extrait=texte_extrait[:5000] if texte_extrait else None,  # Limiter la taille
-                confiance_ocr=confiance_ocr
+                confiance_ocr=confiance_ocr,
+                hash_fichier=hash_fichier
             )
             
             if not document:
                 return False, "Erreur lors de l'enregistrement en base de données", None
             
-            # 10. Nettoyer le fichier temporaire chiffré
+            # 11. Nettoyer le fichier temporaire chiffré
             chemin_temp_chiffre.unlink(missing_ok=True)
             
             # Préparer les informations du document
@@ -186,6 +206,15 @@ class GestionnaireDocuments:
                 
                 self.chiffreur.dechiffrer_fichier(chemin_chiffre, chemin_dechiffre, mot_de_passe)
                 
+                # Vérifier l'intégrité du fichier si un hash est disponible
+                if document.hash_fichier:
+                    hash_actuel = self.calculer_hash_fichier(chemin_dechiffre)
+                    if hash_actuel != document.hash_fichier:
+                        logger.error(f"Intégrité compromise pour document {document_id}")
+                        # Nettoyer le fichier déchiffré
+                        chemin_dechiffre.unlink(missing_ok=True)
+                        return False, "Erreur d'intégrité: le fichier a été modifié ou corrompu", None
+                
                 logger.success(f"Document déchiffré: {chemin_dechiffre}")
                 return True, "Document déchiffré avec succès", chemin_dechiffre
                 
@@ -198,6 +227,57 @@ class GestionnaireDocuments:
         except Exception as e:
             logger.error(f"Erreur récupération document: {e}", exc_info=True)
             return False, f"Erreur: {str(e)}", None
+
+
+            return False, f"Erreur: {str(e)}", None
+
+    def supprimer_document(self, document_id: int) -> Tuple[bool, str]:
+        """
+        Supprime un document physiquement et de la BDD
+        
+        Args:
+            document_id: ID du document
+            
+        Returns:
+            Tuple (succès, message)
+        """
+        logger.info(f"Suppression complète du document ID: {document_id}")
+        
+        try:
+            session = self.bdd.obtenir_session()
+            try:
+                from src.stockage.base_de_donnees import DocumentDB
+                document = session.query(DocumentDB).filter_by(id=document_id).first()
+                
+                if not document:
+                    return False, "Document non trouvé"
+                
+                # Suppression du fichier physique
+                chemin_chiffre = Path(document.chemin_chiffre)
+                if chemin_chiffre.exists():
+                    try:
+                        chemin_chiffre.unlink()
+                        logger.info(f"Fichier chiffré supprimé: {chemin_chiffre}")
+                    except Exception as e:
+                        logger.warning(f"Erreur suppression fichier physique: {e}")
+                else:
+                    logger.warning(f"Fichier physique introuvable: {chemin_chiffre}")
+                
+                # Suppression en base de données via le gestionnaire BDD
+                # On ferme d'abord notre session locale pour laisser le gestionnaire BDD gérer la sienne
+                pass
+            finally:
+                session.close()
+            
+            # Appel à la méthode de suppression BDD existante
+            if self.bdd.supprimer_document(document_id):
+                return True, "Document supprimé définitivement"
+            else:
+                return False, "Erreur lors de la suppression en base de données"
+                
+        except Exception as e:
+            logger.error(f"Erreur suppression document: {e}", exc_info=True)
+            return False, f"Erreur: {str(e)}"
 
 
 # Instance globale

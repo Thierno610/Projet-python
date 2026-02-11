@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Header & Telemetry -->
+<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
+    <div>
+        <h1 class="h2 mb-1">Control Center</h1>
+        <p class="text-muted small mb-0 d-flex align-items-center gap-3">
+            <span class="font-monospace opacity-75">INTERFACE_CONFIG: v4.0.2</span>
+            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-satellite-dish me-2"></i>UPLINK:
+                SYNCED</span>
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <span
+            class="badge bg-white-5 text-white-50 border-slate px-3 py-2 x-small fw-bold">WORKSPACE_THEME_QUALIFIED</span>
+    </div>
+</div>
+
+<form action="{{ url_for('parametres') }}" method="POST">
+    <div class="row g-4">
+        <!-- Visual Matrix Section -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.1s;">
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Visual Matrix</h6>
+
+                <!-- Accent Wave Selector -->
+                <div class="mb-5">
+                    <label class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Accent
+                        Frequency (Color)</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        {% set colors = [
+                        ('#6366f1', 'Indigo'),
+                        ('#10b981', 'Emerald'),
+                        ('#f59e0b', 'Amber'),
+                        ('#f43f5e', 'Rose'),
+                        ('#3b82f6', 'Blue'),
+                        ('#a855f7', 'Violet')
+                        ] %}
+                        {% for hex, name in colors %}
+                        <div class="color-node">
+                            <input type="radio" name="accent_color" value="{{ hex }}" id="color-{{ hex }}"
+                                class="btn-check" {% if user.theme_accent_color==hex %}checked{% endif %}>
+                            <label class="color-swatch hover-lift" for="color-{{ hex }}"
+                                style="--node-color: {{ hex }};">
+                                <i class="fas fa-bolt text-white x-small"></i>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Glass Refraction Intensity -->
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <label class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-0 ps-1">Glass
+                            Refraction (Blur)</label>
+                        <span class="badge bg-indigo-glow text-indigo font-monospace px-2 py-1" id="blur-val-display">{{
+                            user.glass_intensity|int }}PX</span>
+                    </div>
+                    <input type="range" class="form-range cyber-range" name="glass_intensity" min="0" max="40" step="4"
+                        value="{{ user.glass_intensity|int }}" id="blur-range">
+                    <div class="d-flex justify-content-between x-small text-muted mt-2 font-monospace opacity-50">
+                        <span>RAW_FEED</span>
+                        <span>CRYSTALLINE_MAX</span>
+                    </div>
+                </div>
+
+                <!-- Holographic Preview -->
+                <div class="p-5 rounded-4 text-center border-dashed position-relative overflow-hidden"
+                    id="theme-preview-box"
+                    style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.08);">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-5"
+                        style="background: radial-gradient(circle, var(--primary-indigo) 0%, transparent 70%);"></div>
+                    <p class="x-small text-muted mb-4 font-monospace tracking-widest opacity-50">>>
+                        HOLOGRAPHIC_SIMULATION_ACTIVE</p>
+                    <div class="d-inline-flex align-items-center justify-content-center p-4 rounded-pill shadow-glow-indigo transition-premium"
+                        id="preview-element"
+                        style="background: {{ user.theme_accent_color }}; color: white; min-width: 200px;">
+                        <i class="fas fa-fingerprint me-3"></i>
+                        <span class="fw-800 small tracking-widest">AUTHENTICATE_UI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neural Synapse & Logic -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.2s;">
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Neural synapse</h6>
+
+                <div class="d-flex flex-column gap-3">
+                    <div
+                        class="p-3 rounded-3 bg-white-5 border-slate d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block small fw-bold">AI Voice Synthesis</span>
+                            <span class="d-block x-small text-muted">Auditory document analysis feed.</span>
+                        </div>
+                        <div class="form-check form-switch custom-switch-cyber">
+                            <input class="form-check-input" type="checkbox" name="ai_vocal" id="aiVocal" {% if
+                                user.ai_vocal_enabled %}checked{% endif %}>
+                        </div>
+                    </div>
+
+                    <div
+                        class="p-3 rounded-3 bg-white-5 border-slate d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="d-block small fw-bold">Security Relay Logs</span>
+                            <span class="d-block x-small text-muted">Weekly integrity reports via email.</span>
+                        </div>
+                        <div class="form-check form-switch custom-switch-cyber">
+                            <input class="form-check-input" type="checkbox" name="notif_email" id="notifEmail" {% if
+                                user.notifications_email %}checked{% endif %}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Status -->
+            <div class="glass-card p-4 bg-indigo-glow border-0 animate-in" style="animation-delay: 0.3s;">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <i class="fas fa-cloud-bolt text-indigo"></i>
+                    <h6 class="text-white fw-bold mb-0 small">Cloud Synchro: ACTIVE</h6>
+                </div>
+                <p class="x-small text-white-50 mb-0 opacity-75">Neural preferences are sharded and synced across the
+                    secure SafeDoc network constellation.</p>
+            </div>
+
+            <!-- Commit Actions -->
+            <div class="mt-4 pt-4 border-top border-slate">
+                <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow">
+                    COMMIT_EXPERIENCE_CHANGES
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    .cyber-range::-webkit-slider-runnable-track {
+        background: rgba(255, 255, 255, 0.05);
+        height: 4px;
+        border-radius: 2px;
+    }
+
+    .cyber-range::-webkit-slider-thumb {
+        background: #fff;
+        margin-top: -8px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        box-shadow: 0 0 15px var(--primary-indigo);
+        border: 2px solid var(--primary-indigo);
+        cursor: pointer;
+    }
+
+    .color-swatch {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid transparent;
+        background: var(--node-color);
+        transition: var(--transition-premium);
+    }
+
+    .color-node input:checked+.color-swatch {
+        border-color: #fff;
+        transform: scale(1.15) rotate(5deg);
+        box-shadow: 0 0 20px var(--node-color);
+    }
+
+    .color-node input:not(:checked)+.color-swatch i {
+        opacity: 0;
+    }
+
+    .custom-switch-cyber .form-check-input {
+        width: 40px;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+    }
+
+    .custom-switch-cyber .form-check-input:checked {
+        background-color: var(--primary-indigo);
+        border-color: var(--primary-indigo);
+    }
+
+    .shadow-glow-indigo {
+        box-shadow: 0 0 20px var(--primary-indigo);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const blurRange = document.getElementById('blur-range');
+        const blurDisplay = document.getElementById('blur-val-display');
+        const colorRadios = document.querySelectorAll('input[name="accent_color"]');
+        const previewBox = document.getElementById('theme-preview-box');
+        const previewBtn = document.getElementById('preview-element');
+
+        blurRange.addEventListener('input', function () {
+            blurDisplay.textContent = this.value + 'PX';
+            previewBox.style.backdropFilter = `blur(${this.value}px)`;
+        });
+
+        colorRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.checked) {
+                    previewBtn.style.backgroundColor = this.value;
+                    document.documentElement.style.setProperty('--primary-indigo', this.value);
+                    previewBtn.style.boxShadow = `0 0 20px ${this.value}`;
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -13,7 +13,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ===== BASE DE DONNÉES =====
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///data/safedoc.db')
+DATABASE_URL = os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/data/safedoc.db')
 DATABASE_PATH = BASE_DIR / 'data' / 'safedoc.db'
 
 # ===== CHEMINS DE STOCKAGE =====

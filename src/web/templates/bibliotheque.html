@@ -1,166 +1,215 @@
 {% extends "base.html" %}
 
-{% block title %}Vault - SafeDoc Archive{% endblock %}
+{% block title %}Bibliothèque - SafeDoc Vault{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <!-- Header Section -->
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-end mb-2">
-            <div>
-                <h1 class="h3 mb-1">Vault de Données</h1>
-                <p class="text-muted small">Gestionnaire d'archives chiffrées AES-256</p>
+<!-- Header & Actions -->
+<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
+    <div>
+        <h1 class="h2 mb-1">Coffre-fort Numérique</h1>
+        <p class="text-muted small mb-0 d-flex align-items-center gap-2">
+            <i class="fas fa-microchip text-indigo x-small"></i>
+            {{ documents|length }} Documents Sécurisés Identifiés
+        </p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-indigo d-flex align-items-center gap-2 px-4 py-2" data-bs-toggle="modal"
+            data-bs-target="#modalNouveauTag">
+            <i class="fas fa-hashtag small"></i>
+            <span class="small fw-bold">NOUVELLE ÉTIQUETTE</span>
+        </button>
+    </div>
+</div>
+
+<!-- Resource Filter Array -->
+<div class="glass-card p-4 mb-5 animate-in" style="animation-delay: 0.1s;">
+    <div class="row g-4 align-items-end">
+        <div class="col-md-4">
+            <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Recherche de
+                Document</label>
+            <div class="position-relative">
+                <i class="fas fa-search position-absolute text-indigo opacity-50" style="left: 15px; top: 13px;"></i>
+                <input type="text" class="form-control bg-white-5 border-slate ps-5 py-2 text-white small rounded-3"
+                    id="recherche" placeholder="Resource ID, Name, Content..." value="{{ recherche or '' }}">
             </div>
-            <div class="text-end">
-                <p class="x-small text-muted mb-1 text-uppercase fw-bold">Index d'intégrité</p>
-                <div class="d-flex gap-1">
-                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
-                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
-                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
-                    <div style="width: 4px; height: 12px; background: var(--emerald-green); border-radius: 1px;"></div>
-                    <span class="x-small text-emerald ms-2 fw-bold">OPTIMAL</span>
-                </div>
-            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Catégorie</label>
+            <select class="form-select bg-white-5 border-slate text-white small py-2 rounded-3" id="categorie">
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if cat==cat_filtre %}selected{% endif %} class="bg-dark">{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Filtre
+                d'Étiquettes</label>
+            <select class="form-select bg-white-5 border-slate text-white small py-2 rounded-3" id="etiquette">
+                {% for et in etiquettes %}
+                <option value="{{ et }}" {% if et==tag_filtre %}selected{% endif %} class="bg-dark">{{ et }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="button"
+                class="btn btn-indigo w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+                onclick="appliquerFiltres()">
+                <i class="fas fa-sync-alt small"></i>
+                <span class="small fw-bold">SYNC</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Asset Ledger -->
+<div class="glass-card p-0 overflow-hidden animate-in" style="animation-delay: 0.2s;">
+    <div class="p-4 border-bottom border-slate bg-white-5 d-flex justify-content-between align-items-center">
+        <h6 class="x-small text-white text-uppercase fw-800 tracking-widest mb-0">Documents Actifs</h6>
+        <div class="d-flex align-items-center gap-2">
+            <span class="pulse-dot bg-emerald"></span>
+            <span class="x-small text-emerald fw-bold">COFFRE_VERROUILLÉ</span>
         </div>
     </div>
 
-    <!-- Filters Row -->
-    <div class="col-12">
-        <div class="slate-card p-3">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Recherche spectrale</label>
-                    <div class="position-relative">
-                        <i class="fas fa-search position-absolute text-muted"
-                            style="left: 12px; top: 12px; font-size: 0.8rem;"></i>
-                        <input type="text" class="form-control form-control-sm ps-5" id="recherche"
-                            placeholder="Nom, ID, contenu..." value="{{ recherche or '' }}"
-                            style="background: #09090b; border-color: #27272a;">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0 x-small align-middle"
+            style="--bs-table-bg: transparent; --bs-table-border-color: rgba(255,255,255,0.05);">
+            <thead>
+                <tr class="text-muted opacity-50 border-bottom border-slate">
+                    <th class="ps-4 py-3 fw-800">IDENTIFIANT DU DOCUMENT</th>
+                    <th class="py-3 fw-800">CLASSIFICATION</th>
+                    <th class="py-3 fw-800">TAILLE</th>
+                    <th class="py-3 fw-800">TIMESTAMP</th>
+                    <th class="pe-4 py-3 fw-800 text-end">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if documents %}
+                {% for doc in documents %}
+                <tr class="hover-white-2 transition-premium">
+                    <td class="ps-4 py-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-indigo-glow rounded-3 p-2 d-flex align-items-center justify-content-center"
+                                style="width: 38px; height: 38px;">
+                                {% if doc.type_fichier in ['pdf'] %}
+                                <i class="fas fa-file-pdf text-rose"></i>
+                                {% elif doc.type_fichier in ['docx', 'doc'] %}
+                                <i class="fas fa-file-word text-indigo"></i>
+                                {% elif doc.type_fichier in ['xlsx', 'xls', 'csv'] %}
+                                <i class="fas fa-file-excel text-emerald"></i>
+                                {% else %}
+                                <i class="fas fa-file-code text-muted"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div class="fw-800 text-white mb-0">{{ doc.nom }}</div>
+                                <div class="text-muted x-small opacity-50">NODE_ID: #{{ "%04d"|format(doc.id) }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-indigo-glow text-indigo rounded-pill px-3 py-1 border-0 fw-bold">{{
+                                doc.categorie }}</span>
+                            {% for et in doc.etiquettes %}
+                            <span class="badge rounded-pill px-3 py-1 border-0 fw-bold"
+                                style="background: {{ et.couleur }}22; color: {{ et.couleur }};">{{ et.nom }}</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <span class="font-monospace text-muted">{{ (doc.taille_fichier / 1024 / 1024)|round(2) }}
+                            MB</span>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-muted">{{ doc.date_upload.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </td>
+                    <td class="pe-4 py-4 text-end">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
+                                class="btn btn-icon-indigo btn-sm rounded-circle" title="Inspect">
+                                <i class="fas fa-eye x-small"></i>
+                            </a>
+                            <form method="POST" action="{{ url_for('telecharger_document', doc_id=doc.id) }}"
+                                class="d-inline">
+                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle" title="Download">
+                                    <i class="fas fa-download x-small text-emerald"></i>
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('supprimer_document', doc_id=doc.id) }}"
+                                class="d-inline"
+                                onsubmit="return confirm('Confirm asset deletion? This action is irreversible.');">
+                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle hover-danger"
+                                    title="Purge">
+                                    <i class="fas fa-trash-alt x-small"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="opacity-20 mb-4 animate-pulse"><i class="fas fa-box-open fa-3x"></i></div>
+                        <p class="text-muted small fw-bold tracking-wider">COFFRE VIDE. AUCUNE DONNÉE TROUVÉE.</p>
+                        <a href="{{ url_for('upload') }}" class="btn btn-indigo btn-sm mt-3 px-4 py-2">INITIATE
+                            INGEST</a>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Taxonomy (Cyber Styled) -->
+<div class="modal fade" id="modalNouveauTag" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-slate bg-sidebar">
+            <div class="modal-header border-bottom border-slate p-4">
+                <h6 class="modal-title text-white fw-800 tracking-widest">
+                    <i class="fas fa-hashtag text-indigo me-3"></i>AJOUTER UNE ÉTIQUETTE
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('etiquettes') }}" method="POST">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="action" value="creer">
+                    <input type="hidden" name="source" value="bibliotheque">
+
+                    <div class="mb-4">
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Nom de
+                            Identifier</label>
+                        <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                            name="nom" placeholder="e.g. MISSION_CRITICAL, LEGACY..." required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Signature
+                            Signature</label>
+                        <div class="d-flex align-items-center gap-4">
+                            <input type="color" class="form-control form-control-color border-0 rounded-circle"
+                                name="couleur" value="#6366f1"
+                                style="width: 50px; height: 50px; background: transparent;">
+                            <p class="x-small text-muted mb-0">Select a unique chromatic frequency for visual tracking.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Classement</label>
-                    <select class="form-select form-select-sm" id="categorie"
-                        style="background: #09090b; border-color: #27272a;">
-                        {% for cat in categories %}
-                        <option value="{{ cat }}" {% if cat==cat_filtre %}selected{% endif %}>{{ cat }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="modal-footer border-top border-slate p-4 bg-white-5">
+                    <button type="button" class="btn btn-ghost text-muted small"
+                        data-bs-dismiss="modal">ANNULER</button>
+                    <button type="submit" class="btn btn-indigo px-4 fw-bold">CRÉER L'ÉTIQUETTE</button>
                 </div>
-                <div class="col-md-3">
-                    <label class="x-small text-muted text-uppercase fw-bold mb-2">Tag Node</label>
-                    <select class="form-select form-select-sm" id="etiquette"
-                        style="background: #09090b; border-color: #27272a;">
-                        {% for et in etiquettes %}
-                        <option value="{{ et }}" {% if et==tag_filtre %}selected{% endif %}>{{ et }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="button"
-                        class="btn btn-indigo btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2"
-                        onclick="appliquerFiltres()">
-                        <i class="fas fa-sync-alt small"></i>
-                        <span>ACTUALISER</span>
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-
-    <!-- Document Table -->
-    <div class="col-12">
-        <div class="slate-card overflow-hidden">
-            <div class="p-3 border-bottom border-slate bg-opacity-10" style="background: rgba(255,255,255,0.02);">
-                <span class="x-small text-muted text-uppercase fw-bold">{{ documents|length }} Objets détectés dans le
-                    vault</span>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 align-middle"
-                    style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.02);">
-                    <thead>
-                        <tr class="x-small text-muted text-uppercase border-bottom border-slate">
-                            <th class="ps-4 py-3 fw-bold" style="width: 40%;">Document Reference</th>
-                            <th class="py-3 fw-bold">Classification</th>
-                            <th class="py-3 fw-bold">Metadata</th>
-                            <th class="py-3 fw-bold">Status</th>
-                            <th class="pe-4 py-3 fw-bold text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if documents %}
-                        {% for doc in documents %}
-                        <tr class="border-bottom border-slate">
-                            <td class="ps-4 py-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-box rounded border border-slate d-flex align-items-center justify-content-center"
-                                        style="width: 32px; height: 32px; background: #18181b;">
-                                        <i class="fas fa-file-pdf text-muted small"></i>
-                                    </div>
-                                    <div>
-                                        <p class="mb-0 fw-bold small text-light">{{ doc.nom }}</p>
-                                        <p class="mb-0 x-small text-muted">ID: #SD-{{ "%04d"|format(doc.id) }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span
-                                    class="badge rounded-pill px-2 py-1 x-small fw-normal border border-indigo text-indigo"
-                                    style="background: rgba(99, 102, 241, 0.05);">
-                                    {{ doc.categorie }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column gap-1">
-                                    <span class="x-small text-muted"><i class="fas fa-calendar me-1"></i> {{
-                                        doc.date_upload.strftime('%d %b %Y') }}</span>
-                                    <span class="x-small text-muted"><i class="fas fa-hdd me-1"></i> {{
-                                        "%.2f"|format(doc.taille_fichier / 1024 / 1024) }} MB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pulse-dot bg-emerald"></span>
-                                    <span class="x-small text-emerald fw-bold">SECURE</span>
-                                </div>
-                            </td>
-                            <td class="pe-4 py-3 text-end">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
-                                        class="btn btn-icon-slate btn-sm" title="Analyser">
-                                        <i class="fas fa-microchip"></i>
-                                    </a>
-                                    <form method="POST" action="{{ url_for('supprimer_document', doc_id=doc.id) }}"
-                                        class="d-inline"
-                                        onsubmit="return confirm('⚠️ Alerte de sécurité : Confirmer la purge définitive ?');">
-                                        <button type="submit" class="btn btn-icon-slate btn-sm text-danger"
-                                            title="Purger">
-                                            <i class="fas fa-broom"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="py-5 text-center">
-                                <div class="py-4">
-                                    <i class="fas fa-box-open fs-1 text-muted mb-3 opacity-20"></i>
-                                    <h5 class="text-muted">Vault Vide</h5>
-                                    <p class="x-small text-muted">Aucun objet détecté avec les filtres actuels.</p>
-                                    <a href="{{ url_for('upload') }}"
-                                        class="btn btn-indigo btn-sm mt-2 px-4">INITIALISER UN SCAN</a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
 </div>
 {% endblock %}
 

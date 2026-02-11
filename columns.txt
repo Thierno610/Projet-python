@@ -1,0 +1,12 @@
+0|id|INTEGER|1||1
+1|nom_utilisateur|VARCHAR(50)|1||0
+2|hash_mot_de_passe|VARCHAR(255)|1||0
+3|niveau|VARCHAR(20)|0||0
+4|stockage_utilise|INTEGER|0||0
+5|date_creation|DATETIME|0||0
+6|derniere_connexion|DATETIME|0||0
+7|nom_complet|VARCHAR(100)|0||0
+8|email|VARCHAR(100)|0||0
+9|telephone|VARCHAR(20)|0||0
+10|adresse|TEXT|0||0
+11|photo_profil|VARCHAR(500)|0||0

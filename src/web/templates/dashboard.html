@@ -1,166 +1,188 @@
 {% extends "base.html" %}
 
-{% block title %}Intelligence Dashboard - SafeDoc Core{% endblock %}
-
 {% block content %}
-<!-- Header & Quick Actions -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Header & Hub Status -->
+<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
     <div>
-        <h1 class="h3 mb-0">Console de Pilotage</h1>
-        <p class="text-muted small mb-0">SafeDoc Intelligence Node #{{ "%04x"|format(user.id) }} (Status: Active)</p>
+        <h1 class="h2 mb-1">Centre d'Intelligence</h1>
+        <p class="text-muted small mb-0 d-flex align-items-center gap-2">
+            <span class="pulse-dot bg-indigo" style="width: 6px; height: 6px;"></span>
+            Nœud SafeDoc #{{ "%04x"|format(user.id) }} — Chiffré & Actif
+        </p>
     </div>
-    <div class="d-flex gap-2">
-        <div class="slate-card px-3 py-1 d-flex align-items-center gap-2 border-0"
-            style="background: rgba(16, 185, 129, 0.05);">
-            <span class="pulse-dot bg-emerald" style="width: 6px; height: 6px;"></span>
-            <span class="x-small text-emerald fw-bold">SYSTEM ONLINE</span>
+    <div class="d-flex gap-3">
+        <div class="glass-card px-3 py-2 d-flex align-items-center gap-2 border-0 bg-opacity-10"
+            style="background: rgba(99, 102, 241, 0.05);">
+            <i class="fas fa-microchip text-indigo x-small"></i>
+            <span class="x-small text-indigo fw-bold tracking-wider">NEURAL_SYNC_OK</span>
         </div>
-        <a href="/upload" class="btn btn-indigo btn-sm px-3">
-            <i class="fas fa-plus x-small me-2"></i>NOUVEAU SCAN
+        <a href="/upload" class="btn btn-indigo d-flex align-items-center gap-2 px-4 py-2">
+            <i class="fas fa-plus-circle small"></i>
+            <span class="small fw-bold">IMPORTATION SÉCURISÉE</span>
         </a>
     </div>
 </div>
 
-<!-- Top Metrics Row -->
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="slate-card p-3">
-            <p class="x-small text-muted text-uppercase fw-bold mb-1">Objets Indexés</p>
-            <div class="d-flex align-items-baseline gap-2">
-                <span class="h4 mb-0 fw-bold">{{ documents|length if documents else 0 }}</span>
-                <span class="x-small text-muted">DATA_NODES</span>
+<!-- Immersive Metrics Grid -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3 animate-in" style="animation-delay: 0.1s;">
+        <div class="glass-card p-4 h-100 vibrant-gradient-indigo border-0">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="rounded-3 p-2 bg-white-10"><i class="fas fa-folder-tree text-white small"></i></div>
+            </div>
+            <div>
+                <h2 class="display-5 fw-800 text-white mb-0">{{ total_docs if total_docs else 0 }}</h2>
+                <p class="x-small text-white text-uppercase fw-bold opacity-75 mt-1 mb-0 tracking-wider">Documents
+                    Indexés
+                </p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="slate-card p-3">
-            <p class="x-small text-muted text-uppercase fw-bold mb-1">Classification Cluster</p>
-            <div class="d-flex align-items-baseline gap-2">
-                <span class="h4 mb-0 fw-bold">{{ types_categories if types_categories else 0 }}</span>
-                <span class="x-small text-muted">TYPES</span>
+    <div class="col-md-3 animate-in" style="animation-delay: 0.2s;">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="rounded-3 p-2 bg-indigo-glow"><i class="fas fa-tags text-indigo small"></i></div>
+            </div>
+            <div>
+                <h2 class="display-5 fw-800 text-white mb-0">{{ types_categories if types_categories else 0 }}</h2>
+                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Active Clusters</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="slate-card p-3">
-            <p class="x-small text-muted text-uppercase fw-bold mb-1">Payload Volume</p>
-            <div class="d-flex align-items-baseline gap-2">
-                <span class="h4 mb-0 fw-bold">{{ "%.1f"|format(stockage_mb) }}</span>
-                <span class="x-small text-muted">MB USAGE</span>
+    <div class="col-md-3 animate-in" style="animation-delay: 0.3s;">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="rounded-3 p-2 bg-indigo-glow"><i class="fas fa-database text-indigo small"></i></div>
+            </div>
+            <div>
+                <h2 class="display-5 fw-800 text-white mb-0">{{ "%.1f"|format(stockage_mb) }}</h2>
+                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Mégaoctets Synchronisés
+                </p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="slate-card p-3">
-            <p class="x-small text-muted text-uppercase fw-bold mb-1">Uptime Node</p>
-            <div class="d-flex align-items-baseline gap-2">
-                <span class="h4 mb-0 fw-bold">99.9%</span>
-                <span class="x-small text-emerald">OPTIMIZED</span>
+    <div class="col-md-3 animate-in" style="animation-delay: 0.4s;">
+        <div class="glass-card p-4 h-100 border-indigo-glow" style="border: 1px solid rgba(99, 102, 241, 0.3);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="rounded-3 p-2 bg-emerald-glow"><i class="fas fa-shield-check text-emerald small"></i></div>
+            </div>
+            <div>
+                <h2 class="display-5 fw-800 text-emerald mb-0">100%</h2>
+                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Score d'Intégrité</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
-    <!-- Main Visualization Column -->
+<div class="row g-4 mb-4">
+    <!-- Visual Analytics -->
     <div class="col-lg-8">
-        <!-- Main Activity Graph -->
-        <div class="slate-card p-4 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="small text-muted text-uppercase fw-bold mb-0">Vélocité d'Ingestion (7 Jours)</h5>
-                <div class="dropdown">
-                    <button class="btn btn-icon-slate btn-sm" type="button">
-                        <i class="fas fa-ellipsis-h x-small"></i>
-                    </button>
+        <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.5s;">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Vélocité d'Ingestion — Spectre
+                    7J</h6>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-indigo-glow text-indigo x-small">Peak: 10/day</span>
                 </div>
             </div>
-            <div style="height: 250px;">
+            <div style="height: 300px;">
                 <canvas id="ingestionChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Recent Documents Table -->
-        <div class="slate-card p-0 overflow-hidden">
-            <div class="p-3 border-bottom border-slate bg-opacity-10 d-flex justify-content-between align-items-center"
-                style="background: rgba(255,255,255,0.02);">
-                <span class="x-small text-muted text-uppercase fw-bold">Fichiers Récemment Indexés</span>
-                <a href="/bibliotheque" class="x-small text-indigo text-decoration-none fw-bold">VOIR TOUT</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 x-small align-middle"
-                    style="--bs-table-bg: transparent; --bs-table-border-color: var(--border-slate);">
-                    <thead>
-                        <tr class="text-muted opacity-50">
-                            <th class="ps-4">NOM DU DOCUMENT</th>
-                            <th>CATEGORIE</th>
-                            <th>DATE</th>
-                            <th class="text-end pe-4">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if documents %}
-                        {% for doc in documents[:5] %}
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center gap-3">
-                                    <i class="fas fa-file-invoice text-muted opacity-50"></i>
-                                    <span class="fw-bold">{{ doc.nom }}</span>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-slate border border-slate text-muted px-2 py-1">{{ doc.categorie
-                                    }}</span></td>
-                            <td class="text-muted">{{ doc.date_upload.strftime('%d/%m/%Y') }}</td>
-                            <td class="text-end pe-4">
-                                <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
-                                    class="btn btn-icon-slate btn-sm">
-                                    <i class="fas fa-eye x-small"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted italic">Aucun document dans le vault.
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 
-    <!-- Analytics & Status Column -->
+    <!-- AI Feed & Classification -->
     <div class="col-lg-4">
-        <!-- Distribution Doughnut -->
-        <div class="slate-card p-4 mb-4">
-            <h5 class="small text-muted text-uppercase fw-bold mb-4">Spectre de Classification</h5>
+        <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.6s;">
+            <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Spectre de Classification</h6>
             <div style="height: 200px;">
                 <canvas id="distributionChart"></canvas>
             </div>
-            <div class="mt-4 d-flex flex-column gap-2" id="distribution-legend">
+            <div class="mt-4 d-flex flex-column gap-3" id="distribution-legend">
                 <!-- Legend injected by JS -->
             </div>
         </div>
 
-        <!-- System Logs Feed (Terminal style) -->
-        <div class="slate-card p-3" style="background: #09090b;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="x-small text-muted text-uppercase fw-bold letter-spacing-1">System Terminal</span>
-                <span class="x-small text-emerald font-monospace">LIVE</span>
-            </div>
-            <div class="font-monospace x-small text-muted overflow-auto" style="height: 180px; scrollbar-width: none;">
-                <div class="mb-1 text-emerald">>> [SYS_OK] SafeDoc Node Initialization complete.</div>
-                <div class="mb-1">>> [AUTH_BYP] Entry permitted (Level 1).</div>
-                <div class="mb-1">>> [SYNC] Local vault consistent with DB.</div>
-                <div class="mb-1 text-indigo">>> [INFO] Telemetry engine active.</div>
-                <div class="mb-1">>> [IDLE] Awaiting ingestion command...</div>
-                {% if documents %}
-                <div class="mb-1">>> [LOG] Last object indexed: {{ documents[0].nom }}</div>
-                {% endif %}
+        <div class="glass-card p-4 vibrant-gradient-indigo border-0 animate-in" style="animation-delay: 0.7s;">
+            <h6 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="fas fa-wand-magic-sparkles"></i> Flux d'Intelligence
+            </h6>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="rounded-circle bg-white-10 p-2 d-flex align-items-center justify-content-center"
+                        style="width: 34px; height: 34px;">
+                        <i class="fas fa-fingerprint text-white x-small"></i>
+                    </div>
+                    <div>
+                        <p class="x-small text-white fw-bold mb-0">Identité Vérifiée</p>
+                        <p class="x-small text-white-50 mb-0 opacity-75">Sync multi-facteurs terminée</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="rounded-circle bg-white-10 p-2 d-flex align-items-center justify-content-center"
+                        style="width: 34px; height: 34px;">
+                        <i class="fas fa-brain text-white x-small"></i>
+                    </div>
+                    <div>
+                        <p class="x-small text-white fw-bold mb-0">Marquage Prédictif</p>
+                        <p class="x-small text-white-50 mb-0 opacity-75">Prêt pour le prochain lot</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Asset Ledger -->
+<div class="glass-card p-0 overflow-hidden animate-in" style="animation-delay: 0.8s;">
+    <div class="p-4 border-bottom border-slate d-flex justify-content-between align-items-center bg-white-10">
+        <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Documents Numériques Récents</h6>
+        <a href="/bibliotheque" class="btn btn-icon-slate btn-sm rounded-pill px-3">
+            <span class="x-small fw-bold">TOUT EXPLORER</span>
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0 x-small align-middle"
+            style="--bs-table-bg: transparent; --bs-table-border-color: rgba(255,255,255,0.05);">
+            <thead>
+                <tr class="text-muted opacity-50">
+                    <th class="ps-4 py-3">IDENTIFIANT DU DOCUMENT</th>
+                    <th>GROUPE</th>
+                    <th>HORODATAGE</th>
+                    <th class="text-end pe-4">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if documents %}
+                {% for doc in documents[:5] %}
+                <tr class="hover-white-2">
+                    <td class="ps-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-indigo-glow rounded-2 p-2"><i
+                                    class="fas fa-file-shield text-indigo x-small"></i></div>
+                            <span class="fw-bold text-white">{{ doc.nom }}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-white-10 text-muted px-2 py-1">{{ doc.categorie }}</span></td>
+                    <td class="text-muted opacity-75">{{ doc.date_upload.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="text-end pe-4">
+                        <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
+                            class="btn btn-icon-indigo btn-sm rounded-circle">
+                            <i class="fas fa-chevron-right x-small"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted italic">Nœud sécurisé vide. Aucun document
+                        trouvé.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 
 {% endblock %}
@@ -169,25 +191,31 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Data Preparation (Mock tracking for activity)
         const ctxIngestion = document.getElementById('ingestionChart').getContext('2d');
         const ctxDistribution = document.getElementById('distributionChart').getContext('2d');
 
-        // Ingestion Chart (Interactive Line)
+        // Neon Ingestion Plot
+        const gradient = ctxIngestion.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+
         new Chart(ctxIngestion, {
             type: 'line',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'],
                 datasets: [{
-                    label: 'Docs Processed',
-                    data: [4, 8, 5, 9, 12, 4, 7],
+                    label: 'Ingestion Delta',
+                    data: [4, 8, 5, 9, 15, 6, 12],
                     borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.03)',
-                    borderWidth: 2,
+                    backgroundColor: gradient,
+                    borderWidth: 4,
                     tension: 0.4,
                     fill: true,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#6366f1'
+                    pointRadius: 6,
+                    pointBackgroundColor: '#6366f1',
+                    pointBorderColor: 'rgba(255,255,255,0.8)',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8
                 }]
             },
             options: {
@@ -195,53 +223,65 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: '#71717a', font: { size: 10 } } },
-                    y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#71717a', font: { size: 10 } } }
+                    x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10, weight: '600' } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } }
                 }
             }
         });
 
-        // Distribution Chart (Technical Doughnut)
-        const labels = [];
-        const data = [];
-        const colors = ['#6366f1', '#10b981', '#f59e0b', '#3b82f6', '#ec4899'];
+        // Classification Spectrum (Neon Doughnut)
+        const cyberColors = ['#6366f1', '#a855f7', '#10b981', '#f43f5e', '#fbbf24', '#38bdf8'];
+        const distribution = {{ distribution_data | tojson | safe
+    }};
 
-        // In a real app, these would be injected via Jinja2 from cat_counts
-        // Using a simplified example here
-        const mockDistribution = { 'Factures': 45, 'Contrats': 25, 'Identité': 15, 'Divers': 15 };
 
-        Object.keys(mockDistribution).forEach((key, i) => {
-            labels.push(key);
-            data.push(mockDistribution[key]);
 
-            // Manual legend injection
+    const labels = [];
+    const data = [];
+
+    if (distribution.length > 0) {
+        distribution.forEach((item, i) => {
+            labels.push(item.label);
+            data.push(item.value);
+
+            // Immersive Legend
             const legendItem = document.createElement('div');
-            legendItem.className = 'd-flex justify-content-between x-small align-items-center';
-            legendItem.innerHTML = `<div class="d-flex align-items-center gap-2">
-            <div style="width: 8px; height: 8px; background: ${colors[i]}; border-radius: 2px;"></div>
-            <span class="text-muted">${key}</span>
-        </div><span class="text-light fw-bold">${mockDistribution[key]}%</span>`;
+            legendItem.className = 'd-flex justify-content-between align-items-center opacity-75 hover-opacity-100 transition-premium';
+            legendItem.innerHTML = `
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 8px; height: 8px; background: ${cyberColors[i % cyberColors.length]}; border-radius: 2px; box-shadow: 0 0 10px ${cyberColors[i % cyberColors.length]}80;"></div>
+                        <span class="x-small text-muted fw-bold">${item.label}</span>
+                    </div>
+                    <span class="x-small text-white fw-800">${item.value}%</span>
+                `;
             document.getElementById('distribution-legend').appendChild(legendItem);
         });
+    } else {
+        document.getElementById('distribution-legend').innerHTML = '<p class="text-muted x-small italic text-center py-4">Carte de stockage vide.</p>';
+    }
 
-        new Chart(ctxDistribution, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: colors,
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: { legend: { display: false } }
-            }
-        });
+    new Chart(ctxDistribution, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: cyberColors,
+                hoverBackgroundColor: cyberColors,
+                borderWidth: 0,
+                hoverOffset: 20,
+                borderRadius: 4,
+                spacing: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '85%',
+            plugins: { legend: { display: false } },
+            animation: { animateScale: true }
+        }
+    });
     });
 </script>
 {% endblock %}

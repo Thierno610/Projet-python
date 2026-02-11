@@ -3,155 +3,155 @@
 {% block title %}Membership - SafeDoc Pro{% endblock %}
 
 {% block content %}
-<div class="row g-4 justify-content-center">
-    <!-- Header Section -->
-    <div class="col-12 text-center mb-4">
-        <h1 class="h2 mb-1">Mise à Niveau du Système</h1>
-        <p class="text-muted small">Extension des capacités SafeDoc Core vers Cloud Sync Protocol</p>
-        <div class="d-flex justify-content-center gap-2 mt-3">
-            <span class="badge text-indigo bg-opacity-10 border border-indigo px-3 py-1"
-                style="background: rgba(99, 102, 241, 0.05);">SECURE TUNNEL READY</span>
-            <span class="badge text-emerald bg-opacity-10 border border-emerald px-3 py-1"
-                style="background: rgba(16, 185, 129, 0.05);">CLOUD SYNC ENABLED</span>
-        </div>
+<!-- Header & Telemetry -->
+<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
+    <div>
+        <h1 class="h2 mb-1">Neural Tiers</h1>
+        <p class="text-muted small mb-0 d-flex align-items-center gap-3">
+            <span class="font-monospace opacity-75">UPGRADE_PROTOCOL: v8.4.1</span>
+            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-crown me-2"></i>PREMIUM:
+                PENDING</span>
+        </p>
     </div>
+    <div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">
+            <i class="fas fa-chevron-left small me-2"></i>ABORT_UPGRADE
+        </a>
+    </div>
+</div>
 
+<div class="row g-4 justify-content-center">
     <!-- Tier: Standard -->
     <div class="col-md-5">
-        <div class="slate-card p-5 h-100 d-flex flex-column">
+        <div class="glass-card p-5 h-100 d-flex flex-column animate-in" style="animation-delay: 0.1s;">
             <div class="text-center mb-5">
-                <div class="icon-circle mb-4 mx-auto"
-                    style="width: 72px; height: 72px; background: rgba(113, 113, 122, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-terminal text-muted fs-3"></i>
+                <div class="bg-white-5 rounded-4 p-4 d-inline-block mb-4 border-slate">
+                    <i class="fas fa-microchip text-muted fs-2"></i>
                 </div>
-                <h3 class="h4 mb-0 fw-bold">SD-Core</h3>
-                <p class="x-small text-muted text-uppercase fw-bold mb-4">Instance Locale Gratuite</p>
-                <div class="h2 mb-0 fw-bold">0,00€<span class="small text-muted fw-normal fs-6"> / perpétuel</span>
-                </div>
+                <h3 class="h4 mb-0 fw-800 text-white">SD-Core</h3>
+                <p class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4 opacity-75">LOCAL_INSTANCE</p>
+                <div class="h2 mb-0 fw-800 text-white">0,00€<span class="small text-muted fw-normal fs-6 opacity-50"> /
+                        PERPETUAL</span></div>
             </div>
 
             <div class="flex-grow-1">
                 <ul class="list-unstyled d-flex flex-column gap-3 mb-5">
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check text-indigo"></i>
-                        <span class="text-muted">Chiffrement AES-256 local</span>
+                        <i class="fas fa-check-circle text-indigo"></i>
+                        <span class="text-white-50">Local AES-256 Encryption</span>
                     </li>
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check text-indigo"></i>
-                        <span class="text-muted">Extraction OCR intelligente</span>
+                        <i class="fas fa-check-circle text-indigo"></i>
+                        <span class="text-white-50">Smart OCR Ingestion</span>
                     </li>
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check text-indigo"></i>
-                        <span class="text-muted">Télémétrie de base</span>
+                        <i class="fas fa-check-circle text-indigo"></i>
+                        <span class="text-white-50">Basic Metadata Analysis</span>
                     </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-times text-danger opacity-50"></i>
-                        <span class="text-muted opacity-50">Synchronisation Cloud</span>
+                    <li class="d-flex align-items-center gap-3 x-small opacity-25">
+                        <i class="fas fa-times-circle text-rose"></i>
+                        <span class="text-white-50">Neural Cloud Sync</span>
                     </li>
                 </ul>
             </div>
 
-            <div class="p-3 rounded mb-4"
-                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
-                <p class="x-small text-muted mb-0">Contrat de service standard pour usage individuel non-connecté.</p>
+            <div class="p-3 rounded-3 bg-white-5 border-slate mb-4">
+                <p class="x-small text-muted mb-0 italic">Default service container for offline vault operations.</p>
             </div>
 
-            <button class="btn btn-outline-secondary w-100 py-3 disabled">ACTIF : NODE LOCAL</button>
+            <button class="btn btn-outline-slate w-100 py-3 rounded-pill fw-bold x-small disabled">NODE_ACTIVE</button>
         </div>
     </div>
 
     <!-- Tier: Premium -->
     <div class="col-md-5">
-        <div class="slate-card p-5 h-100 d-flex flex-column border-indigo-glow"
-            style="border: 1px solid var(--primary-indigo); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);">
+        <div class="glass-card p-5 h-100 d-flex flex-column border-indigo-glow position-relative overflow-hidden animate-in"
+            style="animation-delay: 0.2s; border: 1px solid var(--primary-indigo) !important; background: rgba(99, 102, 241, 0.03);">
+            <div class="position-absolute top-0 end-0 p-4 opacity-10">
+                <i class="fas fa-wifi fa-5x text-indigo"></i>
+            </div>
+
             <div class="text-center mb-5">
-                <div class="icon-circle mb-4 mx-auto"
-                    style="width: 72px; height: 72px; background: rgba(99, 102, 241, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-ethernet text-indigo fs-3"></i>
+                <div class="bg-indigo-glow rounded-4 p-4 d-inline-block mb-4 border-indigo-glow">
+                    <i class="fas fa-bolt text-indigo fs-2"></i>
                 </div>
-                <h3 class="h4 mb-0 fw-bold">SD-Network</h3>
-                <p class="x-small text-indigo text-uppercase fw-bold mb-4">Extension Cloud Connectée</p>
-                <div class="h2 mb-0 fw-bold">9,99€<span class="small text-muted fw-normal fs-6"> / mois</span></div>
+                <h3 class="h4 mb-0 fw-800 text-white">SD-Network</h3>
+                <p class="x-small text-indigo text-uppercase fw-800 tracking-widest mb-4">CONNECTED_EXTENSION</p>
+                <div class="h2 mb-0 fw-800 text-white">9,99€<span class="small text-muted fw-normal fs-6 opacity-50"> /
+                        MONTHLY</span></div>
             </div>
 
             <div class="flex-grow-1">
                 <ul class="list-unstyled d-flex flex-column gap-3 mb-5">
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-bolt text-indigo"></i>
-                        <span class="text-light">Synchronisation Google Drive bi-directionnelle</span>
+                        <i class="fas fa-plus-circle text-indigo"></i>
+                        <span class="text-white">Symmetric Google Drive Sync</span>
                     </li>
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-bolt text-indigo"></i>
-                        <span class="text-light">Stockage sécurisé étendu : 50 GB</span>
+                        <i class="fas fa-plus-circle text-indigo"></i>
+                        <span class="text-white">Expanded Neural Vault: 50 GB</span>
                     </li>
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-bolt text-indigo"></i>
-                        <span class="text-light">Multi-accessibilité (App, Web, Desktop)</span>
+                        <i class="fas fa-plus-circle text-indigo"></i>
+                        <span class="text-white">Omni-Channel Access Protocol</span>
                     </li>
                     <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-bolt text-indigo"></i>
-                        <span class="text-light">Support technique haute-priorité</span>
+                        <i class="fas fa-plus-circle text-indigo"></i>
+                        <span class="text-white">Priority Relay Support</span>
                     </li>
                 </ul>
             </div>
 
-            <div class="p-3 rounded mb-4"
-                style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2);">
-                <p class="x-small text-muted mb-0">Déployez votre vault sur le réseau SafeDoc Global en toute sécurité.
+            <div class="p-3 rounded-3 bg-indigo-glow border-indigo-glow mb-4">
+                <p class="x-small text-white-50 mb-0">Deploy your sharded vault across the Global SafeDoc constellation.
                 </p>
             </div>
 
-            <button class="btn btn-indigo w-100 py-3 fw-bold"
-                onclick="alert('Module de facturation : Connexion en cours...')">
-                INITIALISER L'UPGRADE
+            <button class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow"
+                onclick="alert('Billing Module: Initializing secure handshake...')">
+                INITIALIZE_UPGRADE
             </button>
         </div>
     </div>
 
-    <!-- Feature Modules -->
+    <!-- Feature Modules Grid -->
     <div class="col-12 mt-5">
-        <div class="slate-card p-4">
-            <h5 class="small text-muted text-uppercase fw-bold mb-5 text-center">Protocoles Avancés inclus dans
-                SD-Network</h5>
-            <div class="row g-4">
+        <div class="glass-card p-5 animate-in" style="animation-delay: 0.3s;">
+            <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-5 text-center">Advanced Protocol
+                Stack</h6>
+            <div class="row g-5">
                 <div class="col-md-4">
                     <div class="text-center">
-                        <div class="icon-small rounded bg-indigo bg-opacity-10 p-3 d-inline-block mb-3">
-                            <i class="fas fa-cloud-sync text-indigo"></i>
+                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
+                            <i class="fas fa-shield-halved text-indigo fs-4"></i>
                         </div>
-                        <h6 class="small fw-bold mb-2">Sync Zero-Knowledge</h6>
-                        <p class="x-small text-muted">Vos fichiers sont chiffrés localement avant tout transfert vers le
-                            cloud.</p>
+                        <h6 class="small fw-800 text-white mb-3">Sync Zero-Knowledge</h6>
+                        <p class="x-small text-muted opacity-75">Local sharding before any cloud relay. We never see
+                            your fragments.</p>
                     </div>
                 </div>
                 <div class="col-md-4 border-start border-slate">
                     <div class="text-center">
-                        <div class="icon-small rounded bg-emerald bg-opacity-10 p-3 d-inline-block mb-3">
-                            <i class="fas fa-history text-emerald"></i>
+                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
+                            <i class="fas fa-dna text-emerald fs-4"></i>
                         </div>
-                        <h6 class="small fw-bold mb-2">Versioning Automatique</h6>
-                        <p class="x-small text-muted">Récupérez n'importe quelle version antérieure de vos documents
-                            importants.</p>
+                        <h6 class="small fw-800 text-white mb-3">Temporal Versioning</h6>
+                        <p class="x-small text-muted opacity-75">Roll back asset clusters to any previous signature in
+                            the history chain.</p>
                     </div>
                 </div>
                 <div class="col-md-4 border-start border-slate">
                     <div class="text-center">
-                        <div class="icon-small rounded bg-indigo bg-opacity-10 p-3 d-inline-block mb-3">
-                            <i class="fas fa-shield-alt text-indigo"></i>
+                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
+                            <i class="fas fa-satellite text-indigo fs-4"></i>
                         </div>
-                        <h6 class="small fw-bold mb-2">Audit de Sécurité Premium</h6>
-                        <p class="x-small text-muted">Rapports détaillés sur les accès et l'intégrité de votre vault
-                            global.</p>
+                        <h6 class="small fw-800 text-white mb-3">Neural Audit Trail</h6>
+                        <p class="x-small text-muted opacity-75">Deep telemetry log of every access pulse and
+                            synchronization event.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="col-12 text-center mt-5 mb-4">
-        <a href="{{ url_for('dashboard') }}" class="btn btn-icon-slate btn-sm">
-            <i class="fas fa-chevron-left small me-2"></i>RETOUR CONSOLE
-        </a>
     </div>
 </div>
 {% endblock %}

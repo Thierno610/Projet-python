@@ -1,0 +1,121 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+<div class="auth-portal-grid animate-in">
+    <!-- Side: Security Nexus Visual -->
+    <div class="position-relative overflow-hidden d-none d-lg-flex align-items-center justify-content-center p-5"
+        style="background: linear-gradient(135deg, #020617 0%, #0f172a 100%);">
+        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10"
+            style="background-image: radial-gradient(var(--primary-indigo) 1px, transparent 1px); background-size: 30px 30px;">
+        </div>
+
+        <div class="text-center position-relative z-1">
+            <div class="bg-indigo-glow rounded-circle p-5 d-inline-flex mb-5 border-indigo-glow shadow-glow">
+                <i class="fas fa-shield-halved text-white display-1"></i>
+            </div>
+            <h2 class="display-5 fw-800 text-white mb-3">Sécurité Totale.<br>Risque Zéro.</h2>
+            <p class="text-white-50 max-w-400 mx-auto lead opacity-75">SafeDoc orchestre vos documents avec
+                un chiffrement de niveau orbital et une interface conçue pour le futur de la souveraineté numérique.</p>
+
+            <div
+                class="mt-5 d-flex justify-content-center gap-5 opacity-50 font-monospace x-small tracking-widest text-uppercase">
+                <div><i class="fas fa-microchip d-block mb-2 fs-4"></i>AES_256_PROT</div>
+                <div><i class="fas fa-fingerprint d-block mb-2 fs-4"></i>NEURAL_AUTH</div>
+                <div><i class="fas fa-cloud-bolt d-block mb-2 fs-4"></i>DRIVE_UPLINK</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side: Authentication Node -->
+    <div class="d-flex align-items-center justify-content-center p-4 p-md-5">
+        <div class="w-100" style="max-width: 420px;">
+            <div class="glass-card p-5 animate-in" style="animation-delay: 0.1s;">
+                <div class="text-center mb-5">
+                    <h2 class="h3 fw-800 text-white mb-2 tracking-tight">Poste d'Authentification</h2>
+                    <p class="x-small text-muted text-uppercase fw-800 tracking-widest opacity-50">Passerelle
+                        d'Interface
+                        Sécurisée</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('login') }}" class="needs-validation">
+                    <div class="mb-4">
+                        <label for="username"
+                            class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Identifiant
+                            Utilisateur</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white-5 border-slate text-muted border-end-0 px-3">
+                                <i class="fas fa-user-tag x-small"></i>
+                            </span>
+                            <input type="text"
+                                class="form-control bg-white-5 border-slate text-white py-3 ps-0 font-monospace border-start-0"
+                                id="username" name="username" required placeholder="UID_Vektor">
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label for="password"
+                                class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-0 ps-1">Clé
+                                Sécurisée</label>
+                            <a href="{{ url_for('forgot_password') }}"
+                                class="text-indigo x-small fw-800 text-decoration-none tracking-widest">OUBLIÉ ?</a>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white-5 border-slate text-muted border-end-0 px-3">
+                                <i class="fas fa-key x-small"></i>
+                            </span>
+                            <input type="password"
+                                class="form-control bg-white-5 border-slate text-white py-3 ps-0 font-monospace border-start-0"
+                                id="password" name="password" required placeholder="********">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('login_demo') }}"
+                            class="btn btn-emerald py-3 rounded-pill fw-800 tracking-widest shadow-glow-emerald border-0">
+                            <i class="fas fa-bolt me-2"></i>ACCÈS DIRECT DÉMO
+                        </a>
+                        <div class="d-flex align-items-center gap-3 my-2 opacity-20">
+                            <hr class="flex-grow-1">
+                            <span class="x-small font-monospace">OU</span>
+                            <hr class="flex-grow-1">
+                        </div>
+                        <button type="submit"
+                            class="btn btn-indigo py-3 rounded-pill fw-800 tracking-widest shadow-glow">
+                            ÉTABLIR_CONNEXION
+                        </button>
+                        <button type="button" onclick="loginWithBiometrics()"
+                            class="btn btn-outline-slate py-2 rounded-pill fw-800 x-small opacity-75 tracking-tighter">
+                            <i class="fas fa-fingerprint me-2"></i>BIOMÉTRIE_HANDSHAKE
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-5 pt-3 border-top border-slate">
+                        <p class="text-muted x-small mb-1 font-monospace">ENTITÉ_NON_ENREGISTRÉE ?</p>
+                        <a href="{{ url_for('register') }}" un Compte Sécurisé</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Classified: Demo Credentials -->
+            <div class="glass-card mt-4 p-4 border-indigo-glow animate-in"
+                style="animation-delay: 0.2s; background: rgba(99, 102, 241, 0.05);">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="pulse-dot bg-indigo"></span>
+                    <span class="x-small text-indigo fw-800 tracking-widest">CLASSIFIÉ : DOSSIERS_DÉMO</span>
+                </div>
+                <div class="font-monospace x-small text-white-50 bg-black-20 p-3 rounded-2 border-slate">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>IDENTIFIER:</span>
+                        <span class="text-white user-select-all">MOCTAR</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>CLÉ_PASS :</span>
+                        <span class="text-white user-select-all">52623835@</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

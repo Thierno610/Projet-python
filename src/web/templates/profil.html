@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="animate-in">
+    <!-- Terminal Header (Detached Glass) -->
+    <div class="glass-card p-5 mb-5 border-0 bg-indigo-glow position-relative overflow-hidden">
+        <div class="position-absolute top-0 end-0 p-4 opacity-10">
+            <i class="fas fa-microchip fa-6x"></i>
+        </div>
+        <div class="d-flex align-items-center gap-5 position-relative">
+            <div class="profile-photo-container">
+                {% if user.photo_profil %}
+                <img src="{{ user.photo_profil }}" alt="Identity" class="rounded-4 border border-white-10 shadow-lg"
+                    style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                <div class="rounded-4 bg-white-5 border border-white-10 d-flex align-items-center justify-content-center"
+                    style="width: 120px; height: 120px;">
+                    <i class="fas fa-user-shield fa-3x text-white opacity-20"></i>
+                </div>
+                {% endif %}
+                <button
+                    class="btn btn-indigo btn-sm rounded-circle position-absolute bottom-0 end-0 border-2 border-dark"
+                    onclick="document.getElementById('photo_upload').click()">
+                    <i class="fas fa-pen x-small"></i>
+                </button>
+            </div>
+            <div class="terminal-text">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <h1 class="h2 mb-0 fw-800 text-white">{{ user.nom_complet or user.nom_utilisateur }}</h1>
+                    <span
+                        class="badge bg-white-10 text-white px-3 py-1 rounded-pill x-small fw-bold border border-white-10">
+                        <i class="fas fa-crown text-indigo me-2"></i>{{ user.niveau|upper }} UNIT
+                    </span>
+                </div>
+                <p class="text-muted small mb-0 font-monospace opacity-75">
+                    <span class="text-indigo">IDENTIFIER:</span> #{{ "%04x"|format(user.id) }} —
+                    <span class="text-indigo">LINK_DATE:</span> {{ user.date_creation.strftime('%Y-%m-%d') if
+                    user.date_creation else 'N/A' }}
+                </p>
+                <div class="d-flex gap-4 mt-3">
+                    <div class="x-small text-white opacity-50"><i
+                            class="fas fa-network-wired me-2"></i>SECURE_NODE_ACTIVE</div>
+                    <div class="x-small text-white opacity-50"><i class="fas fa-key me-2"></i>E2EE_ENABLED</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Security Sidebar -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.1s;">
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Security Protocol</h6>
+
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="x-small text-white-50 fw-bold">Unit Capacity</span>
+                        <span class="x-small text-indigo fw-800">{{ "%.1f"|format(user.stockage_utilise / (1024*1024))
+                            }} MB / 500 MB</span>
+                    </div>
+                    <div class="progress bg-white-5 rounded-pill" style="height: 4px;">
+                        <div class="progress-bar bg-indigo shadow-glow"
+                            style="width: {{ user.pourcentage_stockage() }}%"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
+                        onclick="new bootstrap.Modal(document.getElementById('passwordModal')).show()">
+                        <i class="fas fa-fingerprint text-muted"></i>
+                        <span class="small fw-bold">Credential Drift</span>
+                        <i class="fas fa-arrow-right ms-auto x-small text-muted"></i>
+                    </div>
+                    <div
+                        class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3">
+                        <i class="fas fa-shield-halved text-muted"></i>
+                        <span class="small fw-bold">Multi-Factor Sync</span>
+                        <span class="badge bg-rose-glow text-rose ms-auto x-small border-0">INACTIVE</span>
+                    </div>
+                    <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
+                        onclick="registerBiometrics()" id="biometricBtn">
+                        <i class="fas fa-dna text-emerald"></i>
+                        <span class="small fw-bold">Biometric Imprint</span>
+                        <div class="ms-auto" id="biometricStatus">
+                            <i class="fas fa-plus-circle text-muted x-small"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Identity Matrix Form -->
+        <div class="col-lg-8">
+            <div class="glass-card p-4 animate-in" style="animation-delay: 0.2s;">
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Identity Matrix</h6>
+
+                <form action="/profil" method="POST" enctype="multipart/form-data" id="profileForm">
+                    <input type="hidden" name="action" value="update_profile">
+                    <input type="file" id="photo_upload" name="photo_profil" style="display: none;"
+                        onchange="this.form.submit()">
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Full
+                                Identity</label>
+                            <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                                name="nom_complet" value="{{ user.nom_complet or '' }}" placeholder="Enter legal name">
+                        </div>
+                        <div class="col-md-6">
+                            <label
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Relay
+                                Address (Email)</label>
+                            <input type="email" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                                name="email" value="{{ user.email or '' }}" placeholder="quantum@relay.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Frequency
+                                Link (Mobile)</label>
+                            <input type="tel" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                                name="telephone" value="{{ user.telephone or '' }}" placeholder="+224 6XX XX XX XX">
+                        </div>
+                        <div class="col-md-6">
+                            <label
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Regional
+                                Anchor</label>
+                            <input type="text" class="form-control bg-white-5 border-slate text-white-50 py-3 rounded-3"
+                                value="Republic of Guinea (GN)" disabled>
+                        </div>
+                        <div class="col-12">
+                            <label
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Physical
+                                Coordinate</label>
+                            <textarea class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                                name="adresse" rows="3"
+                                placeholder="District, Avenue, Unit Number...">{{ user.adresse or '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex align-items-center justify-content-between pt-4 border-top border-slate">
+                        <p class="x-small text-muted mb-0 font-monospace opacity-50">
+                            >> LAST_SYNC: {{ now.strftime('%Y-%m-%d %H:%M') if now else 'SEQUENCE_UNKNOWN' }}
+                        </p>
+                        <div class="d-flex gap-3">
+                            <a href="/dashboard" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">ABORT</a>
+                            <button type="submit" class="btn btn-indigo rounded-pill px-5 fw-bold small">
+                                <i class="fas fa-sync-alt small me-2"></i>UPDATE_LOGS
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Password Change Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass shadow-lg border-slate">
+            <div class="modal-header border-slate">
+                <h5 class="modal-title fw-bold">Modifier le mot de passe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="passwordStep1">
+                    <p class="text-white-50 small mb-4">Pour des raisons de sécurité, nous devons vérifier votre
+                        identité. Un code à 6 chiffres sera envoyé à votre adresse e-mail.</p>
+                    <button class="btn btn-indigo w-100 py-3" onclick="requestVerificationCode()">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Envoyer le code par e-mail
+                    </button>
+                </div>
+
+                <div id="passwordStep2" style="display: none;">
+                    <div class="mb-4">
+                        <label class="label-custom">Code de vérification (6 chiffres)</label>
+                        <input type="text" id="verificationCode"
+                            class="form-control-custom w-100 text-center fw-bold fs-4" maxlength="6"
+                            placeholder="000 000">
+                        <p class="text-white-50 x-small mt-2 text-center">Entrez le code reçu par e-mail.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="label-custom">Nouveau mot de passe</label>
+                        <input type="password" id="newPassword" class="form-control-custom w-100"
+                            placeholder="Min. 8 caractères">
+                    </div>
+
+                    <button class="btn btn-indigo w-100 py-3" onclick="verifyAndChangePassword()">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Valider le nouveau mot de passe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function requestVerificationCode() {
+        try {
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Envoi en cours...';
+
+            const response = await fetch('/api/auth/request-verification', { method: 'POST' });
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('passwordStep1').style.display = 'none';
+                document.getElementById('passwordStep2').style.display = 'block';
+            } else {
+                alert(data.error || "Erreur lors de l'envoi du code.");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Envoyer le code par e-mail';
+            }
+        } catch (err) {
+            alert("Une erreur technique est survenue.");
+        }
+    }
+
+    async function verifyAndChangePassword() {
+        const code = document.getElementById('verificationCode').value.trim();
+        const nouveau_mdp = document.getElementById('newPassword').value.trim();
+
+        if (code.length !== 6) {
+            alert("Veuillez entrer le code à 6 chiffres.");
+            return;
+        }
+
+        if (nouveau_mdp.length < 8) {
+            alert("Le nouveau mot de passe doit comporter au moins 8 caractères.");
+            return;
+        }
+
+        try {
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Validation...';
+
+            const response = await fetch('/api/auth/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, nouveau_mdp })
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                alert("Mot de passe modifié avec succès !");
+                location.reload();
+            } else {
+                alert(data.error || "Erreur lors de la modification.");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Valider le nouveau mot de passe';
+            }
+        } catch (err) {
+            alert("Une erreur technique est survenue.");
+        }
+    }
+    async function registerBiometrics() {
+        const btn = document.getElementById('biometricBtn');
+        const status = document.getElementById('biometricStatus');
+
+        try {
+            status.innerHTML = '<i class="fas fa-spinner fa-spin text-emerald x-small"></i>';
+
+            // 1. Get options from backend
+            const optionsRes = await fetch('/api/auth/webauthn/register/options', { method: 'POST' });
+            const options = await optionsRes.json();
+
+            if (!options.publicKey) throw new Error(options.error || "Erreur options");
+
+            // Fix binary data from base64
+            options.publicKey.challenge = Uint8Array.from(atob(options.publicKey.challenge), c => c.charCodeAt(0));
+            options.publicKey.user.id = Uint8Array.from(atob(options.publicKey.user.id), c => c.charCodeAt(0));
+            if (options.publicKey.excludeCredentials) {
+                options.publicKey.excludeCredentials.forEach(cred => {
+                    cred.id = Uint8Array.from(atob(cred.id), c => c.charCodeAt(0));
+                });
+            }
+
+            // 2. Create credential
+            const credential = await navigator.credentials.create({ publicKey: options.publicKey });
+
+            // 3. Send attestation to backend
+            const attestation = {
+                id: credential.id,
+                rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+                type: credential.type,
+                response: {
+                    attestationObject: btoa(String.fromCharCode(...new Uint8Array(credential.response.attestationObject))),
+                    clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response.clientDataJSON)))
+                }
+            };
+
+            const verifyRes = await fetch('/api/auth/webauthn/register/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(attestation)
+            });
+            const result = await verifyRes.json();
+
+            if (result.success) {
+                status.innerHTML = '<i class="fas fa-check-circle text-emerald x-small"></i>';
+                alert("Authentification biométrique activée avec succès !");
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            status.innerHTML = '<i class="fas fa-times-circle text-danger x-small"></i>';
+            alert("Erreur lors de l'activation : " + err.message);
+        }
+    }
+</script>
+
+<style>
+    /* User Terminal Specific Refinements */
+    .bg-indigo-glow {
+        background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+            rgba(15, 23, 42, 0.3);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    }
+
+    .shadow-glow {
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .hover-indigo:hover {
+        background: rgba(99, 102, 241, 0.08) !important;
+        border-color: rgba(99, 102, 241, 0.4) !important;
+    }
+
+    .terminal-text h1 {
+        letter-spacing: -0.02em;
+    }
+</style>
+{% endblock %}

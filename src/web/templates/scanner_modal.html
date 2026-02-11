@@ -1,37 +1,91 @@
-<!-- Scanner Modal Component -->
+<!-- Scanner Modal Component: Optical Ingress -->
 <div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-card border-slate">
-            <div class="modal-header border-slate">
-                <h5 class="modal-title x-small text-muted text-uppercase fw-bold" id="scannerModalLabel">
-                    <i class="fas fa-camera me-2"></i>Scanner SafeDoc Node
-                </h5>
-                <button type="button" class="btn-close btn-close-white x-small" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+        <div class="modal-content glass-card border-indigo-glow overflow-hidden"
+            style="background: rgba(12, 12, 14, 0.98);">
+            <!-- Header: Ingress Status -->
+            <div class="modal-header border-slate bg-white-5 p-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-indigo-glow p-2 rounded-circle border-indigo-glow">
+                        <i class="fas fa-aperture text-indigo animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title x-small text-white fw-800 tracking-widest text-uppercase mb-0"
+                            id="scannerModalLabel">
+                            Optical_Ingress_Node
+                        </h5>
+                        <span class="x-small text-indigo font-monospace opacity-75">HARDWARE: INTEGRATED_LENS_v2</span>
+                    </div>
+                </div>
+                <button type="button"
+                    class="btn btn-outline-slate btn-sm border-0 rounded-circle p-2 opacity-50 hover-100"
+                    data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times x-small"></i>
+                </button>
             </div>
-            <div class="modal-body p-0 position-relative overflow-hidden" style="background: #000; min-height: 400px;">
-                <!-- Camera Viewport -->
-                <video id="scannerVideo" autoplay playsinline class="w-100 h-100" style="object-fit: cover;"></video>
 
-                <!-- Scanning Overlay -->
+            <!-- Viewport: Neural Stream -->
+            <div class="modal-body p-0 position-relative overflow-hidden" style="background: #000; min-height: 450px;">
+                <!-- Camera Viewport -->
+                <video id="scannerVideo" autoplay playsinline class="w-100 h-100"
+                    style="object-fit: cover; filter: contrast(1.1) brightness(1.1);"></video>
+
+                <!-- Scanning Matrix Overlay -->
                 <div
                     class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none">
-                    <div class="scanner-frame"
-                        style="width: 80%; height: 70%; border: 2px solid rgba(99, 102, 241, 0.5); border-radius: 10px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5);">
+                    <!-- Vignette & HUD -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100 shadow-inner"
+                        style="box-shadow: inset 0 0 150px rgba(0,0,0,0.8);"></div>
+
+                    <div class="scanner-frame d-flex align-items-center justify-content-center"
+                        style="width: 85%; height: 75%; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.4);">
+
+                        <!-- UI Corners -->
+                        <div class="position-absolute top-0 start-0 p-3">
+                            <div
+                                style="width: 20px; height: 20px; border-top: 2px solid var(--primary-indigo); border-left: 2px solid var(--primary-indigo); border-radius: 4px 0 0 0;">
+                            </div>
+                        </div>
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <div
+                                style="width: 20px; height: 20px; border-top: 2px solid var(--primary-indigo); border-right: 2px solid var(--primary-indigo); border-radius: 0 4px 0 0;">
+                            </div>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 p-3">
+                            <div
+                                style="width: 20px; height: 20px; border-bottom: 2px solid var(--primary-indigo); border-left: 2px solid var(--primary-indigo); border-radius: 0 0 0 4px;">
+                            </div>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 p-3">
+                            <div
+                                style="width: 20px; height: 20px; border-bottom: 2px solid var(--primary-indigo); border-right: 2px solid var(--primary-indigo); border-radius: 0 0 4px 0;">
+                            </div>
+                        </div>
+
                         <div class="scanner-laser"></div>
+
+                        <!-- HUD Text -->
+                        <div class="position-absolute top-0 start-50 translate-middle-x mt-4">
+                            <span
+                                class="x-small text-white-50 font-monospace tracking-widest bg-black-20 px-3 py-1 rounded-pill border-slate">ALIGN_TARGET_WITHIN_BOUNDS</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Status Badge -->
-                <div class="position-absolute top-3 start-3">
-                    <span class="badge bg-emerald bg-opacity-10 text-emerald animate-pulse border-0">
-                        <i class="fas fa-circle x-small me-1"></i>LIVE_FEED
+                <!-- Live Feed Badge -->
+                <div class="position-absolute top-0 end-0 p-4">
+                    <span
+                        class="badge border-indigo-glow bg-indigo-glow text-white x-small font-monospace tracking-widest px-3 py-2">
+                        <i class="fas fa-broadcast-tower me-2 animate-pulse"></i>LIVE_FEED_SYNCED
                     </span>
                 </div>
             </div>
-            <div class="modal-footer border-slate bg-slate bg-opacity-20 justify-content-center py-3">
-                <button type="button" id="captureBtn" class="btn btn-indigo btn-lg px-5">
-                    <i class="fas fa-expand me-2"></i>CAPTURER L'IMAGE
+
+            <!-- Footer: Controls -->
+            <div class="modal-footer border-slate bg-white-5 justify-content-center py-4">
+                <button type="button" id="captureBtn"
+                    class="btn btn-indigo btn-lg px-5 rounded-pill fw-800 tracking-widest shadow-glow">
+                    <i class="fas fa-camera-retro me-2"></i>ACQUIRE_DATA_SLICE
                 </button>
                 <canvas id="scannerCanvas" class="d-none"></canvas>
             </div>
@@ -52,32 +106,41 @@
         width: 100%;
         height: 2px;
         background: var(--primary-indigo);
-        box-shadow: 0 0 15px var(--primary-indigo);
-        animation: scanMove 2.5s infinite ease-in-out;
+        box-shadow: 0 0 20px 2px var(--primary-indigo);
+        z-index: 10;
+        animation: scanMove 3s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95);
     }
 
     @keyframes scanMove {
-        0% {
+
+        0%,
+        100% {
             top: 0%;
             opacity: 0;
         }
 
-        10% {
-            opacity: 1;
-        }
-
+        10%,
         90% {
             opacity: 1;
         }
 
-        100% {
-            top: 100%;
-            opacity: 0;
+        50% {
+            top: 98%;
         }
     }
 
-    .pointer-events-none {
-        pointer-events: none;
+    .animate-spin-slow {
+        animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
 
@@ -92,12 +155,17 @@
         scannerModal.addEventListener('shown.bs.modal', async () => {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 30 }
+                    }
                 });
                 video.srcObject = stream;
             } catch (err) {
-                console.error("Erreur camera:", err);
-                alert("Accès caméra refusé ou non supporté.");
+                console.error("Optical Error:", err);
+                alert("Hardware acquisition failed: Camera access denied.");
                 bootstrap.Modal.getInstance(scannerModal).hide();
             }
         });
@@ -110,22 +178,28 @@
         });
 
         captureBtn.addEventListener('click', () => {
-            // Play shutter sound if possible
+            // Visualize acquisition
+            captureBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i>PROCESSING...';
+            captureBtn.classList.add('opacity-50');
 
-            // Prepare canvas
+            // Extraction pulse
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Convert to blob and send to form or API
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
 
-            // Custom event to handle the scan result in upload.html
-            const event = new CustomEvent('documentScanned', { detail: { image: dataUrl } });
-            document.dispatchEvent(event);
+            // Transmit slice
+            setTimeout(() => {
+                const event = new CustomEvent('documentScanned', { detail: { image: dataUrl } });
+                document.dispatchEvent(event);
 
-            bootstrap.Modal.getInstance(scannerModal).hide();
+                captureBtn.innerHTML = '<i class="fas fa-camera-retro me-2"></i>ACQUIRE_DATA_SLICE';
+                captureBtn.classList.remove('opacity-50');
+
+                bootstrap.Modal.getInstance(scannerModal).hide();
+            }, 600);
         });
     });
 </script>
