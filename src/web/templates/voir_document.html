@@ -1,270 +1,279 @@
 {% extends "base.html" %}
 
-{% block title %}{{ document.nom }} - Nœud d'Analyse{% endblock %}
+{% block title %}Neural Inspection - {{ document.nom }}{% endblock %}
 
 {% block content %}
-<!-- Header & Telemetry -->
-<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
-    <div>
-        <h1 class="h2 mb-1">Inspecteur de Ressource</h1>
-        <p class="text-muted small mb-0 d-flex align-items-center gap-3">
-            <span class="font-monospace opacity-75">SESSION: #{{ "%04x"|format(document.id) }}</span>
-            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-link me-2"></i>LIEN_PAIR:
-                ÉTABLI</span>
-        </p>
-    </div>
-    <div>
-        <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">
-            <i class="fas fa-arrow-left small me-2"></i>QUITTER_COFFRE
-        </a>
-    </div>
-</div>
-
-<div class="row g-4">
-    <!-- Visual Buffer -->
-    <div class="col-lg-7">
-        <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.1s;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Tampon Visuel</h6>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="pulse-dot bg-indigo"></span>
-                    <span class="x-small text-indigo fw-bold">FLUX_TEMPS_RÉEL</span>
+<div class="animate-in">
+    <!-- Header: Operational Intelligence -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="glass-card p-4 border-slate bg-opacity-10 d-flex justify-content-between align-items-center"
+                style="background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);">
+                <div class="d-flex align-items-center gap-4">
+                    <a href="{{ url_for('bibliotheque') }}" class="btn btn-icon-slate rounded-circle" title="Retour">
+                        <i class="fas fa-chevron-left x-small"></i>
+                    </a>
+                    <div>
+                        <h1 class="h3 mb-1 fw-900 tracking-tighter text-white uppercase">{{ document.nom }}</h1>
+                        <div class="d-flex align-items-center gap-3">
+                            <span
+                                class="badge bg-emerald-glow text-emerald font-monospace x-small border-emerald">INDEX_REF:
+                                #{{ "%04x"|format(document.id) }}</span>
+                            <div class="v-divider" style="height: 12px; border-left: 1px solid rgba(255,255,255,0.1);">
+                            </div>
+                            <span class="x-small text-muted fw-bold d-flex align-items-center gap-2">
+                                <i class="fas fa-shield-check text-emerald x-small"></i>
+                                INTÉGRITÉ_VÉRIFIÉE
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            {% if document.type_fichier in ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'] %}
-            <div class="ratio ratio-16x9 rounded-4 overflow-hidden border-slate bg-white-5" style="min-height: 500px;">
-                <iframe src="{{ url_for('visualiser_document', doc_id=document.id) }}" title="Flux Visuel"
-                    allowfullscreen></iframe>
-            </div>
-            {% elif document.texte_extrait %}
-            <div class="rounded-4 border-slate p-4 bg-white-5 overflow-auto"
-                style="max-height: 500px; min-height: 300px;">
-                <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-slate">
-                    <i class="fas fa-microchip text-indigo"></i>
-                    <span class="x-small text-muted fw-bold">DÉCODAGE_NEURAL : {{ document.type_fichier|upper }}</span>
-                </div>
-                <pre class="mb-0 text-white-75 small font-monospace"
-                    style="white-space: pre-wrap; line-height: 1.8;">{{ document.texte_extrait }}</pre>
-            </div>
-            {% else %}
-            <div class="rounded-4 border-slate p-5 text-center bg-white-5 d-flex flex-column align-items-center justify-content-center"
-                style="min-height: 480px;">
-                <div class="bg-white-5 rounded-circle p-4 mb-4 opacity-50">
-                    <i class="fas fa-eye-slash text-white fs-1"></i>
-                </div>
-                <p class="text-muted small fw-bold tracking-widest mb-4">VISUEL_INDISPONIBLE : {{
-                    document.type_fichier|upper }}</p>
-                <form action="{{ url_for('telecharger_document', doc_id=document.id) }}" method="POST">
-                    <button type="submit" class="btn btn-indigo rounded-pill px-5 py-2 fw-bold small">
-                        <i class="fas fa-download me-2"></i>RÉCUPÉRER_DONNÉES
+                <div class="d-flex gap-2">
+                    <button class="btn btn-icon-indigo rounded-pill px-4 gap-2 d-none d-md-flex"
+                        onclick="toggleImmersion()">
+                        <i class="fas fa-expand-alt x-small"></i>
+                        <span class="x-small fw-bold">IMMERSION_ON</span>
                     </button>
-                </form>
+                    <form action="{{ url_for('telecharger_document', doc_id=document.id) }}" method="POST"
+                        class="d-inline">
+                        <button type="submit" class="btn btn-emerald rounded-pill px-4 gap-2 d-flex align-items-center">
+                            <i class="fas fa-download x-small"></i>
+                            <span class="x-small fw-bold">EXTRACTION_PDF</span>
+                        </button>
+                    </form>
+                </div>
             </div>
-            {% endif %}
-            <p class="text-center x-small text-muted mt-3 mb-0 font-monospace opacity-50">Tunnel sécurisé actif.
-                Chiffrement de pair à pair vérifié.</p>
         </div>
+    </div>
 
-        <!-- Identity Block -->
-        <div class="glass-card p-4 animate-in" style="animation-delay: 0.2s;">
-            <div class="d-flex align-items-center gap-4 mb-5 pb-4 border-bottom border-slate">
-                <div class="bg-indigo-glow rounded-3 p-3 flex-shrink-0"
-                    style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
-                    {% if document.type_fichier in ['pdf'] %}
-                    <i class="fas fa-file-pdf text-rose fs-4"></i>
-                    {% elif document.type_fichier in ['docx', 'doc'] %}
-                    <i class="fas fa-file-word text-indigo fs-4"></i>
+    <div class="row g-4" id="main-inspection-grid">
+        <!-- Neural Preview Hub -->
+        <div class="col-lg-8" id="preview-col">
+            <div class="glass-card p-0 border-slate overflow-hidden position-relative h-100" id="preview-container">
+                <div class="p-3 bg-white-5 border-bottom border-slate d-flex justify-content-between align-items-center sticky-top"
+                    style="z-index: 10;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="pulse-dot bg-emerald"></div>
+                        <span class="x-small text-white-50 text-uppercase fw-900 tracking-widest">Flux Visuel
+                            Neural</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn-group-premium p-1 rounded-pill bg-white-5 border-slate">
+                            <button class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom In"><i
+                                    class="fas fa-plus x-small"></i></button>
+                            <button class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom Out"><i
+                                    class="fas fa-minus x-small"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-viewport overflow-auto custom-scrollbar p-0 bg-black-20"
+                    style="min-height: 600px; height: calc(100vh - 350px);">
+                    {% if document.type_fichier in ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'] %}
+                    <iframe id="doc-iframe" src="{{ url_for('visualiser_document', doc_id=document.id) }}"
+                        class="w-100 h-100 border-0" title="Visualiseur SafeDoc"></iframe>
+
+                    <!-- Safety Handshake Layer (Visible if login/auth needed for decryption) -->
+                    <div id="safety-handshake"
+                        class="position-absolute top-0 start-0 w-100 h-100 d-none flex-column align-items-center justify-content-center bg-black-80 backdrop-blur-lg">
+                        <div class="text-center p-5 glass-card border-indigo shadow-glow-indigo max-w-400">
+                            <i class="fas fa-lock text-indigo display-3 mb-4"></i>
+                            <h4 class="fw-900 text-white mb-3 tracking-tighter uppercase">Handshake de Sécurité</h4>
+                            <p class="x-small text-muted mb-4 opacity-75">Le flux visuel nécessite un déchiffrement en
+                                temps réel. Entrez votre clé de fragment maître pour autoriser l'accès.</p>
+                            <div class="mb-4">
+                                <input type="password"
+                                    class="form-control bg-white-5 border-slate text-center py-3 font-monospace"
+                                    placeholder="MAÎTRE_CLÉ_REQ">
+                            </div>
+                            <button
+                                class="btn btn-indigo w-100 py-3 rounded-pill fw-900 tracking-widest">DÉVERROUILLER_FLUX</button>
+                        </div>
+                    </div>
+                    {% elif document.texte_extrait %}
+                    <div class="p-5">
+                        <div class="p-4 rounded-4 border-slate bg-white-5 position-relative">
+                            <div class="absolute-top-right p-3 opacity-10">
+                                <i class="fas fa-brain fa-4x text-white"></i>
+                            </div>
+                            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-slate">
+                                <span class="badge bg-indigo-glow text-indigo font-monospace">NLP_DECODED</span>
+                                <span class="x-small text-muted font-monospace">{{ document.type_fichier|upper }}
+                                    RAW_DATA</span>
+                            </div>
+                            <div class="neural-text-content font-monospace text-white-75"
+                                style="line-height: 2; letter-spacing: 0.5px;">
+                                {{ document.texte_extrait|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+                    </div>
                     {% else %}
-                    <i class="fas fa-file-code text-indigo fs-4"></i>
+                    <div
+                        class="d-flex flex-column align-items-center justify-content-center h-100 text-center opacity-50 p-5">
+                        <i class="fas fa-eye-slash text-muted display-1 mb-4"></i>
+                        <h4 class="fw-800 text-white mb-2 uppercase">Visuel Non Propagé</h4>
+                        <p class="x-small text-muted max-w-300 mx-auto">Ce format de fichier (.{{
+                            document.type_fichier|upper }}) ne supporte pas la prévisualisation neurale directe.
+                            Utilisez l'extraction PDF pour le visualiser.</p>
+                    </div>
                     {% endif %}
                 </div>
-                <div>
-                    <h4 class="mb-1 text-white fw-800">{{ document.nom }}</h4>
-                    <span class="badge bg-indigo-glow text-indigo rounded-pill px-3 py-1 border-0 fw-bold x-small">{{
-                        document.categorie }}</span>
-                </div>
-                <div class="ms-auto text-end">
-                    <div class="x-small text-muted fw-800 tracking-widest mb-1">INTÉGRITÉ</div>
+            </div>
+        </div>
+
+        <!-- Meta Control Terminal -->
+        <div class="col-lg-4" id="meta-col">
+            <!-- Taxonomy Pulse -->
+            <div class="glass-card p-4 border-slate mb-4">
+                <h6
+                    class="x-small text-white-50 text-uppercase fw-900 tracking-widest mb-4 d-flex justify-content-between align-items-center">
+                    <span>Taxonomie Actuelle</span>
+                    <i class="fas fa-hashtag text-indigo x-small"></i>
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
                     <span
-                        class="badge bg-emerald-glow text-emerald rounded-pill px-3 py-1 border-0 fw-bold x-small">HASH_VÉRIFIÉ</span>
-                </div>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <label
-                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Horodatage
-                        d'Ingestion</label>
-                    <p class="small text-white fw-bold font-monospace">{{ document.date_upload.strftime('%Y-%m-%d
-                        %H:%M:%S') }}</p>
-                </div>
-                <div class="col-md-6">
-                    <label
-                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Protocole
-                        de Chiffrement</label>
-                    <p class="small text-white fw-bold font-monospace text-emerald">AES-256_GCM / SHA-256</p>
-                </div>
-            </div>
-
-            {% if document.metadonnees %}
-            <div class="mt-5">
-                <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Extractions
-                    Neurales</label>
-                <div class="row g-2">
-                    {% for key, value in document.metadonnees.items() %}
-                    <div class="col-md-6">
-                        <div
-                            class="p-3 rounded-3 bg-white-5 border-slate d-flex justify-content-between align-items-center">
-                            <span class="x-small text-muted tracking-widest">{{ key }}</span>
-                            <span class="small fw-800 text-white">{{ value }}</span>
-                        </div>
-                    </div>
+                        class="badge bg-indigo-glow text-indigo rounded-pill px-3 py-1 border-indigo-glow x-small fw-bold">{{
+                        document.categorie|upper }}</span>
+                    {% for et in document.etiquettes %}
+                    <span class="badge rounded-pill px-3 py-1 border-0 fw-bold x-small"
+                        style="background: {{ et.couleur }}22; color: {{ et.couleur }}; border: 1px solid {{ et.couleur }}44 !important;">{{
+                        et.nom|upper }}</span>
                     {% endfor %}
                 </div>
             </div>
-            {% endif %}
-        </div>
-    </div>
 
-    <!-- Operations Panel -->
-    <div class="col-lg-5">
-        <!-- Taxonomy Console -->
-        <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.3s;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Console de Taxonomie</h6>
-                <i class="fas fa-microchip text-indigo opacity-50"></i>
-            </div>
+            <!-- Operational Details -->
+            <div class="glass-card p-4 border-slate mb-4">
+                <h6 class="x-small text-white-50 text-uppercase fw-900 tracking-widest mb-4">Paramètres de Segment</h6>
+                <div class="d-flex flex-column gap-3">
+                    <div
+                        class="p-3 rounded-4 bg-white-5 border-slate d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fas fa-weight-hanging text-muted small"></i>
+                            <span class="x-small text-muted fw-bold">VOLUME</span>
+                        </div>
+                        <span class="font-monospace text-white x-small fw-900">{{ (document.taille_fichier / 1024 /
+                            1024)|round(2) }} MB</span>
+                    </div>
+                    <div
+                        class="p-3 rounded-4 bg-white-5 border-slate d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fas fa-calendar-alt text-muted small"></i>
+                            <span class="x-small text-muted fw-bold">INSCRIPTION</span>
+                        </div>
+                        <span class="font-monospace text-white x-small fw-900">{{
+                            document.date_upload.strftime('%d.%m.%Y') }}</span>
+                    </div>
+                </div>
 
-            <form method="POST" action="{{ url_for('mettre_a_jour_etiquettes', doc_id=document.id) }}">
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    {% for etiquette in etiquettes_dispo %}
-                    <div class="tax-node">
-                        <input type="checkbox" name="etiquettes" value="{{ etiquette.nom }}" id="tag-{{ loop.index }}"
-                            class="btn-check" {% if etiquette in document.etiquettes %}checked{% endif %}>
-                        <label for="tag-{{ loop.index }}"
-                            class="btn btn-glass-node d-flex align-items-center gap-3 px-3 py-2 rounded-3 border-slate">
-                            <div class="node-dot"
-                                style="background: {{ etiquette.couleur }}; box-shadow: 0 0 10px {{ etiquette.couleur }}80;">
+                {% if document.metadonnees %}
+                <div class="mt-4 pt-4 border-top border-slate">
+                    <h6 class="x-small text-indigo text-uppercase fw-900 tracking-widest mb-3 ps-1">Extractions IA</h6>
+                    <div class="row g-2">
+                        {% for key, value in document.metadonnees.items() %}
+                        <div class="col-12">
+                            <div class="p-2 px-3 rounded-3 bg-white-2 d-flex justify-content-between">
+                                <span class="x-small text-muted opacity-50">{{ key|upper }}</span>
+                                <span class="x-small fw-800 text-white-50">{{ value }}</span>
                             </div>
-                            <span class="x-small fw-800">{{ etiquette.nom }}</span>
-                        </label>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
-                <button type="submit" class="btn btn-outline-indigo w-100 py-2 rounded-pill fw-bold small">
-                    <i class="fas fa-sync-alt small me-2"></i>REMAPPER_TAXONOMIE
-                </button>
-            </form>
-        </div>
-
-        <!-- Decrypt & Pull -->
-        <div class="glass-card p-4 mb-4 position-relative overflow-hidden animate-in" style="animation-delay: 0.4s;">
-            <div class="position-absolute top-0 end-0 p-4 opacity-10">
-                <i class="fas fa-shield-halved fa-5x text-emerald"></i>
+                {% endif %}
             </div>
 
-            <h6 class="x-small text-emerald text-uppercase fw-800 tracking-widest mb-4 d-flex align-items-center gap-2">
-                <i class="fas fa-unlock-alt"></i> Impulsion de Déchiffrement Sécurisé
-            </h6>
-
-            <p class="x-small text-muted mb-4 opacity-75">Clé symétrique requise pour déverrouiller les unités de
-                données fragmentées.
-                La charge utile post-déchiffrement sera servie via un lien crypté temporaire.</p>
-
-            <form method="POST" action="{{ url_for('telecharger_document', doc_id=document.id) }}">
-                <div class="mb-4">
-                    <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block ps-1">Clé de
-                        Fragment Maître</label>
-                    <div class="position-relative">
-                        <i class="fas fa-key position-absolute text-muted opacity-50"
-                            style="left: 15px; top: 15px;"></i>
-                        <input type="password"
-                            class="form-control bg-white-5 border-slate text-white ps-5 py-3 rounded-3"
-                            name="mot_de_passe_chiffrement" placeholder="Entrez le fragment de sécurité..." required>
-                    </div>
-                </div>
-                <button type="submit"
-                    class="btn btn-emerald w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow-emerald">
-                    DÉCODER_ET_RÉCUPÉRER_CHARGE
-                </button>
-            </form>
-        </div>
-
-        <!-- Danger Protocol -->
-        <div class="glass-card p-0 border-rose-glow animate-in"
-            style="animation-delay: 0.5s; border-color: rgba(244, 63, 94, 0.2);">
-            <div class="accordion" id="dangerProtocol">
-                <div class="accordion-item bg-transparent border-0">
-                    <h2 class="accordion-header">
-                        <button
-                            class="accordion-button collapsed bg-transparent shadow-none text-rose fw-800 x-small tracking-widest py-3"
-                            type="button" data-bs-toggle="collapse" data-bs-target="#dangerCollapse">
-                            <i class="fas fa-skull-crossbones me-3"></i>PROTOCOLE_DANGER
-                        </button>
-                    </h2>
-                    <div id="dangerCollapse" class="accordion-collapse collapse" data-bs-parent="#dangerProtocol">
-                        <div class="accordion-body pt-0 pb-4 px-4">
-                            <p class="x-small text-muted mb-4 opacity-75">L'initiation de ce protocole effacera
-                                définitivement
-                                les unités de données fragmentées et les clusters de métadonnées du coffre.
-                                <strong>OPÉRATION IRRÉVERSIBLE.</strong></p>
-                            <form method="POST" action="{{ url_for('supprimer_document', doc_id=document.id) }}"
-                                onsubmit="return confirm('CRITIQUE : Purger définitivement cette ressource ?');">
-                                <button type="submit"
-                                    class="btn btn-outline-danger w-100 py-2 rounded-pill fw-bold x-small">
-                                    PURGER_RESSOURCE_À_JAMAIS
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <!-- Danger Zone: Neural Purge -->
+            <div class="glass-card p-4 border-rose-glow"
+                style="border-width: 1px; border-color: rgba(244, 63, 94, 0.2) !important;">
+                <h6
+                    class="x-small text-rose text-uppercase fw-900 tracking-widest mb-3 d-flex align-items-center gap-2">
+                    <i class="fas fa-radiation"></i> Zone de Purge
+                </h6>
+                <p class="x-small text-muted mb-4 opacity-75">La suppression d'un segment est définitive. Toutes les
+                    traces neurales seront purgest du coffre-fort.</p>
+                <form method="POST" action="{{ url_for('supprimer_document', doc_id=document.id) }}"
+                    onsubmit="return confirm('SÉCURITÉ : Confirmer la purge totale de cette ressource ?');">
+                    <button type="submit"
+                        class="btn btn-outline-danger w-100 py-2 rounded-pill fw-bold x-small tracking-widest">
+                        PURGER_LA_RESSOURCE
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .btn-glass-node {
-        background: rgba(255, 255, 255, 0.02);
-        color: var(--text-muted);
-        transition: var(--transition-premium);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+    .neural-text-content {
+        font-family: 'JetBrains Mono', 'Fira Code', monospace;
     }
 
-    .btn-glass-node:hover {
+    .absolute-top-right {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .border-rose-glow:hover {
+        border-color: rgba(244, 63, 94, 0.5) !important;
+        box-shadow: 0 0 20px rgba(244, 63, 94, 0.1);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.05);
-        color: white;
+        border-radius: 20px;
     }
 
-    .btn-check:checked+.btn-glass-node {
-        background: var(--primary-indigo-glow);
-        border-color: var(--primary-indigo);
-        color: white;
-        transform: translateY(-2px);
+    #preview-container.immersion-mode {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+        z-index: 2000;
+        margin: 0 !important;
+        background: var(--bg-main) !important;
     }
 
-    .node-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 2px;
+    #preview-container.immersion-mode .preview-viewport {
+        height: calc(100vh - 120px) !important;
     }
 
-    .shadow-glow-emerald {
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-    }
-
-    .bg-rose-glow {
-        background: rgba(244, 63, 94, 0.1);
-    }
-
-    .text-rose {
-        color: #f43f5e;
-    }
-
-    .border-rose-glow {
-        border: 1px solid rgba(244, 63, 94, 0.3);
+    .btn-xs {
+        width: 28px;
+        height: 28px;
     }
 </style>
-</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleImmersion() {
+        const preview = document.getElementById('preview-container');
+        preview.classList.toggle('immersion-mode');
+
+        const btnText = document.querySelector('[onclick="toggleImmersion()"] span');
+        if (preview.classList.contains('immersion-mode')) {
+            btnText.textContent = 'IMMERSION_OFF';
+            document.body.style.overflow = 'hidden';
+        } else {
+            btnText.textContent = 'IMMERSION_ON';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Auto-show safety handshake if iframe fails to load or shows error (simulated)
+    const iframe = document.getElementById('doc-iframe');
+    if (iframe) {
+        iframe.onerror = function () {
+            document.getElementById('safety-handshake').classList.remove('d-none');
+            document.getElementById('safety-handshake').classList.add('d-flex');
+        };
+    }
+</script>
 {% endblock %}

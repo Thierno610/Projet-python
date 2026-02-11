@@ -1,140 +1,232 @@
 {% extends "base.html" %}
 
-{% block title %}Tags - SafeDoc Classification{% endblock %}
+{% block title %}Classification - SafeDoc Neural Hub{% endblock %}
 
 {% block content %}
-<div class="row g-4 animate-in">
-    <!-- Header Section: Semantic Engine -->
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-                <h1 class="h3 mb-1 fw-800 tracking-tight">Analyses Neurales</h1>
-                <p class="text-muted small d-flex align-items-center gap-2">
-                    <span class="font-monospace opacity-50">METADATA_NODE: SD-TAG_v4</span>
-                    <span class="pulse-dot bg-indigo"></span>
-                    <span class="x-small text-indigo fw-bold tracking-widest">FLUX_EN_DIRECT_SYNCHRO</span>
-                    CAPACITÉ_MAXIMALE
-                </p>
-            </div>
-            <div class="d-flex gap-2 text-end">
-                <div class="glass-card px-4 py-2 border-indigo-glow" style="background: rgba(99, 102, 241, 0.05);">
-                    <p class="x-small text-indigo mb-0 text-uppercase fw-800 tracking-widest">Active_Labels</p>
-                    <p class="h4 mb-0 text-white fw-800 font-monospace">{{ etiquettes|length }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tag Generation Node -->
-    <div class="col-lg-4">
-        <div class="glass-card p-5 h-100 position-relative overflow-hidden">
-            <div class="position-absolute top-0 end-0 p-3 opacity-5">
-                <i class="fas fa-plus-circle fa-4x text-white"></i>
-            </div>
-
-            <p class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Volume d'Indexation</p>
-
-            <form method="POST" action="{{ url_for('etiquettes') }}">
-                <input type="hidden" name="action" value="creer">
-
-                <div class="mb-4">
-                    <label for="nom"
-                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Désignation de
-                        l'Étiquette</label>
-                    <input type="text" class="form-control bg-white-5 border-slate text-white py-3 font-monospace"
-                        id="nom" name="nom" placeholder="ex: CONFIDENTIEL_Z" required>
-                </div>
-
-                <div class="mb-5">
-                    <label for="couleur"
-                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Ressources
-                        Importées</label>
-                    <div class="d-flex gap-3 align-items-center bg-black-20 p-3 rounded-3 border-slate">
-                        <div class="position-relative" style="width: 48px; height: 48px;">
-                            <input type="color"
-                                class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
-                                id="couleur" name="couleur" value="#818cf8">
-                            <div id="color-preview" class="w-100 h-100 rounded-circle border-slate shadow-glow"
-                                style="background: #818cf8; border-width: 2px;"></div>
+<div class="animate-in">
+    <!-- Header: Strategic Control -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="glass-card p-4 border-slate bg-opacity-10 d-flex justify-content-between align-items-center"
+                style="background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);">
+                <div>
+                    <h1 class="h2 mb-1 fw-900 tracking-tighter text-white uppercase">Moteur de Classification</h1>
+                    <div class="d-flex align-items-center gap-3">
+                        <span
+                            class="badge bg-indigo-glow text-indigo font-monospace x-small border-indigo">NODE_ETIQ_v4.5</span>
+                        <div class="v-divider" style="height: 12px; border-left: 1px solid rgba(255,255,255,0.1);">
                         </div>
-                        <span id="color-hex-display"
-                            class="small text-white font-monospace fw-800 tracking-widest opacity-75">#818CF8</span>
+                        <span class="x-small text-muted fw-bold d-flex align-items-center gap-2">
+                            <i class="fas fa-circle text-emerald x-small" style="font-size: 6px;"></i>
+                            ÉTAT_SYSTÈME : ACTIF
+                        </span>
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow">
-                    ÉLARGIR_NŒUDS
-                </button>
-            </form>
-
-            <div class="mt-5 p-3 rounded-3 bg-emerald-glow border-emerald-glow opacity-75">
-                <div class="d-flex gap-3 align-items-center">
-                    <i class="fas fa-info-circle text-emerald"></i>
-                    <span class="text-muted x-small font-monospace">RESOURCES_SUIVIES</span>
+                <div class="text-end d-none d-md-block">
+                    <p class="x-small text-muted mb-0 text-uppercase fw-800 tracking-widest opacity-50">Volume de la
+                        Matrice</p>
+                    <p class="h3 mb-0 text-white fw-900 font-monospace">{{ etiquettes|length }} <span
+                            class="small fw-light opacity-50">NŒUDS</span></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Registry Node -->
-    <div class="col-lg-8">
-        <div class="glass-card p-0 h-100 overflow-hidden d-flex flex-column">
-            <div class="p-4 border-bottom border-slate bg-white-5 d-flex justify-content-between align-items-center">
-                <span class="x-small text-muted text-uppercase fw-800 tracking-widest">Registre de Classification</span>
-                <span
-                    class="badge bg-black-20 text-muted px-3 py-2 rounded-pill font-monospace x-small border-slate">SYNC_BD_LOCALE</span>
-            </div>
+    <div class="row g-4">
+        <!-- Input Node: Ingestion Logic -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 border-slate position-relative overflow-hidden h-100">
+                <div class="mb-4">
+                    <h6 class="x-small text-white-50 text-uppercase fw-900 tracking-widest mb-2 ps-1">
+                        <i class="fas fa-plus-circle me-2 text-indigo"></i>Nouveau Segment
+                    </h6>
+                    <p class="text-muted x-small mb-0 opacity-50">Définissez une nouvelle catégorie d'indexation pour la
+                        bibliothèque.</p>
+                </div>
 
-            <div class="p-5 flex-grow-1 overflow-auto">
-                {% if etiquettes %}
-                <div class="row g-4">
-                    {% for etiquette in etiquettes %}
-                    <div class="col-md-6 animate-in" style="animation-delay: {{ loop.index0 * 0.05 }}s">
-                        <div class="glass-card p-4 d-flex align-items-center justify-content-between border-slate-hover transition-premium hover-up"
-                            style="background: rgba(255, 255, 255, 0.02);">
+                <form method="POST" action="{{ url_for('etiquettes') }}">
+                    <input type="hidden" name="action" value="creer">
+
+                    <div class="mb-4">
+                        <label
+                            class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block ps-1">Libellé</label>
+                        <div class="input-group-premium">
+                            <input type="text"
+                                class="form-control bg-white-5 border-slate text-white py-3 font-monospace" id="nom"
+                                name="nom" placeholder="ex: CONFIDENTIEL" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <div class="d-flex justify-content-between align-items-center mb-2 ps-1">
+                            <label class="x-small text-muted text-uppercase fw-800 tracking-widest">Couleur
+                                Signature</label>
+                            <span id="color-hex-display"
+                                class="font-monospace x-small text-indigo fw-bold">#818CF8</span>
+                        </div>
+                        <div class="p-3 rounded-4 bg-white-2 border-slate">
                             <div class="d-flex align-items-center gap-4">
-                                <div class="color-node"
-                                    style="width: 16px; height: 16px; border-radius: 4px; background: {{ etiquette.couleur }}; box-shadow: 0 0 15px {{ etiquette.couleur }}88;">
+                                <div class="position-relative" style="width: 54px; height: 54px;">
+                                    <input type="color" class="position-absolute opacity-0 cursor-pointer w-100 h-100"
+                                        id="couleur" name="couleur" value="#818cf8" style="z-index: 2;">
+                                    <div id="color-preview" class="w-100 h-100 rounded-circle border-slate shadow-glow"
+                                        style="background: #818cf8; border-width: 2px;"></div>
                                 </div>
-                                <div>
-                                    <p class="mb-0 fw-800 text-white tracking-tight">{{ etiquette.nom|upper }}</p>
-                                    <p class="mb-0 x-small text-muted font-monospace opacity-50 tracking-widest">{{
-                                        etiquette.couleur|upper }}</p>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% set presets = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899',
+                                        '#fa4ff1'] %}
+                                        {% for color in presets %}
+                                        <div class="color-preset-dot cursor-pointer transition-premium"
+                                            onclick="updateColor('{{ color }}')"
+                                            style="width: 20px; height: 20px; border-radius: 4px; background: {{ color }};">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                            <form method="POST" action="{{ url_for('etiquettes') }}"
-                                onsubmit="return confirm('CRITIQUE : La suppression de ce nœud de métadonnées découplera toutes les ressources associées. Confirmer la suppression ?');">
-                                <input type="hidden" name="action" value="supprimer">
-                                <input type="hidden" name="etiquette_id" value="{{ etiquette.id }}">
-                                <button type="submit"
-                                    class="btn btn-outline-rose btn-sm rounded-circle p-2 border-0 opacity-50 hover-100">
-                                    <i class="fas fa-trash-alt x-small"></i>
-                                </button>
-                            </form>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="text-center py-5">
-                    <div class="bg-white-5 d-inline-flex p-5 rounded-circle mb-4 opacity-20">
-                        <i class="fas fa-tags display-1 text-muted"></i>
+
+                    <button type="submit"
+                        class="btn btn-indigo w-100 py-3 rounded-pill fw-900 tracking-widest shadow-glow-indigo transition-premium hover-up">
+                        CRÉER_ÉTICKET
+                    </button>
+                </form>
+
+                <div class="mt-auto pt-5">
+                    <div class="p-3 rounded-3 bg-white-5 border-slate border-start-indigo"
+                        style="border-left-width: 4px !important;">
+                        <p class="x-small text-muted mb-0 font-monospace opacity-75">
+                            <i class="fas fa-shield-halved me-2"></i>Chaque étiquette génère un hash unique pour le
+                            suivi document.
+                        </p>
                     </div>
-                    <h3 class="h4 fw-800 text-white-50">Diagnostic : Flux Vide</h3>
-                    <p class="text-muted small max-w-400 mx-auto">Le moteur de télémétrie est en sommeil. Importez des
-                        ressources pour initier le suivi neural et générer des analyses avancées.</p>
                 </div>
-                {% endif %}
+            </div>
+        </div>
+
+        <!-- Matrix Dashboard: Registry View -->
+        <div class="col-lg-8">
+            <div class="glass-card border-slate h-100 overflow-hidden d-flex flex-column">
+                <div
+                    class="p-4 bg-white-5 border-bottom border-slate d-flex justify-content-between align-items-center">
+                    <h6 class="x-small text-white-50 text-uppercase fw-900 tracking-widest mb-0">Registre des Segments
+                    </h6>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="x-small text-muted font-monospace opacity-50">FILTRAGE : TOUT</span>
+                        <div class="v-divider" style="height: 10px; border-left: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                        <i class="fas fa-search x-small text-muted cursor-pointer hover-text-white"></i>
+                    </div>
+                </div>
+
+                <div class="p-4 flex-grow-1 overflow-auto custom-scrollbar">
+                    {% if etiquettes %}
+                    <div class="row g-3">
+                        {% for etiquette in etiquettes %}
+                        <div class="col-md-6 col-xl-4 animate-in" style="animation-delay: {{ loop.index0 * 0.03 }}s">
+                            <div class="tag-card glass-card p-3 border-slate transition-premium hover-up h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="tag-accent"
+                                            style="width: 4px; height: 16px; border-radius: 2px; background: {{ etiquette.couleur }}; box-shadow: 0 0 10px {{ etiquette.couleur }};">
+                                        </div>
+                                        <span class="x-small text-muted font-monospace opacity-50">#{{ loop.index
+                                            }}</span>
+                                    </div>
+                                    <form method="POST" action="{{ url_for('etiquettes') }}"
+                                        onsubmit="return confirm('SÉCURITÉ : Confirmer la purge de ce segment ?');">
+                                        <input type="hidden" name="action" value="supprimer">
+                                        <input type="hidden" name="etiquette_id" value="{{ etiquette.id }}">
+                                        <button type="submit"
+                                            class="btn btn-sm btn-icon-rose p-0 border-0 opacity-20 hover-100">
+                                            <i class="fas fa-times-circle fs-6"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <h5 class="fw-800 text-white mb-1 tracking-tight">{{ etiquette.nom|upper }}</h5>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="badge bg-white-5 text-muted font-monospace"
+                                        style="font-size: 9px; letter-spacing: 1px;">{{ etiquette.couleur|upper
+                                        }}</span>
+                                    <div class="tag-status-indicator"
+                                        style="width: 6px; height: 6px; border-radius: 50%; background: {{ etiquette.couleur }}; box-shadow: 0 0 8px {{ etiquette.couleur }};">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 my-5">
+                        <div class="bg-indigo-glow d-inline-flex p-5 rounded-circle mb-4 opacity-10">
+                            <i class="fas fa-project-diagram display-2 text-indigo"></i>
+                        </div>
+                        <h4 class="fw-800 text-white shadow-sm">Matrice Vierge</h4>
+                        <p class="text-muted small max-w-400 mx-auto px-4 opacity-75">Aucune classification définie.
+                            Initialisez vos structures d'indexation pour optimiser la recherche.</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .btn-outline-rose:hover {
-        background: rgba(244, 63, 94, 0.2);
+    .tag-card {
+        background: rgba(255, 255, 255, 0.02);
+        cursor: default;
+    }
+
+    .tag-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(99, 102, 241, 0.3) !important;
+    }
+
+    .btn-icon-rose {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: #f43f5e;
-        opacity: 1 !important;
+        transition: all 0.2s ease;
+    }
+
+    .btn-icon-rose:hover {
+        color: #fb7185;
+        transform: rotate(90deg);
+    }
+
+    .color-preset-dot:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .input-group-premium .form-control:focus {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: var(--primary-indigo) !important;
+        box-shadow: none;
+    }
+
+    .border-start-indigo {
+        border-left: 3px solid var(--primary-indigo) !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-indigo);
     }
 </style>
 {% endblock %}
@@ -145,11 +237,18 @@
     const colorPreview = document.getElementById('color-preview');
     const colorHex = document.getElementById('color-hex-display');
 
+    function updateColor(val) {
+        colorInput.value = val;
+        colorPreview.style.background = val;
+        colorHex.textContent = val.toUpperCase();
+        colorPreview.style.boxShadow = `0 0 15px ${val}88`;
+    }
+
     colorInput.addEventListener('input', function (e) {
         const value = e.target.value.toUpperCase();
         colorPreview.style.background = value;
-        colorPreview.style.boxShadow = `0 0 15px ${value}88`;
         colorHex.textContent = value;
+        colorPreview.style.boxShadow = `0 0 15px ${value}88`;
     });
 </script>
 {% endblock %}

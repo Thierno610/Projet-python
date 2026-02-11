@@ -125,24 +125,22 @@
                         <span class="text-muted">{{ doc.date_upload.strftime('%Y-%m-%d %H:%M') }}</span>
                     </td>
                     <td class="pe-4 py-4 text-end">
-                        <div class="d-flex justify-content-end gap-2">
+                        <div class="d-flex justify-content-end gap-3">
                             <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
-                                class="btn btn-icon-indigo btn-sm rounded-circle" title="Inspecter">
-                                <i class="fas fa-eye x-small"></i>
+                                class="btn btn-icon-indigo rounded-circle" title="Inspecter">
+                                <i class="fas fa-eye small"></i>
                             </a>
                             <form method="POST" action="{{ url_for('telecharger_document', doc_id=doc.id) }}"
                                 class="d-inline">
-                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle"
-                                    title="Télécharger">
-                                    <i class="fas fa-download x-small text-emerald"></i>
+                                <button type="submit" class="btn btn-icon-emerald rounded-circle" title="Télécharger">
+                                    <i class="fas fa-download small"></i>
                                 </button>
                             </form>
                             <form method="POST" action="{{ url_for('supprimer_document', doc_id=doc.id) }}"
                                 class="d-inline"
                                 onsubmit="return confirm('Confirmer la suppression de la ressource ? Cette action est irréversible.');">
-                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle hover-danger"
-                                    title="Purger">
-                                    <i class="fas fa-trash-alt x-small"></i>
+                                <button type="submit" class="btn btn-icon-rose rounded-circle" title="Purger">
+                                    <i class="fas fa-trash-alt small"></i>
                                 </button>
                             </form>
                         </div>
