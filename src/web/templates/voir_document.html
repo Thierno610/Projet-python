@@ -67,27 +67,38 @@
                     </div>
                 </div>
 
-                <div class="preview-viewport overflow-auto custom-scrollbar p-0 bg-black-20"
+                <div class="preview-viewport overflow-auto custom-scrollbar p-0 bg-black-20 position-relative"
                     style="min-height: 600px; height: calc(100vh - 350px);">
                     {% if document.type_fichier in ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'] %}
-                    <iframe id="doc-iframe" src="{{ url_for('visualiser_document', doc_id=document.id) }}"
-                        class="w-100 h-100 border-0" title="Visualiseur SafeDoc"></iframe>
-
-                    <!-- Safety Handshake Layer (Visible if login/auth needed for decryption) -->
-                    <div id="safety-handshake"
-                        class="position-absolute top-0 start-0 w-100 h-100 d-none flex-column align-items-center justify-content-center bg-black-80 backdrop-blur-lg">
-                        <div class="text-center p-5 glass-card border-indigo shadow-glow-indigo max-w-400">
-                            <i class="fas fa-lock text-indigo display-3 mb-4"></i>
-                            <h4 class="fw-900 text-white mb-3 tracking-tighter uppercase">Handshake de Sécurité</h4>
-                            <p class="x-small text-muted mb-4 opacity-75">Le flux visuel nécessite un déchiffrement en
-                                temps réel. Entrez votre clé de fragment maître pour autoriser l'accès.</p>
-                            <div class="mb-4">
-                                <input type="password"
-                                    class="form-control bg-white-5 border-slate text-center py-3 font-monospace"
-                                    placeholder="MAÎTRE_CLÉ_REQ">
+                    <!-- Loading Handshake Layer -->
+                    <div id="neural-loading"
+                        class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-black-80 backdrop-blur-md"
+                        style="z-index: 100;">
+                        <div class="text-center p-4">
+                            <i class="fas fa-brain text-indigo mb-4 fs-1 animate-pulse"></i>
+                            <h6 class="x-small text-white-50 text-uppercase fw-900 tracking-widest mb-3">Déchiffrement
+                                Neurale en cours...</h6>
+                            <div class="progress bg-white-5 rounded-pill"
+                                style="height: 4px; width: 200px; margin: 0 auto;">
+                                <div class="progress-bar bg-indigo progress-bar-striped progress-bar-animated"
+                                    style="width: 100%"></div>
                             </div>
-                            <button
-                                class="btn btn-indigo w-100 py-3 rounded-pill fw-900 tracking-widest">DÉVERROUILLER_FLUX</button>
+                        </div>
+                    </div>
+
+                    <iframe id="doc-iframe" class="w-100 h-100 border-0 d-none" title="Visualiseur SafeDoc"></iframe>
+
+                    <!-- Safety Handshake Layer (Visible if error occurs) -->
+                    <div id="safety-handshake"
+                        class="position-absolute top-0 start-0 w-100 h-100 d-none flex-column align-items-center justify-content-center bg-black-80 backdrop-blur-lg"
+                        style="z-index: 110;">
+                        <div class="text-center p-5 glass-card border-indigo shadow-glow-indigo max-w-400">
+                            <i class="fas fa-shield-virus text-rose display-3 mb-4"></i>
+                            <h4 class="fw-900 text-white mb-3 tracking-tighter uppercase">Rupture de Flux</h4>
+                            <p class="x-small text-muted mb-4 opacity-75">Impossible d'établir le lien neural avec cette
+                                ressource. Elle pourrait être corrompue ou nécessiter une clé maître explicite.</p>
+                            <button class="btn btn-indigo w-100 py-3 rounded-pill fw-900 tracking-widest"
+                                onclick="location.reload()">RÉESSAYER</button>
                         </div>
                     </div>
                     {% elif document.texte_extrait %}
@@ -267,13 +278,33 @@
         }
     }
 
-    // Auto-show safety handshake if iframe fails to load or shows error (simulated)
-    const iframe = document.getElementById('doc-iframe');
-    if (iframe) {
-        iframe.onerror = function () {
-            document.getElementById('safety-handshake').classList.remove('d-none');
-            document.getElementById('safety-handshake').classList.add('d-flex');
-        };
-    }
+    // Secure Blob Handshake Strategy (Bypass IDM)
+    document.addEventListener('DOMContentLoaded', function () {
+        const iframe = document.getElementById('doc-iframe');
+        if (!iframe) return;
+
+        const visualUrl = "{{ url_for('visualiser_document', doc_id=document.id) }}";
+
+        fetch(visualUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Fail to fetch document flow');
+                return response.blob();
+            })
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                iframe.src = blobUrl;
+                iframe.classList.remove('d-none');
+                document.getElementById('neural-loading').classList.add('d-none');
+
+                // Content Security: Cleanup blob URL when leaving
+                window.addEventListener('unload', () => URL.revokeObjectURL(blobUrl));
+            })
+            .catch(error => {
+                console.error('Handshake Error:', error);
+                document.getElementById('neural-loading').classList.add('d-none');
+                document.getElementById('safety-handshake').classList.remove('d-none');
+                document.getElementById('safety-handshake').classList.add('d-flex');
+            });
+    });
 </script>
 {% endblock %}
