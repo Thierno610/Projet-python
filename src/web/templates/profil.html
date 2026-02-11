@@ -50,13 +50,13 @@
         <!-- Security Sidebar -->
         <div class="col-lg-4">
             <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.1s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Security Protocol</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Protocole de Sécurité</h6>
 
                 <div class="mb-5">
                     <div class="d-flex justify-content-between mb-3">
-                        <span class="x-small text-white-50 fw-bold">Unit Capacity</span>
+                        <span class="x-small text-white-50 fw-bold">Capacité de l'Unité</span>
                         <span class="x-small text-indigo fw-800">{{ "%.1f"|format(user.stockage_utilise / (1024*1024))
-                            }} MB / 500 MB</span>
+                            }} Mo / 500 Mo</span>
                     </div>
                     <div class="progress bg-white-5 rounded-pill" style="height: 4px;">
                         <div class="progress-bar bg-indigo shadow-glow"
@@ -68,19 +68,19 @@
                     <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
                         onclick="new bootstrap.Modal(document.getElementById('passwordModal')).show()">
                         <i class="fas fa-fingerprint text-muted"></i>
-                        <span class="small fw-bold">Credential Drift</span>
+                        <span class="small fw-bold">Modification des Identifiants</span>
                         <i class="fas fa-arrow-right ms-auto x-small text-muted"></i>
                     </div>
                     <div
                         class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3">
                         <i class="fas fa-shield-halved text-muted"></i>
-                        <span class="small fw-bold">Multi-Factor Sync</span>
-                        <span class="badge bg-rose-glow text-rose ms-auto x-small border-0">INACTIVE</span>
+                        <span class="small fw-bold">Synchro Multi-Facteurs</span>
+                        <span class="badge bg-rose-glow text-rose ms-auto x-small border-0">INACTIF</span>
                     </div>
                     <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
                         onclick="registerBiometrics()" id="biometricBtn">
                         <i class="fas fa-dna text-emerald"></i>
-                        <span class="small fw-bold">Biometric Imprint</span>
+                        <span class="small fw-bold">Empreinte Biométrique</span>
                         <div class="ms-auto" id="biometricStatus">
                             <i class="fas fa-plus-circle text-muted x-small"></i>
                         </div>
@@ -92,7 +92,7 @@
         <!-- Identity Matrix Form -->
         <div class="col-lg-8">
             <div class="glass-card p-4 animate-in" style="animation-delay: 0.2s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Identity Matrix</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Matrice d'Identité</h6>
 
                 <form action="/profil" method="POST" enctype="multipart/form-data" id="profileForm">
                     <input type="hidden" name="action" value="update_profile">
@@ -102,39 +102,40 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Full
-                                Identity</label>
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Identité
+                                Complète</label>
                             <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
-                                name="nom_complet" value="{{ user.nom_complet or '' }}" placeholder="Enter legal name">
+                                name="nom_complet" value="{{ user.nom_complet or '' }}"
+                                placeholder="Entrez votre nom légal">
                         </div>
                         <div class="col-md-6">
                             <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Relay
-                                Address (Email)</label>
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Adresse
+                                de Relais (Email)</label>
                             <input type="email" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
                                 name="email" value="{{ user.email or '' }}" placeholder="quantum@relay.com">
                         </div>
                         <div class="col-md-6">
                             <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Frequency
-                                Link (Mobile)</label>
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Lien
+                                de Fréquence (Mobile)</label>
                             <input type="tel" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
                                 name="telephone" value="{{ user.telephone or '' }}" placeholder="+224 6XX XX XX XX">
                         </div>
                         <div class="col-md-6">
                             <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Regional
-                                Anchor</label>
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Ancre
+                                Régionale</label>
                             <input type="text" class="form-control bg-white-5 border-slate text-white-50 py-3 rounded-3"
-                                value="Republic of Guinea (GN)" disabled>
+                                value="République de Guinée (GN)" disabled>
                         </div>
                         <div class="col-12">
                             <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Physical
-                                Coordinate</label>
+                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Coordonnées
+                                Physiques</label>
                             <textarea class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
                                 name="adresse" rows="3"
-                                placeholder="District, Avenue, Unit Number...">{{ user.adresse or '' }}</textarea>
+                                placeholder="Quartier, Avenue, Numéro de porte...">{{ user.adresse or '' }}</textarea>
                         </div>
                     </div>
 
@@ -143,9 +144,10 @@
                             >> LAST_SYNC: {{ now.strftime('%Y-%m-%d %H:%M') if now else 'SEQUENCE_UNKNOWN' }}
                         </p>
                         <div class="d-flex gap-3">
-                            <a href="/dashboard" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">ABORT</a>
+                            <a href="/dashboard"
+                                class="btn btn-outline-slate rounded-pill px-4 fw-bold small">ANNULER</a>
                             <button type="submit" class="btn btn-indigo rounded-pill px-5 fw-bold small">
-                                <i class="fas fa-sync-alt small me-2"></i>UPDATE_LOGS
+                                <i class="fas fa-sync-alt small me-2"></i>METTRE_A_JOUR_LOGS
                             </button>
                         </div>
                     </div>

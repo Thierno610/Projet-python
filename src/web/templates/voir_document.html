@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}{{ document.nom }} - Analysis Node{% endblock %}
+{% block title %}{{ document.nom }} - Nœud d'Analyse{% endblock %}
 
 {% block content %}
 <!-- Header & Telemetry -->
 <div class="d-flex justify-content-between align-items-center mb-5 animate-in">
     <div>
-        <h1 class="h2 mb-1">Asset Inspector</h1>
+        <h1 class="h2 mb-1">Inspecteur de Ressource</h1>
         <p class="text-muted small mb-0 d-flex align-items-center gap-3">
             <span class="font-monospace opacity-75">SESSION: #{{ "%04x"|format(document.id) }}</span>
-            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-link me-2"></i>PEER_LINK:
-                ESTABLISHED</span>
+            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-link me-2"></i>LIEN_PAIR:
+                ÉTABLI</span>
         </p>
     </div>
     <div>
         <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">
-            <i class="fas fa-arrow-left small me-2"></i>EXIT_VAULT
+            <i class="fas fa-arrow-left small me-2"></i>QUITTER_COFFRE
         </a>
     </div>
 </div>
@@ -25,16 +25,16 @@
     <div class="col-lg-7">
         <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.1s;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Visual Buffer</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Tampon Visuel</h6>
                 <div class="d-flex align-items-center gap-2">
                     <span class="pulse-dot bg-indigo"></span>
-                    <span class="x-small text-indigo fw-bold">REALTIME_STREAM</span>
+                    <span class="x-small text-indigo fw-bold">FLUX_TEMPS_RÉEL</span>
                 </div>
             </div>
 
             {% if document.type_fichier in ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'] %}
             <div class="ratio ratio-16x9 rounded-4 overflow-hidden border-slate bg-white-5" style="min-height: 500px;">
-                <iframe src="{{ url_for('visualiser_document', doc_id=document.id) }}" title="Visual Stream"
+                <iframe src="{{ url_for('visualiser_document', doc_id=document.id) }}" title="Flux Visuel"
                     allowfullscreen></iframe>
             </div>
             {% elif document.texte_extrait %}
@@ -42,7 +42,7 @@
                 style="max-height: 500px; min-height: 300px;">
                 <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-slate">
                     <i class="fas fa-microchip text-indigo"></i>
-                    <span class="x-small text-muted fw-bold">NEURAL_DECODE: {{ document.type_fichier|upper }}</span>
+                    <span class="x-small text-muted fw-bold">DÉCODAGE_NEURAL : {{ document.type_fichier|upper }}</span>
                 </div>
                 <pre class="mb-0 text-white-75 small font-monospace"
                     style="white-space: pre-wrap; line-height: 1.8;">{{ document.texte_extrait }}</pre>
@@ -53,17 +53,17 @@
                 <div class="bg-white-5 rounded-circle p-4 mb-4 opacity-50">
                     <i class="fas fa-eye-slash text-white fs-1"></i>
                 </div>
-                <p class="text-muted small fw-bold tracking-widest mb-4">VISUAL_UNAVAILABLE: {{
+                <p class="text-muted small fw-bold tracking-widest mb-4">VISUEL_INDISPONIBLE : {{
                     document.type_fichier|upper }}</p>
                 <form action="{{ url_for('telecharger_document', doc_id=document.id) }}" method="POST">
                     <button type="submit" class="btn btn-indigo rounded-pill px-5 py-2 fw-bold small">
-                        <i class="fas fa-download me-2"></i>PULL_DATA
+                        <i class="fas fa-download me-2"></i>RÉCUPÉRER_DONNÉES
                     </button>
                 </form>
             </div>
             {% endif %}
-            <p class="text-center x-small text-muted mt-3 mb-0 font-monospace opacity-50">Secure tunnel active.
-                Peer-to-peer encryption verified.</p>
+            <p class="text-center x-small text-muted mt-3 mb-0 font-monospace opacity-50">Tunnel sécurisé actif.
+                Chiffrement de pair à pair vérifié.</p>
         </div>
 
         <!-- Identity Block -->
@@ -85,32 +85,32 @@
                         document.categorie }}</span>
                 </div>
                 <div class="ms-auto text-end">
-                    <div class="x-small text-muted fw-800 tracking-widest mb-1">INTEGRITY</div>
+                    <div class="x-small text-muted fw-800 tracking-widest mb-1">INTÉGRITÉ</div>
                     <span
-                        class="badge bg-emerald-glow text-emerald rounded-pill px-3 py-1 border-0 fw-bold x-small">VERIFIED_HASH</span>
+                        class="badge bg-emerald-glow text-emerald rounded-pill px-3 py-1 border-0 fw-bold x-small">HASH_VÉRIFIÉ</span>
                 </div>
             </div>
 
             <div class="row g-4">
                 <div class="col-md-6">
                     <label
-                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Ingest
-                        Timestamp</label>
+                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Horodatage
+                        d'Ingestion</label>
                     <p class="small text-white fw-bold font-monospace">{{ document.date_upload.strftime('%Y-%m-%d
                         %H:%M:%S') }}</p>
                 </div>
                 <div class="col-md-6">
                     <label
-                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Encryption
-                        Protocol</label>
+                        class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block opacity-50">Protocole
+                        de Chiffrement</label>
                     <p class="small text-white fw-bold font-monospace text-emerald">AES-256_GCM / SHA-256</p>
                 </div>
             </div>
 
             {% if document.metadonnees %}
             <div class="mt-5">
-                <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Neural
-                    Extractions</label>
+                <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Extractions
+                    Neurales</label>
                 <div class="row g-2">
                     {% for key, value in document.metadonnees.items() %}
                     <div class="col-md-6">
@@ -132,7 +132,7 @@
         <!-- Taxonomy Console -->
         <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.3s;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Taxonomy Console</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Console de Taxonomie</h6>
                 <i class="fas fa-microchip text-indigo opacity-50"></i>
             </div>
 
@@ -153,7 +153,7 @@
                     {% endfor %}
                 </div>
                 <button type="submit" class="btn btn-outline-indigo w-100 py-2 rounded-pill fw-bold small">
-                    <i class="fas fa-sync-alt small me-2"></i>REMAP_TAXONOMY
+                    <i class="fas fa-sync-alt small me-2"></i>REMAPPER_TAXONOMIE
                 </button>
             </form>
         </div>
@@ -165,27 +165,28 @@
             </div>
 
             <h6 class="x-small text-emerald text-uppercase fw-800 tracking-widest mb-4 d-flex align-items-center gap-2">
-                <i class="fas fa-unlock-alt"></i> Secure Decrypt Pulse
+                <i class="fas fa-unlock-alt"></i> Impulsion de Déchiffrement Sécurisé
             </h6>
 
-            <p class="x-small text-muted mb-4 opacity-75">Symmetric key required to unlock the sharded data units.
-                Post-decrypt payload will be served via temporary encrypted link.</p>
+            <p class="x-small text-muted mb-4 opacity-75">Clé symétrique requise pour déverrouiller les unités de
+                données fragmentées.
+                La charge utile post-déchiffrement sera servie via un lien crypté temporaire.</p>
 
             <form method="POST" action="{{ url_for('telecharger_document', doc_id=document.id) }}">
                 <div class="mb-4">
-                    <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block ps-1">Master
-                        Fragment Key</label>
+                    <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-2 d-block ps-1">Clé de
+                        Fragment Maître</label>
                     <div class="position-relative">
                         <i class="fas fa-key position-absolute text-muted opacity-50"
                             style="left: 15px; top: 15px;"></i>
                         <input type="password"
                             class="form-control bg-white-5 border-slate text-white ps-5 py-3 rounded-3"
-                            name="mot_de_passe_chiffrement" placeholder="Enter security fragment..." required>
+                            name="mot_de_passe_chiffrement" placeholder="Entrez le fragment de sécurité..." required>
                     </div>
                 </div>
                 <button type="submit"
                     class="btn btn-emerald w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow-emerald">
-                    DECODE_AND_PULL_PAYLOAD
+                    DÉCODER_ET_RÉCUPÉRER_CHARGE
                 </button>
             </form>
         </div>
@@ -199,19 +200,20 @@
                         <button
                             class="accordion-button collapsed bg-transparent shadow-none text-rose fw-800 x-small tracking-widest py-3"
                             type="button" data-bs-toggle="collapse" data-bs-target="#dangerCollapse">
-                            <i class="fas fa-skull-crossbones me-3"></i>DANGER_PROTOCOL
+                            <i class="fas fa-skull-crossbones me-3"></i>PROTOCOLE_DANGER
                         </button>
                     </h2>
                     <div id="dangerCollapse" class="accordion-collapse collapse" data-bs-parent="#dangerProtocol">
                         <div class="accordion-body pt-0 pb-4 px-4">
-                            <p class="x-small text-muted mb-4 opacity-75">Initiating this protocol will permanently wipe
-                                the sharded data units and metadata clusters from the vault. <strong>IRREVERSIBLE
-                                    OPERATION.</strong></p>
+                            <p class="x-small text-muted mb-4 opacity-75">L'initiation de ce protocole effacera
+                                définitivement
+                                les unités de données fragmentées et les clusters de métadonnées du coffre.
+                                <strong>OPÉRATION IRRÉVERSIBLE.</strong></p>
                             <form method="POST" action="{{ url_for('supprimer_document', doc_id=document.id) }}"
-                                onsubmit="return confirm('CRITICAL: Permanently purge this asset?');">
+                                onsubmit="return confirm('CRITIQUE : Purger définitivement cette ressource ?');">
                                 <button type="submit"
                                     class="btn btn-outline-danger w-100 py-2 rounded-pill fw-bold x-small">
-                                    PURGE_ASSET_FOREVER
+                                    PURGER_RESSOURCE_À_JAMAIS
                                 </button>
                             </form>
                         </div>

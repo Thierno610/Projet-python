@@ -32,30 +32,32 @@
                 <div class="row g-4">
                     <!-- High-Tech Capture Zone -->
                     <div class="col-12">
-                        <div class="upload-zone text-center p-5 border-dashed rounded-4 position-relative overflow-hidden"
-                            style="border: 2px dashed rgba(255,255,255,0.08); background: rgba(255,255,255,0.01);">
+                        <!-- Multi-Entry Ingest UI -->
+                        <div class="d-flex flex-column align-items-center mb-4">
+                            <div class="d-flex justify-content-center gap-4 mb-4">
+                                <!-- Local Filesystem Entry -->
+                                <label for="file" class="cursor-pointer mb-0">
+                                    <div class="bg-indigo-glow rounded-circle d-flex align-items-center justify-content-center shadow-glow-indigo transition-premium hover-up"
+                                        style="width: 86px; height: 86px; border: 1px solid rgba(255,255,255,0.1);">
+                                        <i class="fas fa-file-export text-indigo fs-3"></i>
+                                    </div>
+                                </label>
 
-                            <input type="file" id="file" name="file" class="d-none"
-                                accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp">
-                            <input type="hidden" id="scanned_file" name="scanned_file">
-
-                            <label for="file" class="cursor-pointer mb-0 w-100">
-                                <div class="bg-indigo-glow rounded-circle d-inline-flex p-4 mb-4">
-                                    <i class="fas fa-arrow-up-from-bracket text-indigo fs-2"></i>
-                                </div>
-                                <h5 class="fw-800 text-white mb-2">Drop Asset Here</h5>
-                                <p class="text-muted small mb-0">PDF, IMAGES, OU FICHIERS BRUTS (STOCKAGE LOCAL)</p>
-                                <div id="file-name-preview"
-                                    class="mt-4 badge bg-indigo-glow text-indigo p-2 animate-in d-none"></div>
-                            </label>
-
-                            <!-- Cyber Scanner Overlay -->
-                            <div class="position-absolute top-0 end-0 p-3">
-                                <button type="button" class="btn btn-icon-indigo rounded-circle shadow-lg"
-                                    data-bs-toggle="modal" data-bs-target="#scannerModal" title="Optical Capture">
-                                    <i class="fas fa-camera small"></i>
+                                <!-- Optical Logic Entry -->
+                                <button type="button" class="btn p-0 border-0" data-bs-toggle="modal"
+                                    data-bs-target="#scannerModal">
+                                    <div class="bg-indigo-glow rounded-circle d-flex align-items-center justify-content-center shadow-glow-indigo transition-premium hover-up"
+                                        style="width: 86px; height: 86px; border: 1px solid rgba(255,255,255,0.1);">
+                                        <i class="fas fa-camera text-indigo fs-3"></i>
+                                    </div>
                                 </button>
                             </div>
+
+                            <h5 class="fw-800 text-white mb-2">Source de Données</h5>
+                            <p class="text-muted small mb-0 font-monospace opacity-75">SÉLECTIONNEZ : FICHIER_SYSTEME
+                                OU CAPTURE_OPTIQUE</p>
+                            <div id="file-name-preview"
+                                class="mt-4 badge bg-indigo-glow text-indigo p-2 animate-in d-none"></div>
                         </div>
                     </div>
 
@@ -86,7 +88,7 @@
                             <label class="x-small text-muted text-uppercase fw-800 tracking-widest ps-1">Attribution des
                                 Étiquettes</label>
                             <a href="{{ url_for('etiquettes') }}"
-                                class="x-small text-indigo text-decoration-none fw-bold">TAXONOMY_EDIT</a>
+                                class="x-small text-indigo text-decoration-none fw-bold">ÉDITER_TAXONOMIE</a>
                         </div>
                         <div class="d-flex flex-wrap gap-2" id="tag-container">
                             {% for et in etiquettes %}
@@ -180,27 +182,27 @@
             <div class="row g-4">
                 <div class="col-lg-3 col-6">
                     <div class="p-4 border-slate rounded-4 bg-white-5">
-                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Target Cluster</p>
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Cluster Cible</p>
                         <h4 class="mb-0 text-white fw-800">{{ infos.get('categorie', 'N/A') }}</h4>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="p-4 border-slate rounded-4 bg-white-5">
-                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Neural Linkage</p>
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Lien Neuronal</p>
                         <h4 class="mb-0 text-indigo fw-800">{{ "%.0f"|format(infos.get('confiance_categorie', 0) * 100)
                             }}%</h4>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="p-4 border-slate rounded-4 bg-white-5">
-                        <p class="x-small text-muted text-uppercase fw-800 mb-2">OCR Fidelity</p>
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Fidélité OCR</p>
                         <h4 class="mb-0 text-white fw-800">{{ "%.0f"|format(infos.get('confiance_ocr', 0)) }}%</h4>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="p-4 border-slate rounded-4 bg-white-5">
-                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Unit Payload</p>
-                        <h4 class="mb-0 text-white fw-800">{{ "%.2f"|format(infos.get('taille', 0) / 1024 / 1024) }} MB
+                        <p class="x-small text-muted text-uppercase fw-800 mb-2">Charge de l'Unité</p>
+                        <h4 class="mb-0 text-white fw-800">{{ "%.2f"|format(infos.get('taille', 0) / 1024 / 1024) }} Mo
                         </h4>
                     </div>
                 </div>
@@ -208,8 +210,9 @@
 
             <div class="mt-5 pt-4 border-top border-slate d-flex gap-3">
                 <a href="{{ url_for('bibliotheque') }}"
-                    class="btn btn-outline-slate rounded-pill px-5 fw-bold small">VIEW VAULT</a>
-                <a href="{{ url_for('upload') }}" class="btn btn-indigo rounded-pill px-5 fw-bold small">NEXT CYCLE</a>
+                    class="btn btn-outline-slate rounded-pill px-5 fw-bold small">VOIR LE COFFRE</a>
+                <a href="{{ url_for('upload') }}" class="btn btn-indigo rounded-pill px-5 fw-bold small">CYCLE
+                    SUIVANT</a>
             </div>
         </div>
     </div>
@@ -247,7 +250,7 @@
     }
 </style>
 
-{% if infos.get('texte_extrait') %}
+{% if infos and infos.get('texte_extrait') %}
 <div class="mt-4">
     <p class="text-muted x-small text-uppercase mb-2">Aperçu métadonnées extraites</p>
     <div class="p-3 rounded"
@@ -262,10 +265,7 @@
     <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-secondary btn-sm px-4">Vault</a>
     <a href="{{ url_for('upload') }}" class="btn btn-emerald btn-sm px-4">Nouveau scan</a>
 </div>
-</div>
-</div>
-{% endif %}
-</div>
+{% include 'scanner_modal.html' %}
 {% endblock %}
 
 {% block scripts %}

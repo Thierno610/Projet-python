@@ -63,11 +63,23 @@
         }
 
         .glass-sidebar {
-            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             background: rgba(10, 10, 12, 0.5);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+        }
+
+        .glass-sidebar::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari and Opera */
         }
 
         .glass-alert {
@@ -152,7 +164,7 @@
             <nav class="nav flex-column">
                 <a class="nav-link {{ 'active' if page == 'etiquettes' }}" href="{{ url_for('etiquettes') }}">
                     <i class="fas fa-tags"></i>
-                    <span>Classification</span>
+                    <span>Étiquettes</span>
                 </a>
                 <a class="nav-link {{ 'active' if page == 'profil' }}" href="{{ url_for('profil') }}">
                     <i class="fas fa-user-astronaut"></i>
@@ -161,6 +173,10 @@
                 <a class="nav-link {{ 'active' if page == 'parametres' }}" href="{{ url_for('parametres') }}">
                     <i class="fas fa-wand-magic-sparkles"></i>
                     <span>Expérience IA</span>
+                </a>
+                <a class="nav-link {{ 'active' if page == 'apropos' }}" href="{{ url_for('apropos') }}">
+                    <i class="fas fa-info-circle"></i>
+                    <span>À Propos</span>
                 </a>
             </nav>
         </div>

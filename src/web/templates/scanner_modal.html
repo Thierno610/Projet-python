@@ -12,9 +12,10 @@
                     <div>
                         <h5 class="modal-title x-small text-white fw-800 tracking-widest text-uppercase mb-0"
                             id="scannerModalLabel">
-                            Optical_Ingress_Node
+                            Nœud_d'Entrée_Optique
                         </h5>
-                        <span class="x-small text-indigo font-monospace opacity-75">HARDWARE: INTEGRATED_LENS_v2</span>
+                        <span class="x-small text-indigo font-monospace opacity-75">MATÉRIEL :
+                            LENTILLE_INTÉGRÉE_v2</span>
                     </div>
                 </div>
                 <button type="button"
@@ -67,7 +68,7 @@
                         <!-- HUD Text -->
                         <div class="position-absolute top-0 start-50 translate-middle-x mt-4">
                             <span
-                                class="x-small text-white-50 font-monospace tracking-widest bg-black-20 px-3 py-1 rounded-pill border-slate">ALIGN_TARGET_WITHIN_BOUNDS</span>
+                                class="x-small text-white-50 font-monospace tracking-widest bg-black-20 px-3 py-1 rounded-pill border-slate">ALIGNER_LA_CIBLE_DANS_LES_LIMITES</span>
                         </div>
                     </div>
                 </div>
@@ -76,7 +77,7 @@
                 <div class="position-absolute top-0 end-0 p-4">
                     <span
                         class="badge border-indigo-glow bg-indigo-glow text-white x-small font-monospace tracking-widest px-3 py-2">
-                        <i class="fas fa-broadcast-tower me-2 animate-pulse"></i>LIVE_FEED_SYNCED
+                        <i class="fas fa-broadcast-tower me-2 animate-pulse"></i>FLUX_EN_DIRECT_SYNCHRONISÉ
                     </span>
                 </div>
             </div>
@@ -85,7 +86,7 @@
             <div class="modal-footer border-slate bg-white-5 justify-content-center py-4">
                 <button type="button" id="captureBtn"
                     class="btn btn-indigo btn-lg px-5 rounded-pill fw-800 tracking-widest shadow-glow">
-                    <i class="fas fa-camera-retro me-2"></i>ACQUIRE_DATA_SLICE
+                    <i class="fas fa-camera-retro me-2"></i>ACQUÉRIR_TRANCHE_DE_DONNÉES
                 </button>
                 <canvas id="scannerCanvas" class="d-none"></canvas>
             </div>
@@ -178,8 +179,8 @@
         });
 
         captureBtn.addEventListener('click', () => {
-            // Visualize acquisition
-            captureBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i>PROCESSING...';
+            // Visualiser l'acquisition
+            captureBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i>TRAITEMENT...';
             captureBtn.classList.add('opacity-50');
 
             // Extraction pulse

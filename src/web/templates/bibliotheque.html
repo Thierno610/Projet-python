@@ -30,7 +30,7 @@
             <div class="position-relative">
                 <i class="fas fa-search position-absolute text-indigo opacity-50" style="left: 15px; top: 13px;"></i>
                 <input type="text" class="form-control bg-white-5 border-slate ps-5 py-2 text-white small rounded-3"
-                    id="recherche" placeholder="Resource ID, Name, Content..." value="{{ recherche or '' }}">
+                    id="recherche" placeholder="ID Ressource, Nom, Contenu..." value="{{ recherche or '' }}">
             </div>
         </div>
         <div class="col-md-3">
@@ -55,7 +55,7 @@
                 class="btn btn-indigo w-100 py-2 d-flex align-items-center justify-content-center gap-2"
                 onclick="appliquerFiltres()">
                 <i class="fas fa-sync-alt small"></i>
-                <span class="small fw-bold">SYNC</span>
+                <span class="small fw-bold">SYNCHRO</span>
             </button>
         </div>
     </div>
@@ -119,7 +119,7 @@
                     </td>
                     <td class="py-4">
                         <span class="font-monospace text-muted">{{ (doc.taille_fichier / 1024 / 1024)|round(2) }}
-                            MB</span>
+                            Mo</span>
                     </td>
                     <td class="py-4">
                         <span class="text-muted">{{ doc.date_upload.strftime('%Y-%m-%d %H:%M') }}</span>
@@ -127,20 +127,21 @@
                     <td class="pe-4 py-4 text-end">
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
-                                class="btn btn-icon-indigo btn-sm rounded-circle" title="Inspect">
+                                class="btn btn-icon-indigo btn-sm rounded-circle" title="Inspecter">
                                 <i class="fas fa-eye x-small"></i>
                             </a>
                             <form method="POST" action="{{ url_for('telecharger_document', doc_id=doc.id) }}"
                                 class="d-inline">
-                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle" title="Download">
+                                <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle"
+                                    title="Télécharger">
                                     <i class="fas fa-download x-small text-emerald"></i>
                                 </button>
                             </form>
                             <form method="POST" action="{{ url_for('supprimer_document', doc_id=doc.id) }}"
                                 class="d-inline"
-                                onsubmit="return confirm('Confirm asset deletion? This action is irreversible.');">
+                                onsubmit="return confirm('Confirmer la suppression de la ressource ? Cette action est irréversible.');">
                                 <button type="submit" class="btn btn-icon-slate btn-sm rounded-circle hover-danger"
-                                    title="Purge">
+                                    title="Purger">
                                     <i class="fas fa-trash-alt x-small"></i>
                                 </button>
                             </form>
@@ -153,8 +154,8 @@
                     <td colspan="5" class="text-center py-5">
                         <div class="opacity-20 mb-4 animate-pulse"><i class="fas fa-box-open fa-3x"></i></div>
                         <p class="text-muted small fw-bold tracking-wider">COFFRE VIDE. AUCUNE DONNÉE TROUVÉE.</p>
-                        <a href="{{ url_for('upload') }}" class="btn btn-indigo btn-sm mt-3 px-4 py-2">INITIATE
-                            INGEST</a>
+                        <a href="{{ url_for('upload') }}" class="btn btn-indigo btn-sm mt-3 px-4 py-2">LANCER
+                            L'IMPORTATION</a>
                     </td>
                 </tr>
                 {% endif %}
@@ -180,20 +181,21 @@
                     <input type="hidden" name="source" value="bibliotheque">
 
                     <div class="mb-4">
-                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Nom de
-                            Identifier</label>
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Nom du
+                            Tag</label>
                         <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
-                            name="nom" placeholder="e.g. MISSION_CRITICAL, LEGACY..." required>
+                            name="nom" placeholder="ex: CRITIQUE, ARCHIVE..." required>
                     </div>
 
                     <div class="mb-2">
-                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Signature
+                        <label class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block">Couleur de
                             Signature</label>
                         <div class="d-flex align-items-center gap-4">
                             <input type="color" class="form-control form-control-color border-0 rounded-circle"
                                 name="couleur" value="#6366f1"
                                 style="width: 50px; height: 50px; background: transparent;">
-                            <p class="x-small text-muted mb-0">Select a unique chromatic frequency for visual tracking.
+                            <p class="x-small text-muted mb-0">Choisissez une fréquence chromatique unique pour le suivi
+                                visuel.
                             </p>
                         </div>
                     </div>

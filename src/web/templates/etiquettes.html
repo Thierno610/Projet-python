@@ -8,11 +8,12 @@
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-                <h1 class="h3 mb-1 fw-800 tracking-tight">Classification Engine</h1>
+                <h1 class="h3 mb-1 fw-800 tracking-tight">Analyses Neurales</h1>
                 <p class="text-muted small d-flex align-items-center gap-2">
                     <span class="font-monospace opacity-50">METADATA_NODE: SD-TAG_v4</span>
                     <span class="pulse-dot bg-indigo"></span>
-                    <span class="x-small text-indigo fw-bold tracking-widest text-uppercase">Sub-Routine Active</span>
+                    <span class="x-small text-indigo fw-bold tracking-widest">FLUX_EN_DIRECT_SYNCHRO</span>
+                    CAPACITÉ_MAXIMALE
                 </p>
             </div>
             <div class="d-flex gap-2 text-end">
@@ -31,22 +32,23 @@
                 <i class="fas fa-plus-circle fa-4x text-white"></i>
             </div>
 
-            <h5 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Initialize New Label</h5>
+            <p class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Volume d'Indexation</p>
 
             <form method="POST" action="{{ url_for('etiquettes') }}">
                 <input type="hidden" name="action" value="creer">
 
                 <div class="mb-4">
-                    <label for="nom" class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Label
-                        Designation</label>
+                    <label for="nom"
+                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Désignation de
+                        l'Étiquette</label>
                     <input type="text" class="form-control bg-white-5 border-slate text-white py-3 font-monospace"
-                        id="nom" name="nom" placeholder="e.g. CLASSIFIED_Z" required>
+                        id="nom" name="nom" placeholder="ex: CONFIDENTIEL_Z" required>
                 </div>
 
                 <div class="mb-5">
                     <label for="couleur"
-                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Chroma
-                        Signature</label>
+                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-2 ps-1">Ressources
+                        Importées</label>
                     <div class="d-flex gap-3 align-items-center bg-black-20 p-3 rounded-3 border-slate">
                         <div class="position-relative" style="width: 48px; height: 48px;">
                             <input type="color"
@@ -61,15 +63,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow">
-                    DEPLOY_METADATA_NODE
+                    ÉLARGIR_NŒUDS
                 </button>
             </form>
 
             <div class="mt-5 p-3 rounded-3 bg-emerald-glow border-emerald-glow opacity-75">
                 <div class="d-flex gap-3 align-items-center">
                     <i class="fas fa-info-circle text-emerald"></i>
-                    <p class="x-small text-muted mb-0 font-monospace">Neural tags optimize AI-driven asset indexing and
-                        global telemetry filter efficiency.</p>
+                    <span class="text-muted x-small font-monospace">RESOURCES_SUIVIES</span>
                 </div>
             </div>
         </div>
@@ -79,9 +80,9 @@
     <div class="col-lg-8">
         <div class="glass-card p-0 h-100 overflow-hidden d-flex flex-column">
             <div class="p-4 border-bottom border-slate bg-white-5 d-flex justify-content-between align-items-center">
-                <span class="x-small text-muted text-uppercase fw-800 tracking-widest">Classification Registry</span>
+                <span class="x-small text-muted text-uppercase fw-800 tracking-widest">Registre de Classification</span>
                 <span
-                    class="badge bg-black-20 text-muted px-3 py-2 rounded-pill font-monospace x-small border-slate">LOCAL_DB_SYNCED</span>
+                    class="badge bg-black-20 text-muted px-3 py-2 rounded-pill font-monospace x-small border-slate">SYNC_BD_LOCALE</span>
             </div>
 
             <div class="p-5 flex-grow-1 overflow-auto">
@@ -102,7 +103,7 @@
                                 </div>
                             </div>
                             <form method="POST" action="{{ url_for('etiquettes') }}"
-                                onsubmit="return confirm('CRITICAL: Removing this metadata node will decouple all associated assets. Proceed with deletion?');">
+                                onsubmit="return confirm('CRITIQUE : La suppression de ce nœud de métadonnées découplera toutes les ressources associées. Confirmer la suppression ?');">
                                 <input type="hidden" name="action" value="supprimer">
                                 <input type="hidden" name="etiquette_id" value="{{ etiquette.id }}">
                                 <button type="submit"
@@ -119,9 +120,9 @@
                     <div class="bg-white-5 d-inline-flex p-5 rounded-circle mb-4 opacity-20">
                         <i class="fas fa-tags display-1 text-muted"></i>
                     </div>
-                    <h5 class="h4 fw-800 text-white-50">Empty Registry Feed</h5>
-                    <p class="text-muted small max-w-400 mx-auto">No classification nodes have been initialized for this
-                        vault. Define one on the portal terminal to begin neural mapping.</p>
+                    <h3 class="h4 fw-800 text-white-50">Diagnostic : Flux Vide</h3>
+                    <p class="text-muted small max-w-400 mx-auto">Le moteur de télémétrie est en sommeil. Importez des
+                        ressources pour initier le suivi neural et générer des analyses avancées.</p>
                 </div>
                 {% endif %}
             </div>

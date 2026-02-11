@@ -18,7 +18,7 @@
                     <div class="pulse-dot bg-indigo" style="width: 8px; height: 8px;"></div>
                 </div>
                 <div>
-                    <span class="x-small text-white fw-800 tracking-widest text-uppercase d-block">Neural_Relay</span>
+                    <span class="x-small text-white fw-800 tracking-widest text-uppercase d-block">Relais_Neural</span>
                     <span class="x-small text-indigo font-monospace opacity-75">ID: GUIDA_v4.8</span>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="input-group bg-black-20 rounded-pill p-1 border-slate focus-within-indigo shadow-inner">
                 <input type="text" id="chatbox-input"
                     class="form-control border-0 bg-transparent text-white x-small font-monospace ps-3"
-                    placeholder="TRANSMIT_QUERY...">
+                    placeholder="TRANSMETTRE_REQUÊTE...">
                 <button id="chatbox-send" class="btn btn-indigo rounded-circle p-2 ms-1"
                     style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-paper-plane x-small"></i>
@@ -210,7 +210,7 @@
                 const data = await response.json();
 
                 typingNode.remove();
-                addBubble(data.reply || "Neural established. How can SafeDoc assist your query?", 'ai');
+                addBubble(data.reply || "Lien neural établi. Comment SafeDoc peut-il traiter votre requête ?", 'ai');
                 greetingLoaded = true;
             } catch (err) {
                 console.error("Link Failure:", err);
@@ -240,11 +240,11 @@
                 if (data.reply) {
                     addBubble(data.reply, 'ai');
                 } else {
-                    addBubble("SYNTAX_ERROR: Response retrieval failed.", 'ai');
+                    addBubble("ERREUR_SYNTAXE : Échec de récupération de la réponse.", 'ai');
                 }
             } catch (err) {
                 if (typingNode) typingNode.remove();
-                addBubble("LINK_LOSS: Assistant offline.", 'ai');
+                addBubble("PERTE_LIEN : Assistant hors ligne.", 'ai');
             } finally {
                 input.disabled = false;
                 send.disabled = false;

@@ -4,16 +4,16 @@
 <!-- Header & Telemetry -->
 <div class="d-flex justify-content-between align-items-center mb-5 animate-in">
     <div>
-        <h1 class="h2 mb-1">Control Center</h1>
+        <h1 class="h2 mb-1">Centre de Contrôle</h1>
         <p class="text-muted small mb-0 d-flex align-items-center gap-3">
             <span class="font-monospace opacity-75">INTERFACE_CONFIG: v4.0.2</span>
-            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-satellite-dish me-2"></i>UPLINK:
-                SYNCED</span>
+            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-satellite-dish me-2"></i>LIAISON:
+                SYNCHRO</span>
         </p>
     </div>
     <div class="d-flex gap-2">
         <span
-            class="badge bg-white-5 text-white-50 border-slate px-3 py-2 x-small fw-bold">WORKSPACE_THEME_QUALIFIED</span>
+            class="badge bg-white-5 text-white-50 border-slate px-3 py-2 x-small fw-bold">THÈME_ESPACE_TRAVAIL_QUALIFIÉ</span>
     </div>
 </div>
 
@@ -22,12 +22,13 @@
         <!-- Visual Matrix Section -->
         <div class="col-lg-7">
             <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.1s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Visual Matrix</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Matrice Visuelle</h6>
 
                 <!-- Accent Wave Selector -->
                 <div class="mb-5">
-                    <label class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Accent
-                        Frequency (Color)</label>
+                    <label
+                        class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Fréquence
+                        d'Accent (Couleur)</label>
                     <div class="d-flex flex-wrap gap-3">
                         {% set colors = [
                         ('#6366f1', 'Indigo'),
@@ -53,16 +54,16 @@
                 <!-- Glass Refraction Intensity -->
                 <div class="mb-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <label class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-0 ps-1">Glass
-                            Refraction (Blur)</label>
+                        <label class="x-small text-white-50 text-uppercase fw-800 tracking-widest mb-0 ps-1">Réfraction
+                            du Verre (Flou)</label>
                         <span class="badge bg-indigo-glow text-indigo font-monospace px-2 py-1" id="blur-val-display">{{
                             user.glass_intensity|int }}PX</span>
                     </div>
                     <input type="range" class="form-range cyber-range" name="glass_intensity" min="0" max="40" step="4"
                         value="{{ user.glass_intensity|int }}" id="blur-range">
                     <div class="d-flex justify-content-between x-small text-muted mt-2 font-monospace opacity-50">
-                        <span>RAW_FEED</span>
-                        <span>CRYSTALLINE_MAX</span>
+                        <span>FLUX_BRUT</span>
+                        <span>CRISTALLIN_MAX</span>
                     </div>
                 </div>
 
@@ -73,12 +74,12 @@
                     <div class="position-absolute top-0 start-0 w-100 h-100 opacity-5"
                         style="background: radial-gradient(circle, var(--primary-indigo) 0%, transparent 70%);"></div>
                     <p class="x-small text-muted mb-4 font-monospace tracking-widest opacity-50">>>
-                        HOLOGRAPHIC_SIMULATION_ACTIVE</p>
+                        SIMULATION_HOLOGRAPHIQUE_ACTIVE</p>
                     <div class="d-inline-flex align-items-center justify-content-center p-4 rounded-pill shadow-glow-indigo transition-premium"
                         id="preview-element"
                         style="background: {{ user.theme_accent_color }}; color: white; min-width: 200px;">
                         <i class="fas fa-fingerprint me-3"></i>
-                        <span class="fw-800 small tracking-widest">AUTHENTICATE_UI</span>
+                        <span class="fw-800 small tracking-widest">AUTHENTIFIER_UI</span>
                     </div>
                 </div>
             </div>
@@ -87,14 +88,14 @@
         <!-- Neural Synapse & Logic -->
         <div class="col-lg-5">
             <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.2s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Neural synapse</h6>
+                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Synapse neurale</h6>
 
                 <div class="d-flex flex-column gap-3">
                     <div
                         class="p-3 rounded-3 bg-white-5 border-slate d-flex align-items-center justify-content-between">
                         <div>
-                            <span class="d-block small fw-bold">AI Voice Synthesis</span>
-                            <span class="d-block x-small text-muted">Auditory document analysis feed.</span>
+                            <span class="d-block small fw-bold">Synthèse Vocale IA</span>
+                            <span class="d-block x-small text-muted">Flux d'analyse auditive des documents.</span>
                         </div>
                         <div class="form-check form-switch custom-switch-cyber">
                             <input class="form-check-input" type="checkbox" name="ai_vocal" id="aiVocal" {% if
@@ -105,8 +106,9 @@
                     <div
                         class="p-3 rounded-3 bg-white-5 border-slate d-flex align-items-center justify-content-between">
                         <div>
-                            <span class="d-block small fw-bold">Security Relay Logs</span>
-                            <span class="d-block x-small text-muted">Weekly integrity reports via email.</span>
+                            <span class="d-block small fw-bold">Logs de Relais de Sécurité</span>
+                            <span class="d-block x-small text-muted">Rapports hebdomadaires d'intégrité par
+                                email.</span>
                         </div>
                         <div class="form-check form-switch custom-switch-cyber">
                             <input class="form-check-input" type="checkbox" name="notif_email" id="notifEmail" {% if
@@ -120,16 +122,17 @@
             <div class="glass-card p-4 bg-indigo-glow border-0 animate-in" style="animation-delay: 0.3s;">
                 <div class="d-flex align-items-center gap-3 mb-2">
                     <i class="fas fa-cloud-bolt text-indigo"></i>
-                    <h6 class="text-white fw-bold mb-0 small">Cloud Synchro: ACTIVE</h6>
+                    <h6 class="text-white fw-bold mb-0 small">Synchro Cloud : ACTIVE</h6>
                 </div>
-                <p class="x-small text-white-50 mb-0 opacity-75">Neural preferences are sharded and synced across the
-                    secure SafeDoc network constellation.</p>
+                <p class="x-small text-white-50 mb-0 opacity-75">Les préférences neurales sont fragmentées et
+                    synchronisées à travers la
+                    constellation du réseau sécurisé SafeDoc.</p>
             </div>
 
             <!-- Commit Actions -->
             <div class="mt-4 pt-4 border-top border-slate">
                 <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow">
-                    COMMIT_EXPERIENCE_CHANGES
+                    APPLIQUER_MODIFICATIONS_EXPÉRIENCE
                 </button>
             </div>
         </div>
