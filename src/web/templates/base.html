@@ -16,57 +16,16 @@
     <!-- SafeDoc Cyber-Premium CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/safedoc_cyber.css') }}">
 
-    <style>
-        :root {
-                {
-                % if user and user.theme_accent_color %
-            }
-
-            --primary-indigo: {
-                    {
-                    user.theme_accent_color
-                }
-            }
-
-            ;
-
-            --primary-indigo-hover: {
-                    {
-                    user.theme_accent_color
-                }
-            }
-
-            ;
-
-            --primary-indigo-glow: {
-                    {
-                    user.theme_accent_color
-                }
-            }
-
-            ;
-
-                {
-                % endif %
-            }
-
-                {
-                % if user and user.glass_intensity is not none %
-            }
-
-            --glass-blur: blur({
-                    {
-                    user.glass_intensity
-                }
-            }
-
-            px);
-
-            {
-            % endif %
-        }
-        }
-    </style>
+    <script>
+        {% if user and user.theme_accent_color %}
+        document.documentElement.style.setProperty('--primary-indigo', '{{ user.theme_accent_color }}');
+        document.documentElement.style.setProperty('--primary-indigo-hover', '{{ user.theme_accent_color }}');
+        document.documentElement.style.setProperty('--primary-indigo-glow', '{{ user.theme_accent_color }}');
+        {% endif %}
+        {% if user and user.glass_intensity is not none %}
+        document.documentElement.style.setProperty('--glass-blur', 'blur({{ user.glass_intensity }}px)');
+        {% endif %}
+    </script>
 
     <style>
         .pulse-dot {
@@ -182,7 +141,7 @@
                 </a>
                 <a class="nav-link {{ 'active' if page == 'bibliotheque' }}" href="{{ url_for('bibliotheque') }}">
                     <i class="fas fa-vault"></i>
-                    <span>Coffre-fort Numérique</span>
+                    <span>Bibliothèque Numérique</span>
                 </a>
                 {% endif %}
             </nav>
