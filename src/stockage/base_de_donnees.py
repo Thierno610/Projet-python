@@ -550,11 +550,10 @@ class GestionnaireBaseDeDonnees:
     def creer_etiquettes_par_defaut(self, utilisateur_id: int):
         """Initialise les étiquettes standard pour un nouvel utilisateur"""
         defaults = [
-            ("Important", "#F59E0B"),  # Amber
-            ("Urgent", "#EF4444"),     # Red
-            ("Personnel", "#8B5CF6"),  # Purple
-            ("Note", "#3B82F6")        # Blue
-        ]
+        ("Factures", "#F59E0B"),   # Amber
+        ("Identité", "#3B82F6"),   # Blue
+        ("Urgent", "#EF4444")      # Red
+    ]
         for nom, couleur in defaults:
             self.creer_etiquette(nom, couleur, utilisateur_id)
 

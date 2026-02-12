@@ -4,86 +4,111 @@
 <!-- Header & Hub Status -->
 <div class="d-flex justify-content-between align-items-center mb-5 animate-in">
     <div>
-        <h1 class="h2 mb-1">Centre d'Intelligence</h1>
-        <p class="text-muted small mb-0 d-flex align-items-center gap-2">
-            <span class="pulse-dot bg-indigo" style="width: 6px; height: 6px;"></span>
-            Nœud SafeDoc #{{ "%04x"|format(user.id) }} — Chiffré & Actif
+        <h1 class="h2 mb-1 fw-800 text-white">Tableau de Bord</h1>
+        <p class="small mb-0 d-flex align-items-center gap-2" style="color: rgba(255,255,255,0.5);">
+            <span class="pulse-dot bg-emerald" style="width: 6px; height: 6px;"></span>
+            Bienvenue, {{ user.nom_complet or user.nom_utilisateur }} — Tous vos documents sont sécurisés
         </p>
     </div>
     <div class="d-flex gap-3">
-        <div class="glass-card px-3 py-2 d-flex align-items-center gap-2 border-0 bg-opacity-10"
-            style="background: rgba(99, 102, 241, 0.05);">
-            <i class="fas fa-microchip text-indigo x-small"></i>
-            <span class="x-small text-indigo fw-bold tracking-wider">NEURAL_SYNC_OK</span>
-        </div>
-        <a href="/upload" class="btn btn-indigo d-flex align-items-center gap-2 px-4 py-2">
-            <i class="fas fa-plus-circle small"></i>
-            <span class="small fw-bold">IMPORTATION SÉCURISÉE</span>
+        <a href="/upload" class="btn btn-indigo d-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-lg">
+            <i class="fas fa-cloud-arrow-up small"></i>
+            <span class="small fw-bold">Ajouter un Document</span>
         </a>
     </div>
 </div>
 
-<!-- Immersive Metrics Grid -->
+<!-- Stats Cards -->
 <div class="row g-4 mb-5">
+    <!-- Total Documents -->
     <div class="col-md-3 animate-in" style="animation-delay: 0.1s;">
-        <div class="glass-card p-4 h-100 vibrant-gradient-indigo border-0">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="rounded-3 p-2 bg-white-10"><i class="fas fa-folder-tree text-white small"></i></div>
+        <div class="stat-card glass-card p-4 h-100 position-relative overflow-hidden"
+            style="background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(168,85,247,0.08) 100%); border: 1px solid rgba(99,102,241,0.2);">
+            <div class="position-absolute top-0 end-0 opacity-5"
+                style="font-size: 80px; margin-top: -10px; margin-right: -5px;">
+                <i class="fas fa-folder-open"></i>
             </div>
-            <div>
-                <h2 class="display-5 fw-800 text-white mb-0">{{ total_docs if total_docs else 0 }}</h2>
-                <p class="x-small text-white text-uppercase fw-bold opacity-75 mt-1 mb-0 tracking-wider">Documents
-                    Indexés
-                </p>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                    style="width: 42px; height: 42px; background: rgba(99,102,241,0.2);">
+                    <i class="fas fa-folder-open text-indigo"></i>
+                </div>
             </div>
+            <h2 class="display-5 fw-900 text-white mb-1">{{ total_docs if total_docs else 0 }}</h2>
+            <p class="small fw-bold mb-0" style="color: rgba(255,255,255,0.6);">Documents</p>
         </div>
     </div>
+
+    <!-- Categories -->
     <div class="col-md-3 animate-in" style="animation-delay: 0.2s;">
-        <div class="glass-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="rounded-3 p-2 bg-indigo-glow"><i class="fas fa-tags text-indigo small"></i></div>
+        <div class="stat-card glass-card p-4 h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 opacity-5"
+                style="font-size: 80px; margin-top: -10px; margin-right: -5px;">
+                <i class="fas fa-tags"></i>
             </div>
-            <div>
-                <h2 class="display-5 fw-800 text-white mb-0">{{ types_categories if types_categories else 0 }}</h2>
-                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Clusters Actifs</p>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                    style="width: 42px; height: 42px; background: rgba(168,85,247,0.15);">
+                    <i class="fas fa-tags" style="color: #a855f7;"></i>
+                </div>
             </div>
+            <h2 class="display-5 fw-900 text-white mb-1">{{ types_categories if types_categories else 0 }}</h2>
+            <p class="small fw-bold mb-0" style="color: rgba(255,255,255,0.6);">Catégories</p>
         </div>
     </div>
+
+    <!-- Storage Used -->
     <div class="col-md-3 animate-in" style="animation-delay: 0.3s;">
-        <div class="glass-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="rounded-3 p-2 bg-indigo-glow"><i class="fas fa-database text-indigo small"></i></div>
+        <div class="stat-card glass-card p-4 h-100 position-relative overflow-hidden">
+            <div class="position-absolute top-0 end-0 opacity-5"
+                style="font-size: 80px; margin-top: -10px; margin-right: -5px;">
+                <i class="fas fa-hard-drive"></i>
             </div>
-            <div>
-                <h2 class="display-5 fw-800 text-white mb-0">{{ "%.1f"|format(stockage_mb) }}</h2>
-                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Mégaoctets Synchronisés
-                </p>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                    style="width: 42px; height: 42px; background: rgba(16,185,129,0.15);">
+                    <i class="fas fa-hard-drive text-emerald"></i>
+                </div>
             </div>
+            <h2 class="display-5 fw-900 text-white mb-1">{{ "%.1f"|format(stockage_mb) }}</h2>
+            <p class="small fw-bold mb-0" style="color: rgba(255,255,255,0.6);">Mo utilisés</p>
         </div>
     </div>
+
+    <!-- Security Status -->
     <div class="col-md-3 animate-in" style="animation-delay: 0.4s;">
-        <div class="glass-card p-4 h-100 border-indigo-glow" style="border: 1px solid rgba(99, 102, 241, 0.3);">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="rounded-3 p-2 bg-emerald-glow"><i class="fas fa-shield-check text-emerald small"></i></div>
+        <div class="stat-card glass-card p-4 h-100 position-relative overflow-hidden"
+            style="border: 1px solid rgba(16,185,129,0.2);">
+            <div class="position-absolute top-0 end-0 opacity-5"
+                style="font-size: 80px; margin-top: -10px; margin-right: -5px;">
+                <i class="fas fa-shield-check"></i>
             </div>
-            <div>
-                <h2 class="display-5 fw-800 text-emerald mb-0">100%</h2>
-                <p class="x-small text-muted text-uppercase fw-bold mt-1 mb-0 tracking-wider">Score d'Intégrité</p>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                    style="width: 42px; height: 42px; background: rgba(16,185,129,0.15);">
+                    <i class="fas fa-shield-check text-emerald"></i>
+                </div>
             </div>
+            <h2 class="display-5 fw-900 text-emerald mb-1">100%</h2>
+            <p class="small fw-bold mb-0" style="color: rgba(255,255,255,0.6);">Sécurité</p>
         </div>
     </div>
 </div>
 
 <div class="row g-4 mb-4">
-    <!-- Visual Analytics -->
+    <!-- Activity Chart -->
     <div class="col-lg-8">
         <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.5s;">
-            <div class="d-flex justify-content-between align-items-center mb-5">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Vélocité d'Ingestion — Spectre
-                    7J</h6>
-                <div class="d-flex gap-2">
-                    <span class="badge bg-indigo-glow text-indigo x-small">Pic: 10/jour</span>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                        style="width: 36px; height: 36px; background: rgba(99,102,241,0.15);">
+                        <i class="fas fa-chart-line text-indigo x-small"></i>
+                    </div>
+                    <h6 class="fw-800 text-white mb-0">Activité de la Semaine</h6>
                 </div>
+                <span class="badge rounded-pill px-3 py-2 x-small fw-bold"
+                    style="background: rgba(99,102,241,0.15); color: #818cf8;">7 derniers jours</span>
             </div>
             <div style="height: 300px;">
                 <canvas id="ingestionChart"></canvas>
@@ -91,41 +116,56 @@
         </div>
     </div>
 
-    <!-- AI Feed & Classification -->
+    <!-- Classification & Quick Info -->
     <div class="col-lg-4">
+        <!-- Classification Donut -->
         <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.6s;">
-            <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Spectre de Classification</h6>
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px; background: rgba(168,85,247,0.15);">
+                    <i class="fas fa-chart-pie x-small" style="color: #a855f7;"></i>
+                </div>
+                <h6 class="fw-800 text-white mb-0">Répartition par Type</h6>
+            </div>
             <div style="height: 200px;">
                 <canvas id="distributionChart"></canvas>
             </div>
-            <div class="mt-4 d-flex flex-column gap-3" id="distribution-legend">
+            <div class="mt-4 d-flex flex-column gap-2" id="distribution-legend">
                 <!-- Legend injected by JS -->
             </div>
         </div>
 
-        <div class="glass-card p-4 vibrant-gradient-indigo border-0 animate-in" style="animation-delay: 0.7s;">
-            <h6 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                <i class="fas fa-wand-magic-sparkles"></i> Flux d'Intelligence
+        <!-- Quick Status Card -->
+        <div class="glass-card p-4 animate-in position-relative overflow-hidden"
+            style="animation-delay: 0.7s; background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.08) 100%); border: 1px solid rgba(99,102,241,0.15);">
+            <div class="position-absolute top-0 end-0 opacity-5"
+                style="font-size: 100px; margin-top: -15px; margin-right: -10px;">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h6 class="fw-800 text-white mb-3 d-flex align-items-center gap-2 position-relative">
+                <i class="fas fa-bolt text-indigo"></i> Résumé Rapide
             </h6>
-            <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-column gap-3 position-relative">
                 <div class="d-flex gap-3 align-items-center">
-                    <div class="rounded-circle bg-white-10 p-2 d-flex align-items-center justify-content-center"
-                        style="width: 34px; height: 34px;">
-                        <i class="fas fa-fingerprint text-white x-small"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 34px; height: 34px; min-width: 34px; background: rgba(16,185,129,0.15);">
+                        <i class="fas fa-check text-emerald x-small"></i>
                     </div>
                     <div>
-                        <p class="x-small text-white fw-bold mb-0">Identité Vérifiée</p>
-                        <p class="x-small text-white-50 mb-0 opacity-75">Sync multi-facteurs terminée</p>
+                        <p class="x-small text-white fw-bold mb-0">Chiffrement Actif</p>
+                        <p class="x-small mb-0" style="color: rgba(255,255,255,0.4);">Tous vos fichiers sont protégés
+                        </p>
                     </div>
                 </div>
                 <div class="d-flex gap-3 align-items-center">
-                    <div class="rounded-circle bg-white-10 p-2 d-flex align-items-center justify-content-center"
-                        style="width: 34px; height: 34px;">
-                        <i class="fas fa-brain text-white x-small"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 34px; height: 34px; min-width: 34px; background: rgba(99,102,241,0.15);">
+                        <i class="fas fa-brain text-indigo x-small"></i>
                     </div>
                     <div>
-                        <p class="x-small text-white fw-bold mb-0">Marquage Prédictif</p>
-                        <p class="x-small text-white-50 mb-0 opacity-75">Prêt pour le prochain lot</p>
+                        <p class="x-small text-white fw-bold mb-0">Analyse IA</p>
+                        <p class="x-small mb-0" style="color: rgba(255,255,255,0.4);">Classification automatique prête
+                        </p>
                     </div>
                 </div>
             </div>
@@ -133,50 +173,71 @@
     </div>
 </div>
 
-<!-- Asset Ledger -->
+<!-- Recent Documents Table -->
 <div class="glass-card p-0 overflow-hidden animate-in" style="animation-delay: 0.8s;">
-    <div class="p-4 border-bottom border-slate d-flex justify-content-between align-items-center bg-white-10">
-        <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-0">Documents Numériques Récents</h6>
-        <a href="/bibliotheque" class="btn btn-icon-indigo btn-sm rounded-pill px-3">
-            <span class="x-small fw-bold">TOUT EXPLORER</span>
+    <div class="p-4 d-flex justify-content-between align-items-center"
+        style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+                style="width: 36px; height: 36px; background: rgba(99,102,241,0.15);">
+                <i class="fas fa-clock-rotate-left text-indigo x-small"></i>
+            </div>
+            <h6 class="fw-800 text-white mb-0">Documents Récents</h6>
+        </div>
+        <a href="/bibliotheque" class="btn btn-sm rounded-pill px-4 fw-bold small"
+            style="background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.2);">
+            Voir tout <i class="fas fa-arrow-right ms-2 x-small"></i>
         </a>
     </div>
     <div class="table-responsive">
-        <table class="table table-dark table-hover mb-0 x-small align-middle"
-            style="--bs-table-bg: transparent; --bs-table-border-color: rgba(255,255,255,0.05);">
+        <table class="table table-dark table-hover mb-0 small align-middle"
+            style="--bs-table-bg: transparent; --bs-table-border-color: rgba(255,255,255,0.04);">
             <thead>
-                <tr class="text-muted opacity-50">
-                    <th class="ps-4 py-3">IDENTIFIANT DU DOCUMENT</th>
-                    <th>GROUPE</th>
-                    <th>HORODATAGE</th>
-                    <th class="text-end pe-4">ACTIONS</th>
+                <tr>
+                    <th class="ps-4 py-3 fw-bold x-small text-uppercase" style="color: rgba(255,255,255,0.35);">Nom du
+                        document</th>
+                    <th class="fw-bold x-small text-uppercase" style="color: rgba(255,255,255,0.35);">Catégorie</th>
+                    <th class="fw-bold x-small text-uppercase" style="color: rgba(255,255,255,0.35);">Date d'ajout</th>
+                    <th class="text-end pe-4 fw-bold x-small text-uppercase" style="color: rgba(255,255,255,0.35);">
+                        Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% if documents %}
                 {% for doc in documents[:5] %}
-                <tr class="hover-white-2">
+                <tr class="doc-table-row">
                     <td class="ps-4">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="bg-indigo-glow rounded-2 p-2"><i
-                                    class="fas fa-file-shield text-indigo x-small"></i></div>
+                            <div class="rounded-2 p-2 d-flex align-items-center justify-content-center"
+                                style="width: 36px; height: 36px; background: rgba(99,102,241,0.1);">
+                                <i class="fas fa-file-lines text-indigo x-small"></i>
+                            </div>
                             <span class="fw-bold text-white">{{ doc.nom }}</span>
                         </div>
                     </td>
-                    <td><span class="badge bg-white-10 text-muted px-2 py-1">{{ doc.categorie }}</span></td>
-                    <td class="text-muted opacity-75">{{ doc.date_upload.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <span class="badge rounded-pill px-3 py-1 x-small fw-bold"
+                            style="background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2);">
+                            {{ doc.categorie }}
+                        </span>
+                    </td>
+                    <td style="color: rgba(255,255,255,0.5);">{{ doc.date_upload.strftime('%d/%m/%Y à %H:%M') }}</td>
                     <td class="text-end pe-4">
-                        <a href="{{ url_for('voir_document', doc_id=doc.id) }}"
-                            class="btn btn-icon-indigo btn-sm rounded-circle">
-                            <i class="fas fa-chevron-right x-small"></i>
+                        <a href="{{ url_for('voir_document', doc_id=doc.id) }}" class="btn btn-sm rounded-pill px-3"
+                            style="background: rgba(99,102,241,0.1); color: #818cf8; border: 1px solid rgba(99,102,241,0.2);">
+                            <i class="fas fa-eye x-small me-1"></i> Voir
                         </a>
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="4" class="text-center py-5 text-muted italic">Nœud sécurisé vide. Aucun document
-                        trouvé.</td>
+                    <td colspan="4" class="text-center py-5">
+                        <i class="fas fa-folder-open display-4 mb-3 d-block" style="color: rgba(255,255,255,0.1);"></i>
+                        <p class="mb-2 fw-bold" style="color: rgba(255,255,255,0.4);">Aucun document pour le moment</p>
+                        <p class="x-small mb-0" style="color: rgba(255,255,255,0.25);">Commencez par ajouter votre
+                            premier document</p>
+                    </td>
                 </tr>
                 {% endif %}
             </tbody>
@@ -184,6 +245,25 @@
     </div>
 </div>
 </div>
+
+<style>
+    .stat-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .doc-table-row {
+        transition: background 0.2s ease;
+    }
+
+    .doc-table-row:hover {
+        background: rgba(99, 102, 241, 0.04) !important;
+    }
+</style>
 
 {% endblock %}
 
@@ -194,24 +274,24 @@
         const ctxIngestion = document.getElementById('ingestionChart').getContext('2d');
         const ctxDistribution = document.getElementById('distributionChart').getContext('2d');
 
-        // Neon Ingestion Plot
+        // Activity Chart
         const gradient = ctxIngestion.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
         gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
 
         new Chart(ctxIngestion, {
             type: 'line',
             data: {
-                labels: ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'],
+                labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
                 datasets: [{
-                    label: 'Delta Ingestion',
+                    label: 'Documents ajoutés',
                     data: [4, 8, 5, 9, 15, 6, 12],
                     borderColor: '#6366f1',
                     backgroundColor: gradient,
-                    borderWidth: 4,
+                    borderWidth: 3,
                     tension: 0.4,
                     fill: true,
-                    pointRadius: 6,
+                    pointRadius: 5,
                     pointBackgroundColor: '#6366f1',
                     pointBorderColor: 'rgba(255,255,255,0.8)',
                     pointBorderWidth: 2,
@@ -221,43 +301,56 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.9)',
+                        borderColor: 'rgba(99,102,241,0.3)',
+                        borderWidth: 1,
+                        titleFont: { weight: '700' },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10, weight: '600' } } },
-                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } }
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11, weight: '600' } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.03)' },
+                        ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 } }
+                    }
                 }
             }
         });
 
-        // Classification Spectrum (Neon Doughnut)
-        const cyberColors = ['#6366f1', '#a855f7', '#10b981', '#f43f5e', '#fbbf24', '#38bdf8'];
+        // Classification Donut
+        const chartColors = ['#6366f1', '#a855f7', '#10b981', '#f43f5e', '#fbbf24', '#38bdf8'];
         const distribution = {{ distribution_data | tojson | safe
     }};
-
-
 
     const labels = [];
     const data = [];
 
     if (distribution.length > 0) {
-        distribution.forEach((item, i) => {
+        distribution.forEach(function (item, i) {
             labels.push(item.label);
             data.push(item.value);
 
-            // Immersive Legend
-            const legendItem = document.createElement('div');
-            legendItem.className = 'd-flex justify-content-between align-items-center opacity-75 hover-opacity-100 transition-premium';
-            legendItem.innerHTML = `
-                    <div class="d-flex align-items-center gap-3">
-                        <div style="width: 8px; height: 8px; background: ${cyberColors[i % cyberColors.length]}; border-radius: 2px; box-shadow: 0 0 10px ${cyberColors[i % cyberColors.length]}80;"></div>
-                        <span class="x-small text-muted fw-bold">${item.label}</span>
-                    </div>
-                    <span class="x-small text-white fw-800">${item.value}%</span>
-                `;
+            var legendItem = document.createElement('div');
+            legendItem.className = 'd-flex justify-content-between align-items-center p-2 rounded-2';
+            legendItem.style.cssText = 'transition: background 0.2s; cursor: default;';
+            legendItem.innerHTML =
+                '<div class="d-flex align-items-center gap-3">' +
+                '<div style="width: 10px; height: 10px; background: ' + chartColors[i % chartColors.length] + '; border-radius: 3px; box-shadow: 0 0 8px ' + chartColors[i % chartColors.length] + '60;"></div>' +
+                '<span class="x-small fw-bold" style="color: rgba(255,255,255,0.7);">' + item.label + '</span>' +
+                '</div>' +
+                '<span class="x-small fw-900 text-white">' + item.value + '%</span>';
             document.getElementById('distribution-legend').appendChild(legendItem);
         });
     } else {
-        document.getElementById('distribution-legend').innerHTML = '<p class="text-muted x-small italic text-center py-4">Carte de stockage vide.</p>';
+        document.getElementById('distribution-legend').innerHTML = '<div class="text-center py-4"><i class="fas fa-chart-pie display-6 d-block mb-2" style="color: rgba(255,255,255,0.08);"></i><p class="x-small mb-0" style="color: rgba(255,255,255,0.3);">Aucune donnée disponible</p></div>';
     }
 
     new Chart(ctxDistribution, {
@@ -266,19 +359,28 @@
             labels: labels,
             datasets: [{
                 data: data,
-                backgroundColor: cyberColors,
-                hoverBackgroundColor: cyberColors,
+                backgroundColor: chartColors,
+                hoverBackgroundColor: chartColors,
                 borderWidth: 0,
-                hoverOffset: 20,
+                hoverOffset: 15,
                 borderRadius: 4,
-                spacing: 5
+                spacing: 4
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '85%',
-            plugins: { legend: { display: false } },
+            cutout: '80%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,0.9)',
+                    borderColor: 'rgba(99,102,241,0.3)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 8
+                }
+            },
             animation: { animateScale: true }
         }
     });

@@ -113,7 +113,241 @@
             background-color: #18181b;
             color: white;
         }
+
+        /* ============ Theme Toggle Button ============ */
+        .btn-theme-toggle {
+            position: relative;
+            width: 64px;
+            height: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .btn-theme-toggle:hover {
+            border-color: var(--primary-indigo);
+            box-shadow: 0 0 12px var(--primary-indigo-glow);
+        }
+
+        .btn-theme-toggle .theme-icon-dark,
+        .btn-theme-toggle .theme-icon-light {
+            font-size: 13px;
+            z-index: 2;
+            transition: all 0.4s ease;
+        }
+
+        .btn-theme-toggle .theme-icon-dark {
+            color: #a5b4fc;
+        }
+
+        .btn-theme-toggle .theme-icon-light {
+            color: #fbbf24;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-indigo);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        [data-theme="light"] .toggle-slider {
+            left: calc(100% - 28px);
+            background: #f59e0b;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        [data-theme="light"] .btn-theme-toggle {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="light"] .btn-theme-toggle .theme-icon-dark {
+            color: #94a3b8;
+        }
+
+        [data-theme="light"] .btn-theme-toggle .theme-icon-light {
+            color: #f59e0b;
+        }
+
+        /* ============ Light Mode Theme ============ */
+        [data-theme="light"] {
+            --bg-main: #f1f5f9;
+            --bg-surface: rgba(255, 255, 255, 0.85);
+            --bg-sidebar: rgba(255, 255, 255, 0.92);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] body,
+        [data-theme="light"].bg-gradient-dark {
+            background: #f1f5f9 !important;
+            color: #0f172a;
+        }
+
+        [data-theme="light"] body::before {
+            background:
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+        }
+
+        [data-theme="light"] .sidebar,
+        [data-theme="light"] .glass-sidebar {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.06);
+        }
+
+        [data-theme="light"] .navbar {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+
+        [data-theme="light"] .glass-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        [data-theme="light"] .glass-card:hover {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+
+        [data-theme="light"] h1,
+        [data-theme="light"] h2,
+        [data-theme="light"] h3,
+        [data-theme="light"] .h3 {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .text-white,
+        [data-theme="light"] .fw-900.text-white {
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a;
+        }
+
+        [data-theme="light"] .text-white-50 {
+            color: #475569 !important;
+        }
+
+        [data-theme="light"] .text-white-75 {
+            color: #334155 !important;
+        }
+
+        [data-theme="light"] .text-muted {
+            color: #64748b !important;
+        }
+
+        [data-theme="light"] .nav-link {
+            color: #475569;
+        }
+
+        [data-theme="light"] .nav-link:hover {
+            color: #0f172a;
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        [data-theme="light"] .nav-link.active {
+            color: #fff;
+        }
+
+        [data-theme="light"] .form-control,
+        [data-theme="light"] .form-select {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] .form-control::placeholder {
+            color: rgba(0, 0, 0, 0.35) !important;
+        }
+
+        [data-theme="light"] .input-group-text {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: #475569 !important;
+        }
+
+        [data-theme="light"] .bg-white-5,
+        [data-theme="light"] .bg-white-2 {
+            background: rgba(0, 0, 0, 0.03) !important;
+        }
+
+        [data-theme="light"] .bg-black-20 {
+            background: rgba(0, 0, 0, 0.04) !important;
+        }
+
+        [data-theme="light"] .bg-black-80 {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        [data-theme="light"] .border-slate {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        [data-theme="light"] .v-divider {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .glass-alert {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .badge {
+            color: inherit;
+        }
+
+        [data-theme="light"] select option,
+        [data-theme="light"] .form-select option,
+        [data-theme="light"] .form-control option {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .btn-icon-indigo,
+        [data-theme="light"] .btn-icon-emerald,
+        [data-theme="light"] .btn-icon-rose,
+        [data-theme="light"] .btn-icon-slate {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .profile-summary .x-small {
+            color: #334155 !important;
+        }
     </style>
+
+    <script>
+        // Apply saved theme BEFORE render to prevent flash
+        (function () {
+            var saved = localStorage.getItem('safedoc-theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 </head>
 
 <body class="bg-gradient-dark">
@@ -195,22 +429,25 @@
         <!-- Floating Navbar -->
         <nav class="navbar navbar-expand-lg glass-card mt-4 mb-5">
             <div class="container-fluid px-0">
-                <div id="ai-status" class="x-small text-muted d-none d-md-block">
-                    <span class="pulse-dot bg-emerald" style="width: 6px; height: 6px; margin-right: 8px;"></span>
-                    OPS SÉCURISÉES : ACTIVES
-                </div>
+                <button id="theme-toggle" class="btn-theme-toggle d-none d-md-flex" onclick="toggleTheme()"
+                    title="Changer le thème">
+                    <i class="fas fa-moon theme-icon-dark"></i>
+                    <i class="fas fa-sun theme-icon-light"></i>
+                    <span class="toggle-slider"></span>
+                </button>
 
                 <div class="ms-auto d-flex align-items-center gap-4">
                     <div class="v-divider"></div>
                     {% if session.get('user_id') %}
-                    <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('profil') }}" class="d-flex align-items-center gap-3 text-decoration-none"
+                        style="cursor: pointer;">
                         <span class="x-small text-muted fw-bold">{{ user.nom_utilisateur if user else 'Utilisateur'
                             }}</span>
                         <div class="rounded-circle border border-indigo p-1" style="width: 32px; height: 32px;">
                             <img src="{{ user.photo_profil if user and user.photo_profil else '/static/img/default-avatar.png' }}"
                                 class="w-100 h-100 rounded-circle object-fit-cover shadow-sm">
                         </div>
-                    </div>
+                    </a>
                     {% else %}
                     <a href="{{ url_for('login') }}" class="btn btn-indigo btn-sm px-3 x-small">CONNEXION</a>
                     {% endif %}
@@ -246,6 +483,21 @@
     <!-- Core Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/safedoc_stable.js') }}"></script>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        function toggleTheme() {
+            var html = document.documentElement;
+            var current = html.getAttribute('data-theme');
+            if (current === 'light') {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('safedoc-theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('safedoc-theme', 'light');
+            }
+        }
+    </script>
 
     <!-- Chatbot Component -->
     {% include 'chatbox.html' %}

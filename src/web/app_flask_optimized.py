@@ -470,7 +470,7 @@ def upload():
                         
                     if success:
                         flash(message, 'success')
-                        return render_template('upload.html', user=user, success=True, infos=infos, page='upload')
+                        return render_template('upload.html', user=user, succes=True, infos=infos, etiquettes=etiquettes, page='upload')
                     else:
                         flash(message, 'danger')
                 else:
@@ -484,7 +484,7 @@ def upload():
         except Exception as e:
             flash(f"Erreur lors de l'ingestion : {str(e)}", "danger")
             
-    return render_template('upload.html', user=user, page='upload')
+    return render_template('upload.html', user=user, etiquettes=etiquettes, page='upload')
 
 @app.route('/bibliotheque')
 @login_required

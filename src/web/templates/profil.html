@@ -2,86 +2,158 @@
 
 {% block content %}
 <div class="animate-in">
-    <!-- Terminal Header (Detached Glass) -->
-    <div class="glass-card p-5 mb-5 border-0 bg-indigo-glow position-relative overflow-hidden">
-        <div class="position-absolute top-0 end-0 p-4 opacity-10">
-            <i class="fas fa-microchip fa-6x"></i>
+    <!-- Profile Hero Banner -->
+    <div class="profile-hero mb-5 position-relative overflow-hidden rounded-4">
+        <!-- Background gradient layer -->
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+            style="background: linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.1) 40%, rgba(16,185,129,0.08) 100%); z-index: 0;">
         </div>
-        <div class="d-flex align-items-center gap-5 position-relative">
-            <div class="profile-photo-container">
-                {% if user.photo_profil %}
-                <img src="{{ user.photo_profil }}" alt="Identity" class="rounded-4 border border-white-10 shadow-lg"
-                    style="width: 120px; height: 120px; object-fit: cover;">
-                {% else %}
-                <div class="rounded-4 bg-white-5 border border-white-10 d-flex align-items-center justify-content-center"
-                    style="width: 120px; height: 120px;">
-                    <i class="fas fa-user-shield fa-3x text-white opacity-20"></i>
+        <div class="position-absolute top-0 end-0" style="z-index: 0; opacity: 0.04;">
+            <i class="fas fa-fingerprint" style="font-size: 280px; color: white;"></i>
+        </div>
+
+        <div class="position-relative p-5" style="z-index: 1;">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="profile-avatar-wrapper position-relative">
+                        {% if user.photo_profil %}
+                        <img src="{{ user.photo_profil }}" alt="Avatar" class="rounded-circle shadow-lg border-3"
+                            style="width: 130px; height: 130px; object-fit: cover; border: 3px solid rgba(99,102,241,0.5);">
+                        {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                            style="width: 130px; height: 130px; background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(168,85,247,0.2)); border: 3px solid rgba(99,102,241,0.5);">
+                            <span class="display-4 fw-900 text-white" style="opacity: 0.8;">{{ (user.nom_complet or
+                                user.nom_utilisateur)[0]|upper }}</span>
+                        </div>
+                        {% endif %}
+                        <button class="btn btn-indigo btn-sm rounded-circle position-absolute shadow-lg"
+                            style="bottom: 5px; right: 5px; width: 36px; height: 36px;"
+                            onclick="document.getElementById('photo_upload').click()" title="Changer la photo">
+                            <i class="fas fa-camera x-small"></i>
+                        </button>
+                    </div>
                 </div>
-                {% endif %}
-                <button
-                    class="btn btn-indigo btn-sm rounded-circle position-absolute bottom-0 end-0 border-2 border-dark"
-                    onclick="document.getElementById('photo_upload').click()">
-                    <i class="fas fa-pen x-small"></i>
-                </button>
-            </div>
-            <div class="terminal-text">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <h1 class="h2 mb-0 fw-800 text-white">{{ user.nom_complet or user.nom_utilisateur }}</h1>
-                    <span
-                        class="badge bg-white-10 text-white px-3 py-1 rounded-pill x-small fw-bold border border-white-10">
-                        <i class="fas fa-crown text-indigo me-2"></i>{{ user.niveau|upper }} UNIT
-                    </span>
-                </div>
-                <p class="text-muted small mb-0 font-monospace opacity-75">
-                    <span class="text-indigo">IDENTIFIER:</span> #{{ "%04x"|format(user.id) }} —
-                    <span class="text-indigo">LINK_DATE:</span> {{ user.date_creation.strftime('%Y-%m-%d') if
-                    user.date_creation else 'N/A' }}
-                </p>
-                <div class="d-flex gap-4 mt-3">
-                    <div class="x-small text-white opacity-50"><i
-                            class="fas fa-network-wired me-2"></i>SECURE_NODE_ACTIVE</div>
-                    <div class="x-small text-white opacity-50"><i class="fas fa-key me-2"></i>E2EE_ENABLED</div>
+                <div class="col">
+                    <div class="mb-2">
+                        <h1 class="display-6 fw-900 text-white mb-1 tracking-tight">{{ user.nom_complet or
+                            user.nom_utilisateur }}</h1>
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <span class="badge rounded-pill px-3 py-2 fw-bold x-small"
+                                style="background: rgba(99,102,241,0.2); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">
+                                <i class="fas fa-crown me-1"></i>{{ user.niveau|upper }}
+                            </span>
+                            <span class="x-small fw-bold" style="color: rgba(255,255,255,0.5);">
+                                <i class="fas fa-hashtag me-1 text-indigo"></i>{{ "%04x"|format(user.id) }}
+                            </span>
+                            <span class="x-small fw-bold" style="color: rgba(255,255,255,0.5);">
+                                <i class="fas fa-calendar-check me-1 text-emerald"></i>Membre depuis {{
+                                user.date_creation.strftime('%d/%m/%Y') if user.date_creation else 'N/A' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 mt-3">
+                        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                            style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);">
+                            <div class="pulse-dot bg-emerald" style="width: 6px; height: 6px;"></div>
+                            <span class="x-small fw-bold text-emerald">EN LIGNE</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                            style="background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);">
+                            <i class="fas fa-shield-check text-indigo x-small"></i>
+                            <span class="x-small fw-bold text-indigo">VÉRIFIÉ</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Security Sidebar -->
+        <!-- LEFT: Security & Storage -->
         <div class="col-lg-4">
-            <div class="glass-card p-4 h-100 animate-in" style="animation-delay: 0.1s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Protocole de Sécurité</h6>
-
-                <div class="mb-5">
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="x-small text-white-50 fw-bold">Capacité de l'Unité</span>
-                        <span class="x-small text-indigo fw-800">{{ "%.1f"|format(user.stockage_utilise / (1024*1024))
-                            }} Mo / 500 Mo</span>
+            <!-- Storage Card -->
+            <div class="glass-card p-4 mb-4 animate-in" style="animation-delay: 0.1s;">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; background: rgba(99,102,241,0.15);">
+                        <i class="fas fa-hard-drive text-indigo"></i>
                     </div>
-                    <div class="progress bg-white-5 rounded-pill" style="height: 4px;">
-                        <div class="progress-bar bg-indigo shadow-glow"
-                            style="width: {{ user.pourcentage_stockage() }}%"></div>
-                    </div>
+                    <h6 class="mb-0 fw-800 text-white text-uppercase x-small tracking-widest">Espace de Stockage</h6>
                 </div>
 
-                <div class="d-flex flex-column gap-2">
-                    <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
-                        onclick="new bootstrap.Modal(document.getElementById('passwordModal')).show()">
-                        <i class="fas fa-fingerprint text-muted"></i>
-                        <span class="small fw-bold">Modification des Identifiants</span>
-                        <i class="fas fa-arrow-right ms-auto x-small text-muted"></i>
+                <div class="text-center mb-3">
+                    <div class="position-relative d-inline-block">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.05)"
+                                stroke-width="8" />
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="#6366f1" stroke-width="8"
+                                stroke-dasharray="{{ (user.pourcentage_stockage() / 100) * 327 }} 327"
+                                transform="rotate(-90 60 60)" stroke-linecap="round" />
+                        </svg>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center">
+                            <span class="h4 fw-900 text-white mb-0">{{ "%.0f"|format(user.pourcentage_stockage())
+                                }}%</span>
+                        </div>
                     </div>
-                    <div
-                        class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3">
-                        <i class="fas fa-shield-halved text-muted"></i>
-                        <span class="small fw-bold">Synchro Multi-Facteurs</span>
-                        <span class="badge bg-rose-glow text-rose ms-auto x-small border-0">INACTIF</span>
+                </div>
+                <div class="text-center">
+                    <span class="x-small fw-bold" style="color: rgba(255,255,255,0.6);">
+                        {{ "%.1f"|format(user.stockage_utilise / (1024*1024)) }} Mo <span class="text-muted">sur</span>
+                        500 Mo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Security Actions -->
+            <div class="glass-card p-4 animate-in" style="animation-delay: 0.15s;">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; background: rgba(16,185,129,0.15);">
+                        <i class="fas fa-shield-halved text-emerald"></i>
                     </div>
-                    <div class="p-3 rounded-3 bg-white-5 border-slate hover-indigo transition-premium d-flex align-items-center gap-3 cursor-pointer"
-                        onclick="registerBiometrics()" id="biometricBtn">
-                        <i class="fas fa-dna text-emerald"></i>
-                        <span class="small fw-bold">Empreinte Biométrique</span>
-                        <div class="ms-auto" id="biometricStatus">
+                    <h6 class="mb-0 fw-800 text-white text-uppercase x-small tracking-widest">Sécurité</h6>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="security-action-item p-3 rounded-3 d-flex align-items-center gap-3"
+                        onclick="new bootstrap.Modal(document.getElementById('passwordModal')).show()"
+                        style="cursor: pointer;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px; min-width: 36px; background: rgba(99,102,241,0.12);">
+                            <i class="fas fa-key text-indigo x-small"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="small fw-bold text-white d-block">Mot de Passe</span>
+                            <span class="x-small" style="color: rgba(255,255,255,0.4);">Modifier vos identifiants</span>
+                        </div>
+                        <i class="fas fa-chevron-right x-small text-muted"></i>
+                    </div>
+
+                    <div class="security-action-item p-3 rounded-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px; min-width: 36px; background: rgba(244,63,94,0.12);">
+                            <i class="fas fa-mobile-screen text-rose x-small"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="small fw-bold text-white d-block">Double Authentification</span>
+                            <span class="x-small" style="color: rgba(255,255,255,0.4);">Protection renforcée</span>
+                        </div>
+                        <span class="badge rounded-pill x-small fw-bold px-2 py-1"
+                            style="background: rgba(244,63,94,0.15); color: #fb7185;">INACTIF</span>
+                    </div>
+
+                    <div class="security-action-item p-3 rounded-3 d-flex align-items-center gap-3"
+                        onclick="registerBiometrics()" id="biometricBtn" style="cursor: pointer;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 36px; height: 36px; min-width: 36px; background: rgba(16,185,129,0.12);">
+                            <i class="fas fa-fingerprint text-emerald x-small"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="small fw-bold text-white d-block">Biométrie</span>
+                            <span class="x-small" style="color: rgba(255,255,255,0.4);">Empreinte digitale / Face
+                                ID</span>
+                        </div>
+                        <div id="biometricStatus">
                             <i class="fas fa-plus-circle text-muted x-small"></i>
                         </div>
                     </div>
@@ -89,10 +161,20 @@
             </div>
         </div>
 
-        <!-- Identity Matrix Form -->
+        <!-- RIGHT: Personal Information Form -->
         <div class="col-lg-8">
-            <div class="glass-card p-4 animate-in" style="animation-delay: 0.2s;">
-                <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Matrice d'Identité</h6>
+            <div class="glass-card p-5 animate-in" style="animation-delay: 0.2s;">
+                <div class="d-flex align-items-center gap-3 mb-5">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; background: rgba(99,102,241,0.15);">
+                        <i class="fas fa-user-pen text-indigo"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-800 text-white text-uppercase x-small tracking-widest">Informations
+                            Personnelles</h6>
+                        <span class="x-small" style="color: rgba(255,255,255,0.4);">Mettez à jour vos données</span>
+                    </div>
+                </div>
 
                 <form action="/profil" method="POST" enctype="multipart/form-data" id="profileForm">
                     <input type="hidden" name="action" value="update_profile">
@@ -101,53 +183,66 @@
 
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Identité
-                                Complète</label>
-                            <input type="text" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
+                            <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                                style="color: rgba(255,255,255,0.6);">
+                                <i class="fas fa-user me-2 text-indigo"></i>Nom Complet
+                            </label>
+                            <input type="text"
+                                class="form-control form-control-lg bg-white-5 border-slate text-white rounded-3"
                                 name="nom_complet" value="{{ user.nom_complet or '' }}"
-                                placeholder="Entrez votre nom légal">
+                                placeholder="Entrez votre nom complet"
+                                style="border-color: rgba(255,255,255,0.1) !important;">
                         </div>
                         <div class="col-md-6">
-                            <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Adresse
-                                de Relais (Email)</label>
-                            <input type="email" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
-                                name="email" value="{{ user.email or '' }}" placeholder="quantum@relay.com">
+                            <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                                style="color: rgba(255,255,255,0.6);">
+                                <i class="fas fa-envelope me-2 text-indigo"></i>Adresse Email
+                            </label>
+                            <input type="email"
+                                class="form-control form-control-lg bg-white-5 border-slate text-white rounded-3"
+                                name="email" value="{{ user.email or '' }}" placeholder="votre@email.com"
+                                style="border-color: rgba(255,255,255,0.1) !important;">
                         </div>
                         <div class="col-md-6">
-                            <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Lien
-                                de Fréquence (Mobile)</label>
-                            <input type="tel" class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
-                                name="telephone" value="{{ user.telephone or '' }}" placeholder="+224 6XX XX XX XX">
+                            <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                                style="color: rgba(255,255,255,0.6);">
+                                <i class="fas fa-phone me-2 text-emerald"></i>Téléphone
+                            </label>
+                            <input type="tel"
+                                class="form-control form-control-lg bg-white-5 border-slate text-white rounded-3"
+                                name="telephone" value="{{ user.telephone or '' }}" placeholder="+224 6XX XX XX XX"
+                                style="border-color: rgba(255,255,255,0.1) !important;">
                         </div>
                         <div class="col-md-6">
-                            <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Ancre
-                                Régionale</label>
-                            <input type="text" class="form-control bg-white-5 border-slate text-white-50 py-3 rounded-3"
-                                value="République de Guinée (GN)" disabled>
+                            <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                                style="color: rgba(255,255,255,0.6);">
+                                <i class="fas fa-flag me-2 text-emerald"></i>Pays
+                            </label>
+                            <input type="text" class="form-control form-control-lg bg-white-5 border-slate rounded-3"
+                                value="République de Guinée" disabled
+                                style="color: rgba(255,255,255,0.5) !important; border-color: rgba(255,255,255,0.06) !important;">
                         </div>
                         <div class="col-12">
-                            <label
-                                class="x-small text-muted text-uppercase fw-800 tracking-widest mb-3 d-block ps-1">Coordonnées
-                                Physiques</label>
-                            <textarea class="form-control bg-white-5 border-slate text-white py-3 rounded-3"
-                                name="adresse" rows="3"
-                                placeholder="Quartier, Avenue, Numéro de porte...">{{ user.adresse or '' }}</textarea>
+                            <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                                style="color: rgba(255,255,255,0.6);">
+                                <i class="fas fa-location-dot me-2 text-indigo"></i>Adresse
+                            </label>
+                            <textarea class="form-control form-control-lg bg-white-5 border-slate text-white rounded-3"
+                                name="adresse" rows="3" placeholder="Quartier, Avenue, Numéro de porte..."
+                                style="border-color: rgba(255,255,255,0.1) !important;">{{ user.adresse or '' }}</textarea>
                         </div>
                     </div>
 
-                    <div class="mt-5 d-flex align-items-center justify-content-between pt-4 border-top border-slate">
-                        <p class="x-small text-muted mb-0 font-monospace opacity-50">
-                            >> LAST_SYNC: {{ now.strftime('%Y-%m-%d %H:%M') if now else 'SEQUENCE_UNKNOWN' }}
-                        </p>
+                    <div class="mt-5 pt-4 d-flex align-items-center justify-content-between"
+                        style="border-top: 1px solid rgba(255,255,255,0.06);">
+                        <span class="x-small font-monospace" style="color: rgba(255,255,255,0.25);">
+                            Dernière mise à jour : {{ now.strftime('%d/%m/%Y à %H:%M') if now else '—' }}
+                        </span>
                         <div class="d-flex gap-3">
-                            <a href="/dashboard"
-                                class="btn btn-outline-slate rounded-pill px-4 fw-bold small">ANNULER</a>
-                            <button type="submit" class="btn btn-indigo rounded-pill px-5 fw-bold small">
-                                <i class="fas fa-sync-alt small me-2"></i>METTRE_A_JOUR_LOGS
+                            <a href="/dashboard" class="btn btn-outline-secondary rounded-pill px-4 fw-bold small"
+                                style="border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">Annuler</a>
+                            <button type="submit" class="btn btn-indigo rounded-pill px-5 fw-bold small shadow-lg">
+                                <i class="fas fa-check me-2"></i>Enregistrer
                             </button>
                         </div>
                     </div>
@@ -156,21 +251,28 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- Password Change Modal -->
 <div class="modal fade" id="passwordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass shadow-lg border-slate">
-            <div class="modal-header border-slate">
-                <h5 class="modal-title fw-bold">Modifier le mot de passe</h5>
+        <div class="modal-content glass shadow-lg border-slate"
+            style="background: rgba(15,23,42,0.95) !important; backdrop-filter: blur(20px);">
+            <div class="modal-header border-slate px-4 pt-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; background: rgba(99,102,241,0.15);">
+                        <i class="fas fa-lock text-indigo"></i>
+                    </div>
+                    <h5 class="modal-title fw-800 text-white mb-0">Modifier le mot de passe</h5>
+                </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <div id="passwordStep1">
-                    <p class="text-white-50 small mb-4">Pour des raisons de sécurité, nous devons vérifier votre
+                    <p class="small mb-4" style="color: rgba(255,255,255,0.6);">Pour des raisons de sécurité, nous
+                        devons vérifier votre
                         identité. Un code à 6 chiffres sera envoyé à votre adresse e-mail.</p>
-                    <button class="btn btn-indigo w-100 py-3" onclick="requestVerificationCode()">
+                    <button class="btn btn-indigo w-100 py-3 rounded-3 fw-bold" onclick="requestVerificationCode()">
                         <i class="fas fa-paper-plane me-2"></i>
                         Envoyer le code par e-mail
                     </button>
@@ -178,20 +280,25 @@
 
                 <div id="passwordStep2" style="display: none;">
                     <div class="mb-4">
-                        <label class="label-custom">Code de vérification (6 chiffres)</label>
+                        <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                            style="color: rgba(255,255,255,0.6);">Code de vérification</label>
                         <input type="text" id="verificationCode"
-                            class="form-control-custom w-100 text-center fw-bold fs-4" maxlength="6"
-                            placeholder="000 000">
-                        <p class="text-white-50 x-small mt-2 text-center">Entrez le code reçu par e-mail.</p>
+                            class="form-control form-control-lg bg-white-5 border-slate text-white text-center fw-bold fs-4 rounded-3"
+                            maxlength="6" placeholder="000 000"
+                            style="letter-spacing: 0.5em; border-color: rgba(255,255,255,0.1) !important;">
+                        <p class="x-small mt-2 text-center" style="color: rgba(255,255,255,0.4);">Entrez le code reçu
+                            par e-mail.</p>
                     </div>
 
                     <div class="mb-4">
-                        <label class="label-custom">Nouveau mot de passe</label>
-                        <input type="password" id="newPassword" class="form-control-custom w-100"
-                            placeholder="Min. 8 caractères">
+                        <label class="form-label x-small fw-800 text-uppercase tracking-widest mb-2"
+                            style="color: rgba(255,255,255,0.6);">Nouveau mot de passe</label>
+                        <input type="password" id="newPassword"
+                            class="form-control form-control-lg bg-white-5 border-slate text-white rounded-3"
+                            placeholder="Min. 8 caractères" style="border-color: rgba(255,255,255,0.1) !important;">
                     </div>
 
-                    <button class="btn btn-indigo w-100 py-3" onclick="verifyAndChangePassword()">
+                    <button class="btn btn-indigo w-100 py-3 rounded-3 fw-bold" onclick="verifyAndChangePassword()">
                         <i class="fas fa-check-circle me-2"></i>
                         Valider le nouveau mot de passe
                     </button>
@@ -262,6 +369,7 @@
             alert("Une erreur technique est survenue.");
         }
     }
+
     async function registerBiometrics() {
         const btn = document.getElementById('biometricBtn');
         const status = document.getElementById('biometricStatus');
@@ -269,13 +377,11 @@
         try {
             status.innerHTML = '<i class="fas fa-spinner fa-spin text-emerald x-small"></i>';
 
-            // 1. Get options from backend
             const optionsRes = await fetch('/api/auth/webauthn/register/options', { method: 'POST' });
             const options = await optionsRes.json();
 
             if (!options.publicKey) throw new Error(options.error || "Erreur options");
 
-            // Fix binary data from base64
             options.publicKey.challenge = Uint8Array.from(atob(options.publicKey.challenge), c => c.charCodeAt(0));
             options.publicKey.user.id = Uint8Array.from(atob(options.publicKey.user.id), c => c.charCodeAt(0));
             if (options.publicKey.excludeCredentials) {
@@ -284,10 +390,8 @@
                 });
             }
 
-            // 2. Create credential
             const credential = await navigator.credentials.create({ publicKey: options.publicKey });
 
-            // 3. Send attestation to backend
             const attestation = {
                 id: credential.id,
                 rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
@@ -320,25 +424,36 @@
 </script>
 
 <style>
-    /* User Terminal Specific Refinements */
-    .bg-indigo-glow {
-        background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-            rgba(15, 23, 42, 0.3);
+    .profile-hero {
+        background: rgba(15, 23, 42, 0.4);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        border: 1px solid rgba(99, 102, 241, 0.15);
     }
 
-    .shadow-glow {
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    .profile-avatar-wrapper {
+        display: inline-block;
     }
 
-    .hover-indigo:hover {
-        background: rgba(99, 102, 241, 0.08) !important;
-        border-color: rgba(99, 102, 241, 0.4) !important;
+    .security-action-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .terminal-text h1 {
-        letter-spacing: -0.02em;
+    .security-action-item:hover {
+        background: rgba(99, 102, 241, 0.08);
+        border-color: rgba(99, 102, 241, 0.3);
+        transform: translateX(4px);
+    }
+
+    .form-control:focus,
+    .form-control-lg:focus {
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.2) !important;
     }
 </style>
 {% endblock %}
