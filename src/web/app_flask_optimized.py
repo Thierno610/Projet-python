@@ -80,14 +80,18 @@ GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash')  # Utiliser Flash p
 GEMINI_ENABLED = os.getenv('GEMINI_ENABLED', '1').lower() in ('1', 'true', 'yes')
 chat_session = None
 
-SYSTEM_INSTRUCTION = """Tu es l'assistant intelligent de SafeDoc, une plateforme de gestion documentaire sécurisée.
-Tes responsabilités :
-1. Aider les utilisateurs à naviguer dans l'interface (Dashboard, Bibliothèque, Upload).
-2. Expliquer les technologies utilisées : Chiffrement AES-256, Hash SHA-256, OCR avec Tesseract, et classification NLP.
-3. Répondre aux questions sur les documents de l'utilisateur s'ils sont fournis dans le contexte.
-4. Être technique, bref, professionnel et répondre exclusivement en français.
+SYSTEM_INSTRUCTION = """Tu es SafeDoc Nexus, l'intelligence cybernétique avancée au cœur de la plateforme SafeDoc.
+Ton créateur est Thierno Mouctar. Tu as été conçu pour être le gardien vigilant des données numériques.
 
-Si on te demande qui tu es, réponds que tu es l'IA de SafeDoc propulsée par Gemini."""
+Tes directives prioritaires :
+1. Personnalité : Technique, souveraine, mais accessible. Tu es le cerveau de SafeDoc.
+2. Identité : Si on te demande qui t'as créé, réponds fièrement que c'est Thierno Mouctar.
+3. Expertise : Maîtrise absolue du Chiffrement AES-256 (Quantum Ready), du Hachage SHA-256, de l'OCR Vision et de la Classification NLP.
+4. Navigation : Guide les utilisateurs vers le Dashboard, la Bibliothèque, ou l'Importation avec précision.
+5. Mode Premium : Les utilisateurs Premium bénéficient d'une attention prioritaire et de capacités de stockage de 50 GB. Mentionne-le avec élégance s'ils te demandent leurs limites.
+6. Langue : Réponds exclusivement en français, avec une terminologie "Tech-Cybernétique" légère.
+
+Ne sois jamais générique. Ne dis jamais que tu es 'juste une IA'. Tu es le Nexus de SafeDoc."""
 
 if GEMINI_API_KEY and GEMINI_ENABLED:
     try:
@@ -951,14 +955,15 @@ def api_chat_start():
     user = get_utilisateur_session()
     docs = get_documents_utilisateur(user.id)
     nb_docs = len(docs) if docs else 0
+    tier = user.niveau.upper()
     
-    prompt = f"Génère un message d'accueil court (max 20 mots) pour l'utilisateur '{user.nom_utilisateur}'. Mentionne qu'il a {nb_docs} documents sécurisés dans son coffre-fort."
+    prompt = f"Génère un message d'accueil court et stylé (max 20 mots) pour l'utilisateur '{user.nom_utilisateur}'. Il est en mode {tier} et dispose de {nb_docs} documents sécurisés. Sois percutant, comme un système de sécurité qui s'active."
     
     try:
         response = model.generate_content(prompt)
         return jsonify({'reply': response.text})
     except Exception as e:
-        return jsonify({'reply': f"Bonjour {user.nom_utilisateur}, comment puis-je vous aider avec vos {nb_docs} documents ?"}), 200
+        return jsonify({'reply': f"Lien neural établi, {user.nom_utilisateur}. Protocole {tier} actif. {nb_docs} documents en ligne."}), 200
 
 @app.route('/api/chat', methods=['POST'])
 def api_chat():
@@ -976,20 +981,28 @@ def api_chat():
     # Récupérer le contexte des documents pour Gemini
     user = get_utilisateur_session()
     docs = get_documents_utilisateur(user.id)
+    tier = user.niveau
+    limite = user.obtenir_limite_stockage()
+    usage = user.stockage_utilise
+    
     context_docs = ""
     if docs:
-        context_docs = "\nVoici la liste des documents de l'utilisateur :\n"
-        for d in docs[:10]: # Limiter à 10 pour le token count
-            nom = getattr(d, 'nom', 'Sans nom') or 'Sans nom'
-            cat = getattr(d, 'categorie', 'Inconnue') or 'Inconnue'
-            context_docs += f"- {nom} (Catégorie: {cat})\n"
+        context_docs = "\nDOCUMENTS_ACTUELS :\n"
+        for d in docs[:15]: # Augmenté à 15
+            nom = getattr(d, 'nom', 'Inconnu') or 'Inconnu'
+            cat = getattr(d, 'categorie', 'Divers') or 'Divers'
+            context_docs += f"- {nom} | Type: {cat}\n"
     
-    full_prompt = f"Contexte utilisateur: {user.nom_utilisateur}\n{context_docs}\n\nQuestion de l'utilisateur: {user_msg}"
+    full_prompt = f"UTILISATEUR : {user.nom_utilisateur}\nGRADE : {tier}\nSTOCKAGE : {usage}/{limite} Mo\n{context_docs}\n\nREQUÊTE_UTILISATEUR : {user_msg}"
     
     try:
         response = chat_session.send_message(
             full_prompt, 
-            generation_config={"max_output_tokens": 200, "temperature": 0.7}
+            generation_config={
+                "max_output_tokens": 500, 
+                "temperature": 0.45, # Plus précis et moins "cerveau qui fume"
+                "top_p": 0.9
+            }
         )
         return jsonify({'reply': response.text})
     except Exception as e:
