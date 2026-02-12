@@ -59,9 +59,9 @@
                     </div>
                     <div class="d-flex gap-2">
                         <div class="btn-group-premium p-1 rounded-pill bg-white-5 border-slate">
-                            <button class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom In"><i
+                            <button id="zoom-plus" class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom In"><i
                                     class="fas fa-plus x-small"></i></button>
-                            <button class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom Out"><i
+                            <button id="zoom-minus" class="btn btn-icon-slate btn-xs rounded-circle" title="Zoom Out"><i
                                     class="fas fa-minus x-small"></i></button>
                         </div>
                     </div>
@@ -86,7 +86,10 @@
                         </div>
                     </div>
 
-                    <iframe id="doc-iframe" class="w-100 h-100 border-0 d-none" title="Visualiseur SafeDoc"></iframe>
+                    <div class="zoom-wrapper w-100 h-100" id="zoom-target">
+                        <iframe id="doc-iframe" class="w-100 h-100 border-0 d-none"
+                            title="Visualiseur SafeDoc"></iframe>
+                    </div>
 
                     <!-- Safety Handshake Layer (Visible if error occurs) -->
                     <div id="safety-handshake"
@@ -112,9 +115,11 @@
                                 <span class="x-small text-muted font-monospace">{{ document.type_fichier|upper }}
                                     RAW_DATA</span>
                             </div>
-                            <div class="neural-text-content font-monospace text-white-75"
-                                style="line-height: 2; letter-spacing: 0.5px;">
-                                {{ document.texte_extrait|replace('\n', '<br>')|safe }}
+                            <div class="zoom-wrapper" id="zoom-target-text">
+                                <div class="neural-text-content font-monospace text-white-75"
+                                    style="line-height: 2; letter-spacing: 0.5px;">
+                                    {{ document.texte_extrait|replace('\n', '<br>')|safe }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -131,10 +136,12 @@
                         </div>
 
                         <!-- Preview Content (Initially hidden) -->
-                        <div id="office-content"
-                            class="w-100 h-100 bg-white text-dark p-5 overflow-auto custom-scrollbar d-none shadow-inner"
-                            style="min-height: 500px;">
-                            <!-- Content will be injected here -->
+                        <div class="zoom-wrapper" id="zoom-target-office" style="width: 100%; height: 100%;">
+                            <div id="office-content"
+                                class="w-100 h-100 bg-white text-dark p-5 overflow-auto custom-scrollbar d-none shadow-inner"
+                                style="min-height: 500px;">
+                                <!-- Content will be injected here -->
+                            </div>
                         </div>
 
                         <!-- Error State (Fallback to download) -->
@@ -293,6 +300,22 @@
         width: 28px;
         height: 28px;
     }
+
+    .preview-viewport {
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .zoom-wrapper {
+        transform-origin: top center;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+    }
 </style>
 {% endblock %}
 
@@ -300,6 +323,48 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+    // --- ZOOM LOGIC ---
+    let currentZoom = 1.0;
+    const ZOOM_STEP = 0.1;
+    const MAX_ZOOM = 3.0;
+    const MIN_ZOOM = 0.5;
+
+    function updateZoom() {
+        // Obtenir la cible active du zoom
+        const iframeTarget = document.getElementById('zoom-target');
+        const officeTarget = document.getElementById('zoom-target-office');
+        const textTarget = document.querySelector('.neural-text-content');
+
+        const targets = [iframeTarget, officeTarget, textTarget].filter(t => t !== null);
+
+        targets.forEach(target => {
+            target.style.transform = `scale(${currentZoom})`;
+            // Ajuster la taille du conteneur pour permettre le scroll si zoom > 1
+            if (currentZoom > 1) {
+                target.style.width = (100 * currentZoom) + '%';
+                target.style.height = (100 * currentZoom) + '%';
+            } else {
+                target.style.width = '100%';
+                target.style.height = '100%';
+            }
+        });
+    }
+
+    document.getElementById('zoom-plus')?.addEventListener('click', () => {
+        if (currentZoom < MAX_ZOOM) {
+            currentZoom += ZOOM_STEP;
+            updateZoom();
+        }
+    });
+
+    document.getElementById('zoom-minus')?.addEventListener('click', () => {
+        if (currentZoom > MIN_ZOOM) {
+            currentZoom -= ZOOM_STEP;
+            updateZoom();
+        }
+    });
+
+    // --- IMMERSION LOGIC ---
     function toggleImmersion() {
         const preview = document.getElementById('preview-container');
         preview.classList.toggle('immersion-mode');

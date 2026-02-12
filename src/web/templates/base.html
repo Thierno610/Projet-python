@@ -337,6 +337,31 @@
         [data-theme="light"] .profile-summary .x-small {
             color: #334155 !important;
         }
+
+        /* Premium Tier Effects */
+        [data-tier="premium"] .glass-sidebar {
+            border-right: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        [data-tier="premium"] .vibrant-gradient-indigo {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: #000 !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [data-tier="premium"] .animate-in {
+            animation-duration: 0.4s !important;
+            /* Slightly faster animations for 'fluidity' */
+        }
+
+        .transition-premium {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-up:hover {
+            transform: translateY(-2px);
+        }
     </style>
 
     <script>
@@ -350,7 +375,7 @@
     </script>
 </head>
 
-<body class="bg-gradient-dark">
+<body class="bg-gradient-dark" data-tier="{{ user.niveau if user else 'free' }}">
     <!-- Global Background Ornament -->
     <div class="bg-ornament"></div>
 
@@ -370,7 +395,11 @@
         <div class="px-3 mb-4 d-flex align-items-center justify-content-between profile-summary">
             <span class="x-small fw-bold text-muted text-uppercase">{{ user.nom_utilisateur if user else 'Session'
                 }}</span>
-            <span class="badge vibrant-gradient-indigo px-2 py-1 x-small">{{ user.niveau if user else 'Free' }}</span>
+            <a href="{{ url_for('premium') }}" class="text-decoration-none">
+                <span class="badge vibrant-gradient-indigo px-2 py-1 x-small shadow-sm hover-up transition-premium">
+                    {{ user.niveau if user else 'Free' }}
+                </span>
+            </a>
         </div>
 
         <div class="mb-4">

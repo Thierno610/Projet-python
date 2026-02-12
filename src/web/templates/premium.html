@@ -1,157 +1,155 @@
 {% extends "base.html" %}
 
-{% block title %}Membership - SafeDoc Pro{% endblock %}
+{% block title %}Upgrade to Premium - SafeDoc AI{% endblock %}
 
 {% block content %}
-<!-- Header & Telemetry -->
-<div class="d-flex justify-content-between align-items-center mb-5 animate-in">
-    <div>
-        <h1 class="h2 mb-1">Neural Tiers</h1>
-        <p class="text-muted small mb-0 d-flex align-items-center gap-3">
-            <span class="font-monospace opacity-75">UPGRADE_PROTOCOL: v8.4.1</span>
-            <span class="x-small text-indigo fw-bold tracking-widest"><i class="fas fa-crown me-2"></i>PREMIUM:
-                PENDING</span>
-        </p>
-    </div>
-    <div>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-slate rounded-pill px-4 fw-bold small">
-            <i class="fas fa-chevron-left small me-2"></i>ABORT_UPGRADE
-        </a>
-    </div>
-</div>
-
-<div class="row g-4 justify-content-center">
-    <!-- Tier: Standard -->
-    <div class="col-md-5">
-        <div class="glass-card p-5 h-100 d-flex flex-column animate-in" style="animation-delay: 0.1s;">
-            <div class="text-center mb-5">
-                <div class="bg-white-5 rounded-4 p-4 d-inline-block mb-4 border-slate">
-                    <i class="fas fa-microchip text-muted fs-2"></i>
+<div class="row justify-content-center animate-in">
+    <div class="col-lg-10 col-xl-8">
+        <!-- Main Hero Card -->
+        <div class="glass-card overflow-hidden border-indigo-glow mb-5" style="border-width: 2px;">
+            <div class="premium-hero-header p-5 text-center position-relative overflow-hidden">
+                <div class="premium-bg-glow"></div>
+                <div class="position-relative" style="z-index: 2;">
+                    <div
+                        class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill bg-indigo-glow border-indigo-glow">
+                        <i class="fas fa-crown text-indigo x-small"></i>
+                        <span class="x-small fw-900 tracking-widest text-indigo">OFFRE EXCLUSIVE</span>
+                    </div>
+                    <h1 class="display-4 fw-900 text-white mb-3 tracking-tighter">ÉLEVEZ VOTRE SÉCURITÉ</h1>
+                    <p class="lead text-white-50 max-w-600 mx-auto">Activez le protocole Premium pour déverrouiller la
+                        pleine puissance de SafeDoc et protéger vos données avec une fluidité inégalée.</p>
                 </div>
-                <h3 class="h4 mb-0 fw-800 text-white">SD-Core</h3>
-                <p class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4 opacity-75">LOCAL_INSTANCE</p>
-                <div class="h2 mb-0 fw-800 text-white">0,00€<span class="small text-muted fw-normal fs-6 opacity-50"> /
-                        PERPETUAL</span></div>
             </div>
 
-            <div class="flex-grow-1">
-                <ul class="list-unstyled d-flex flex-column gap-3 mb-5">
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check-circle text-indigo"></i>
-                        <span class="text-white-50">Local AES-256 Encryption</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check-circle text-indigo"></i>
-                        <span class="text-white-50">Smart OCR Ingestion</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-check-circle text-indigo"></i>
-                        <span class="text-white-50">Basic Metadata Analysis</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small opacity-25">
-                        <i class="fas fa-times-circle text-rose"></i>
-                        <span class="text-white-50">Neural Cloud Sync</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="p-3 rounded-3 bg-white-5 border-slate mb-4">
-                <p class="x-small text-muted mb-0 italic">Default service container for offline vault operations.</p>
-            </div>
-
-            <button class="btn btn-outline-slate w-100 py-3 rounded-pill fw-bold x-small disabled">NODE_ACTIVE</button>
-        </div>
-    </div>
-
-    <!-- Tier: Premium -->
-    <div class="col-md-5">
-        <div class="glass-card p-5 h-100 d-flex flex-column border-indigo-glow position-relative overflow-hidden animate-in"
-            style="animation-delay: 0.2s; border: 1px solid var(--primary-indigo) !important; background: rgba(99, 102, 241, 0.03);">
-            <div class="position-absolute top-0 end-0 p-4 opacity-10">
-                <i class="fas fa-wifi fa-5x text-indigo"></i>
-            </div>
-
-            <div class="text-center mb-5">
-                <div class="bg-indigo-glow rounded-4 p-4 d-inline-block mb-4 border-indigo-glow">
-                    <i class="fas fa-bolt text-indigo fs-2"></i>
-                </div>
-                <h3 class="h4 mb-0 fw-800 text-white">SD-Network</h3>
-                <p class="x-small text-indigo text-uppercase fw-800 tracking-widest mb-4">CONNECTED_EXTENSION</p>
-                <div class="h2 mb-0 fw-800 text-white">9,99€<span class="small text-muted fw-normal fs-6 opacity-50"> /
-                        MONTHLY</span></div>
-            </div>
-
-            <div class="flex-grow-1">
-                <ul class="list-unstyled d-flex flex-column gap-3 mb-5">
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-plus-circle text-indigo"></i>
-                        <span class="text-white">Symmetric Google Drive Sync</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-plus-circle text-indigo"></i>
-                        <span class="text-white">Expanded Neural Vault: 50 GB</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-plus-circle text-indigo"></i>
-                        <span class="text-white">Omni-Channel Access Protocol</span>
-                    </li>
-                    <li class="d-flex align-items-center gap-3 x-small">
-                        <i class="fas fa-plus-circle text-indigo"></i>
-                        <span class="text-white">Priority Relay Support</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="p-3 rounded-3 bg-indigo-glow border-indigo-glow mb-4">
-                <p class="x-small text-white-50 mb-0">Deploy your sharded vault across the Global SafeDoc constellation.
-                </p>
-            </div>
-
-            <button class="btn btn-indigo w-100 py-3 rounded-pill fw-800 tracking-widest shadow-glow"
-                onclick="alert('Billing Module: Initializing secure handshake...')">
-                INITIALIZE_UPGRADE
-            </button>
-        </div>
-    </div>
-
-    <!-- Feature Modules Grid -->
-    <div class="col-12 mt-5">
-        <div class="glass-card p-5 animate-in" style="animation-delay: 0.3s;">
-            <h6 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-5 text-center">Advanced Protocol
-                Stack</h6>
-            <div class="row g-5">
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
-                            <i class="fas fa-shield-halved text-indigo fs-4"></i>
+            <div class="p-5 bg-white-2">
+                <div class="row g-4 mb-5">
+                    <!-- Feature 1: Storage -->
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 border-slate bg-white-5 h-100 transition-premium hover-up">
+                            <div class="bg-indigo-glow rounded-3 p-3 mb-4 d-inline-flex">
+                                <i class="fas fa-database text-indigo fs-4"></i>
+                            </div>
+                            <h5 class="fw-800 text-white mb-3">Stockage Illimité</h5>
+                            <p class="x-small text-muted mb-0">Passez de 500 MB à 50 GB de stockage sécurisé pour tous
+                                vos documents haute résolution.</p>
                         </div>
-                        <h6 class="small fw-800 text-white mb-3">Sync Zero-Knowledge</h6>
-                        <p class="x-small text-muted opacity-75">Local sharding before any cloud relay. We never see
-                            your fragments.</p>
+                    </div>
+                    <!-- Feature 2: Performance -->
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 border-slate bg-white-5 h-100 transition-premium hover-up">
+                            <div class="bg-emerald-glow rounded-3 p-3 mb-4 d-inline-flex">
+                                <i class="fas fa-bolt text-emerald fs-4"></i>
+                            </div>
+                            <h5 class="fw-800 text-white mb-3">Fluidité Totale</h5>
+                            <p class="x-small text-muted mb-0">Priorité de traitement IA pour l'OCR et la
+                                classification. Zéro attente, 100% réactivité.</p>
+                        </div>
+                    </div>
+                    <!-- Feature 3: Advanced Security -->
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 border-slate bg-white-5 h-100 transition-premium hover-up">
+                            <div class="bg-rose-glow rounded-3 p-3 mb-4 d-inline-flex">
+                                <i class="fas fa-shield-halved text-rose fs-4"></i>
+                            </div>
+                            <h5 class="fw-800 text-white mb-3">Sync Cloud</h5>
+                            <p class="x-small text-muted mb-0">Synchronisation sécurisée avec Google Drive pour une
+                                redondance totale de vos archives.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 border-start border-slate">
-                    <div class="text-center">
-                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
-                            <i class="fas fa-dna text-emerald fs-4"></i>
-                        </div>
-                        <h6 class="small fw-800 text-white mb-3">Temporal Versioning</h6>
-                        <p class="x-small text-muted opacity-75">Roll back asset clusters to any previous signature in
-                            the history chain.</p>
+
+                <div class="text-center">
+                    <div class="mb-4">
+                        <span class="display-3 fw-900 text-white">0 GNF</span>
+                        <span class="text-muted small">/ À VIE</span>
+                        <div class="badge bg-emerald-glow text-emerald ms-2 p-2 px-3 rounded-pill x-small">OFFRE DE
+                            LANCEMENT</div>
                     </div>
-                </div>
-                <div class="col-md-4 border-start border-slate">
-                    <div class="text-center">
-                        <div class="bg-white-5 rounded-circle p-4 d-inline-flex mb-4">
-                            <i class="fas fa-satellite text-indigo fs-4"></i>
-                        </div>
-                        <h6 class="small fw-800 text-white mb-3">Neural Audit Trail</h6>
-                        <p class="x-small text-muted opacity-75">Deep telemetry log of every access pulse and
-                            synchronization event.</p>
-                    </div>
+
+                    <button id="activate-premium-btn"
+                        class="btn btn-indigo btn-lg px-5 py-3 rounded-pill fw-900 tracking-widest shadow-glow-indigo animate-pulse">
+                        ACTIVER LE PROTOCOLE PREMIUM
+                    </button>
+
+                    <p class="x-small text-muted mt-4 opacity-50 font-monospace">
+                        VÉRIIFICATION_INTÉGRITÉ: OK <br>
+                        ID_TRANSACTION: SDF-{{ range(1000, 9999)|random }}-SEC
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .premium-hero-header {
+        min-height: 300px;
+        background: #0a0a0c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .premium-bg-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 150%;
+        height: 150%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .premium-hero-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(to top, #0a0a0c, transparent);
+    }
+
+    .hover-up:hover {
+        transform: translateY(-8px);
+        border-color: var(--primary-indigo) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+</style>
+
+<script>
+    document.getElementById('activate-premium-btn').addEventListener('click', async function () {
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i> INITIALISATION_PROTOCOLE...';
+
+        try {
+            const response = await fetch('/api/user/activate-premium', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                btn.classList.replace('btn-indigo', 'btn-emerald');
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> PROTOCOLE_ACTIF !';
+
+                // Redirection after success
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+            } else {
+                alert("Erreur lors de l'activation : " + data.error);
+                btn.disabled = false;
+                btn.innerHTML = 'ACTIVER LE PROTOCOLE PREMIUM';
+            }
+        } catch (error) {
+            console.error('Premium Activation Error:', error);
+            btn.disabled = false;
+            btn.innerHTML = 'ACTIVER LE PROTOCOLE PREMIUM';
+        }
+    });
+</script>
 {% endblock %}

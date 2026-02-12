@@ -907,6 +907,34 @@ def api_user_data():
     }
     return jsonify(data)
 
+@app.route('/api/user/activate-premium', methods=['POST'])
+@login_required
+def api_activate_premium():
+    """Active le mode Premium pour l'utilisateur connecté"""
+    user_id = session.get('user_id')
+    if not BDD_AVAILABLE:
+        return jsonify({'success': False, 'error': 'Base de données non disponible'}), 503
+        
+    db_session = gestionnaire_bdd.obtenir_session()
+    try:
+        user = db_session.query(UtilisateurDB).get(user_id)
+        if not user:
+            return jsonify({'success': False, 'error': 'Utilisateur non trouvé'}), 404
+            
+        # Basculer vers premium
+        user.niveau = 'premium'
+        db_session.commit()
+        
+        # Loguer l'événement
+        logger.success(f"Utilisateur {user.nom_utilisateur} est passé en PREMIUM")
+        return jsonify({'success': True, 'message': 'Protocole Premium activé avec succès'})
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Erreur activation Premium: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        db_session.close()
+
 @app.route('/api/chat/start', methods=['GET'])
 def api_chat_start():
     """Génère un message d'accueil personnalisé via Gemini"""
