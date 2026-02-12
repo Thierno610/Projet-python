@@ -408,7 +408,7 @@
                 {% if session.get('user_id') %}
                 <a class="nav-link {{ 'active' if page == 'dashboard' }}" href="{{ url_for('dashboard') }}">
                     <i class="fas fa-grid-2"></i>
-                    <span>Tableau de Bord IA</span>
+                    <span>Tableau de Bord</span>
                 </a>
                 <a class="nav-link {{ 'active' if page == 'upload' }}" href="{{ url_for('upload') }}">
                     <i class="fas fa-arrow-up-from-bracket"></i>
@@ -435,7 +435,7 @@
                 </a>
                 <a class="nav-link {{ 'active' if page == 'parametres' }}" href="{{ url_for('parametres') }}">
                     <i class="fas fa-wand-magic-sparkles"></i>
-                    <span>Expérience IA</span>
+                    <span>Expérience</span>
                 </a>
                 <a class="nav-link {{ 'active' if page == 'apropos' }}" href="{{ url_for('apropos') }}">
                     <i class="fas fa-info-circle"></i>

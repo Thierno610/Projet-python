@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Upgrade to Premium - SafeDoc AI{% endblock %}
+{% block title %}Upgrade to Premium - SafeDoc{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center animate-in">
@@ -16,8 +16,14 @@
                         <span class="x-small fw-900 tracking-widest text-indigo">OFFRE EXCLUSIVE</span>
                     </div>
                     <h1 class="display-4 fw-900 text-white mb-3 tracking-tighter">ÉLEVEZ VOTRE SÉCURITÉ</h1>
-                    <p class="lead text-white-50 max-w-600 mx-auto">Activez le protocole Premium pour déverrouiller la
-                        pleine puissance de SafeDoc et protéger vos données avec une fluidité inégalée.</p>
+                    <p class="lead text-white-50 max-w-600 mx-auto">
+                        {% if user.niveau == 'premium' %}
+                        Vous bénéficiez actuellement de la protection maximale. Votre protocole Premium est actif.
+                        {% else %}
+                        Activez le protocole Premium pour déverrouiller la pleine puissance de SafeDoc et protéger vos
+                        données avec une fluidité inégalée.
+                        {% endif %}
+                    </p>
                 </div>
             </div>
 
@@ -41,7 +47,7 @@
                                 <i class="fas fa-bolt text-emerald fs-4"></i>
                             </div>
                             <h5 class="fw-800 text-white mb-3">Fluidité Totale</h5>
-                            <p class="x-small text-muted mb-0">Priorité de traitement IA pour l'OCR et la
+                            <p class="x-small text-muted mb-0">Priorité de traitement pour l'OCR et la
                                 classification. Zéro attente, 100% réactivité.</p>
                         </div>
                     </div>
@@ -66,10 +72,23 @@
                             LANCEMENT</div>
                     </div>
 
-                    <button id="activate-premium-btn"
-                        class="btn btn-indigo btn-lg px-5 py-3 rounded-pill fw-900 tracking-widest shadow-glow-indigo animate-pulse">
-                        ACTIVER LE PROTOCOLE PREMIUM
-                    </button>
+                    <div class="d-flex flex-column align-items-center gap-3">
+                        {% if user.niveau == 'premium' %}
+                        <button id="activate-premium-btn"
+                            class="btn btn-emerald btn-lg px-5 py-3 rounded-pill fw-900 tracking-widest shadow-glow-emerald">
+                            PROTOCOLE PREMIUM ACTIF
+                        </button>
+                        <button id="downgrade-btn"
+                            class="btn btn-link text-white-50 x-small text-decoration-none hover-opacity-100 mt-2">
+                            <i class="fas fa-arrow-down me-1"></i> Revenir au mode gratuit
+                        </button>
+                        {% else %}
+                        <button id="activate-premium-btn"
+                            class="btn btn-indigo btn-lg px-5 py-3 rounded-pill fw-900 tracking-widest shadow-glow-indigo animate-pulse">
+                            ACTIVER LE PROTOCOLE PREMIUM
+                        </button>
+                        {% endif %}
+                    </div>
 
                     <p class="x-small text-muted mt-4 opacity-50 font-monospace">
                         VÉRIIFICATION_INTÉGRITÉ: OK <br>
@@ -119,37 +138,48 @@
 </style>
 
 <script>
-    document.getElementById('activate-premium-btn').addEventListener('click', async function () {
-        const btn = this;
+    const activateBtn = document.getElementById('activate-premium-btn');
+    const downgradeBtn = document.getElementById('downgrade-btn');
+
+    async function changeTier(mode) {
+        const btn = mode === 'premium' ? activateBtn : downgradeBtn;
+        const originalHtml = btn.innerHTML;
+
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i> INITIALISATION_PROTOCOLE...';
+        btn.innerHTML = '<i class="fas fa-sync-alt fa-spin me-2"></i> TRAITEMENT...';
 
         try {
             const response = await fetch('/api/user/activate-premium', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode: mode })
             });
 
             const data = await response.json();
 
             if (data.success) {
-                btn.classList.replace('btn-indigo', 'btn-emerald');
-                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> PROTOCOLE_ACTIF !';
-
-                // Redirection after success
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> TERMINÉ !';
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 1500);
+                    window.location.reload();
+                }, 1000);
             } else {
-                alert("Erreur lors de l'activation : " + data.error);
+                alert("Erreur : " + data.error);
                 btn.disabled = false;
-                btn.innerHTML = 'ACTIVER LE PROTOCOLE PREMIUM';
+                btn.innerHTML = originalHtml;
             }
         } catch (error) {
-            console.error('Premium Activation Error:', error);
+            console.error('Tier Change Error:', error);
             btn.disabled = false;
-            btn.innerHTML = 'ACTIVER LE PROTOCOLE PREMIUM';
+            btn.innerHTML = originalHtml;
         }
-    });
+    }
+
+    if (activateBtn && !activateBtn.classList.contains('btn-emerald')) {
+        activateBtn.addEventListener('click', () => changeTier('premium'));
+    }
+
+    if (downgradeBtn) {
+        downgradeBtn.addEventListener('click', () => changeTier('free'));
+    }
 </script>
 {% endblock %}

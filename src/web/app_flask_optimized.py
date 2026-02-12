@@ -98,7 +98,7 @@ if GEMINI_API_KEY and GEMINI_ENABLED:
         )
         # Préchauffer la session
         chat_session = model.start_chat()
-        print(f"✅ SafeDoc AI Hub Initialisé ({GEMINI_MODEL})")
+        print(f"✅ SafeDoc Hub Initialisé ({GEMINI_MODEL})")
     except Exception as e:
         print(f"⚠️ Erreur Initialisation AI: {e}")
         model = None
@@ -910,8 +910,11 @@ def api_user_data():
 @app.route('/api/user/activate-premium', methods=['POST'])
 @login_required
 def api_activate_premium():
-    """Active le mode Premium pour l'utilisateur connecté"""
+    """Active ou désactive le mode Premium pour l'utilisateur connecté"""
     user_id = session.get('user_id')
+    data = request.json or {}
+    mode = data.get('mode') # Optional: 'premium' or 'free'
+    
     if not BDD_AVAILABLE:
         return jsonify({'success': False, 'error': 'Base de données non disponible'}), 503
         
@@ -921,16 +924,20 @@ def api_activate_premium():
         if not user:
             return jsonify({'success': False, 'error': 'Utilisateur non trouvé'}), 404
             
-        # Basculer vers premium
-        user.niveau = 'premium'
+        # Basculer le niveau
+        nouveau_niveau = mode if mode in ['free', 'premium'] else ('free' if user.niveau == 'premium' else 'premium')
+        user.niveau = nouveau_niveau
         db_session.commit()
         
-        # Loguer l'événement
-        logger.success(f"Utilisateur {user.nom_utilisateur} est passé en PREMIUM")
-        return jsonify({'success': True, 'message': 'Protocole Premium activé avec succès'})
+        logger.success(f"Utilisateur {user.nom_utilisateur} est passé en {user.niveau.upper()}")
+        return jsonify({
+            'success': True, 
+            'niveau': user.niveau,
+            'message': f"Protocole {user.niveau.capitalize()} activé avec succès"
+        })
     except Exception as e:
         db_session.rollback()
-        logger.error(f"Erreur activation Premium: {e}")
+        logger.error(f"Erreur changement niveau Premium: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         db_session.close()
