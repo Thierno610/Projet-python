@@ -362,6 +362,69 @@
         .hover-up:hover {
             transform: translateY(-2px);
         }
+
+        /* Storage Indicator Styles - Premium */
+        .storage-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 10px 15px 25px 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .storage-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--bar-color);
+            transform: translateY(-2px);
+        }
+
+        .storage-progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .storage-bar {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(90deg, var(--bar-color), #fff3);
+            box-shadow: 0 0 15px var(--bar-color);
+            position: relative;
+        }
+
+        .storage-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: bar-shine 3s infinite;
+        }
+
+        @keyframes bar-shine {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        [data-theme="light"] .storage-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
     </style>
 
     <script>
@@ -444,13 +507,43 @@
             </nav>
         </div>
 
-        <!-- Footer Actions -->
-        <div class="mt-auto px-2">
-            <a class="nav-link text-rose opacity-75 hover-opacity-100" href="{{ url_for('logout') }}">
-                <i class="fas fa-power-off"></i>
-                <span>Déconnexion Sécurisée</span>
+        {% if session.get('user_id') and user %}
+        <!-- Storage Indicator Premium -->
+        {% set pct = user.pourcentage_stockage() %}
+        {% set bar_color = '#10b981' if pct < 70 else ('#f59e0b' if pct < 90 else '#f43f5e' ) %} <div
+            class="storage-card animate-in" style="animation-delay: 0.3s; --bar-color: {{ bar_color }};">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="x-small fw-900 text-muted uppercase tracking-widest opacity-75">Neural Storage</span>
+                <span class="x-small fw-900 text-white shadow-sm">{{ pct|int }}%</span>
+            </div>
+
+            <div class="storage-progress">
+                <div class="storage-bar" style="width: {{ pct }}%;"></div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-2 font-monospace" style="font-size: 0.65rem;">
+                <span class="text-white-50">{{ user.stockage_utilise|int }} Mo</span>
+                <span class="text-white-50 opacity-50">{{ user.obtenir_limite_stockage() // 1024 if
+                    user.obtenir_limite_stockage() >= 1024 else user.obtenir_limite_stockage() }} {{ 'Go' if
+                    user.obtenir_limite_stockage() >= 1024 else 'Mo' }}</span>
+            </div>
+
+            {% if pct > 80 and user.niveau == 'free' %}
+            <a href="{{ url_for('premium') }}"
+                class="btn btn-sm btn-indigo w-100 mt-2 py-1 x-small fw-900 rounded-pill shadow-glow-indigo">
+                <i class="fas fa-crown me-1"></i> OPTIMISER
             </a>
-        </div>
+            {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Footer Actions -->
+    <div class="mt-auto px-2">
+        <a class="nav-link text-rose opacity-75 hover-opacity-100" href="{{ url_for('logout') }}">
+            <i class="fas fa-power-off"></i>
+            <span>Déconnexion Sécurisée</span>
+        </a>
+    </div>
     </div>
 
     <!-- Main Viewboard -->
