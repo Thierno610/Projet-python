@@ -118,6 +118,40 @@
                             </div>
                         </div>
                     </div>
+                    {% elif document.type_fichier in ['docx', 'xlsx'] %}
+                    <!-- Office Preview Container -->
+                    <div id="office-preview-wrapper" class="w-100 h-100 d-flex flex-column position-relative">
+
+                        <!-- Loading State -->
+                        <div id="office-loading" class="position-absolute top-50 start-50 translate-middle text-center"
+                            style="z-index: 20;">
+                            <div class="spinner-border text-indigo mb-3" role="status"></div>
+                            <h6 class="x-small text-white-50 text-uppercase fw-900 tracking-widest">Rendu Local en
+                                cours...</h6>
+                        </div>
+
+                        <!-- Preview Content (Initially hidden) -->
+                        <div id="office-content"
+                            class="w-100 h-100 bg-white text-dark p-5 overflow-auto custom-scrollbar d-none shadow-inner"
+                            style="min-height: 500px;">
+                            <!-- Content will be injected here -->
+                        </div>
+
+                        <!-- Error State (Fallback to download) -->
+                        <div id="office-error"
+                            class="d-none flex-column align-items-center justify-content-center h-100 text-center p-5">
+                            <i class="fas fa-exclamation-triangle text-warning display-4 mb-3"></i>
+                            <h5 class="text-white mb-3">Prévisualisation Impossible</h5>
+                            <p class="text-muted small mb-4">Le rendu local a échoué. Veuillez télécharger le fichier
+                                pour le consulter.</p>
+                            <form action="{{ url_for('telecharger_document', doc_id=document.id) }}" method="POST">
+                                <button type="submit"
+                                    class="btn btn-indigo rounded-pill px-4 py-2 fw-bold tracking-widest hover-up">
+                                    <i class="fas fa-download me-2"></i> TÉLÉCHARGER
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                     {% else %}
                     <div
                         class="d-flex flex-column align-items-center justify-content-center h-100 text-center opacity-50 p-5">
@@ -263,6 +297,8 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
     function toggleImmersion() {
         const preview = document.getElementById('preview-container');
@@ -278,33 +314,131 @@
         }
     }
 
-    // Secure Blob Handshake Strategy (Bypass IDM)
+    // === Secure Blob Handshake Strategy (Bypass IDM via Base64/JSON) ===
     document.addEventListener('DOMContentLoaded', function () {
-        const iframe = document.getElementById('doc-iframe');
-        if (!iframe) return;
+        var docType = "{{ document.type_fichier }}";
+        var visualUrl = "{{ url_for('visualiser_document', doc_id=document.id) }}";
 
-        const visualUrl = "{{ url_for('visualiser_document', doc_id=document.id) }}";
+        // Helper: Convert Base64 string to Blob
+        function base64ToBlob(base64, mime) {
+            var binaryString = window.atob(base64);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return new Blob([bytes], { type: mime });
+        }
 
+        // Generic error handler
+        function showError(message) {
+            // Try Office error container first
+            var officeError = document.getElementById('office-error');
+            var officeLoading = document.getElementById('office-loading');
+            if (officeError && officeLoading) {
+                officeLoading.classList.add('d-none');
+                officeError.classList.remove('d-none');
+                officeError.classList.add('d-flex');
+                var p = officeError.querySelector('p');
+                if (p) p.textContent = message;
+                return;
+            }
+            // Try neural error container
+            var neuralLoading = document.getElementById('neural-loading');
+            var safetyHandshake = document.getElementById('safety-handshake');
+            if (neuralLoading && safetyHandshake) {
+                neuralLoading.classList.add('d-none');
+                safetyHandshake.classList.remove('d-none');
+                safetyHandshake.classList.add('d-flex');
+                var p2 = safetyHandshake.querySelector('p');
+                if (p2) p2.textContent = message;
+            }
+        }
+
+        // 1. Fetch JSON from server (IDM won't intercept JSON)
         fetch(visualUrl)
-            .then(response => {
-                if (!response.ok) throw new Error('Fail to fetch document flow');
-                return response.blob();
+            .then(function (response) {
+                if (!response.ok) throw new Error('Erreur HTTP: ' + response.status);
+                return response.json();
             })
-            .then(blob => {
-                const blobUrl = URL.createObjectURL(blob);
-                iframe.src = blobUrl;
-                iframe.classList.remove('d-none');
-                document.getElementById('neural-loading').classList.add('d-none');
+            .then(function (data) {
+                if (data.status !== 'success') {
+                    throw new Error(data.message || 'Erreur inconnue du serveur');
+                }
 
-                // Content Security: Cleanup blob URL when leaving
-                window.addEventListener('unload', () => URL.revokeObjectURL(blobUrl));
+                var blob = base64ToBlob(data.content, data.mime_type);
+
+                // Route to appropriate renderer based on file type
+                if (docType === 'docx' || docType === 'xlsx') {
+                    renderOffice(blob, docType);
+                } else {
+                    renderMedia(blob);
+                }
             })
-            .catch(error => {
-                console.error('Handshake Error:', error);
-                document.getElementById('neural-loading').classList.add('d-none');
-                document.getElementById('safety-handshake').classList.remove('d-none');
-                document.getElementById('safety-handshake').classList.add('d-flex');
+            .catch(function (error) {
+                console.error('SafeDoc Handshake Error:', error);
+                showError('Échec du flux sécurisé : ' + error.message);
             });
+
+        // Render PDF/Images in iframe
+        function renderMedia(blob) {
+            var iframe = document.getElementById('doc-iframe');
+            if (!iframe) return;
+
+            var blobUrl = URL.createObjectURL(blob);
+            iframe.src = blobUrl;
+            iframe.classList.remove('d-none');
+            document.getElementById('neural-loading').classList.add('d-none');
+            window.addEventListener('unload', function () { URL.revokeObjectURL(blobUrl); });
+        }
+
+        // Render Office documents (DOCX/XLSX)
+        function renderOffice(blob, type) {
+            var loading = document.getElementById('office-loading');
+            var content = document.getElementById('office-content');
+            var errorDiv = document.getElementById('office-error');
+
+            if (!loading || !content || !errorDiv) return;
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var arrayBuffer = e.target.result;
+
+                if (type === 'docx') {
+                    mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+                        .then(function (result) {
+                            loading.classList.add('d-none');
+                            content.innerHTML = result.value;
+                            content.classList.remove('d-none');
+                        })
+                        .catch(function (err) {
+                            console.error("DOCX Rendering Error:", err);
+                            loading.classList.add('d-none');
+                            errorDiv.classList.remove('d-none');
+                            errorDiv.classList.add('d-flex');
+                            var p = errorDiv.querySelector('p');
+                            if (p) p.textContent = 'Erreur de rendu DOCX : ' + (err.message || err);
+                        });
+                } else if (type === 'xlsx') {
+                    try {
+                        var workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                        var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        var html = XLSX.utils.sheet_to_html(firstSheet);
+                        loading.classList.add('d-none');
+                        content.innerHTML = html;
+                        content.classList.remove('d-none');
+                    } catch (err) {
+                        console.error("XLSX Rendering Error:", err);
+                        loading.classList.add('d-none');
+                        errorDiv.classList.remove('d-none');
+                        errorDiv.classList.add('d-flex');
+                        var p = errorDiv.querySelector('p');
+                        if (p) p.textContent = 'Erreur de rendu XLSX : ' + (err.message || err);
+                    }
+                }
+            };
+            reader.readAsArrayBuffer(blob);
+        }
     });
 </script>
 {% endblock %}

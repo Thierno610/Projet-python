@@ -66,7 +66,7 @@ try:
     ALLOWED_EXTENSIONS = set(CONFIG_ALLOWED)
     MAX_CONTENT_LENGTH = MAX_UPLOAD_SIZE_BYTES
 except ImportError:
-    ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'tiff', 'bmp'}
+    ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'tiff', 'bmp', 'doc', 'docx', 'xls', 'xlsx'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     FREE_TIER_LIMIT_MB = 500
     PREMIUM_TIER_LIMIT_MB = 50000
@@ -147,9 +147,18 @@ def get_utilisateur_session():
     """Récupère l'utilisateur connecté via la session Flask"""
     user_id = session.get('user_id')
     if user_id and BDD_AVAILABLE:
-        user_db = gestionnaire_bdd.obtenir_session().query(UtilisateurDB).get(user_id)
-        if user_db:
-            return user_db
+        # Utiliser une session à courte durée pour éviter les fuites
+        db_session = gestionnaire_bdd.obtenir_session()
+        try:
+            user = db_session.query(UtilisateurDB).get(user_id)
+            if user:
+                # Détacher l'objet de la session pour qu'il reste accessible après fermeture
+                db_session.expunge(user)
+                return user
+        except Exception as e:
+            logger.error(f"Erreur session utilisateur: {e}")
+        finally:
+            db_session.close()
     
     return None
 
@@ -169,11 +178,9 @@ def get_documents_utilisateur(user_id):
 
 def get_etiquettes_utilisateur(user_id):
     if BDD_AVAILABLE:
-        # Initialiser les étiquettes par défaut si aucune n'existe
+        # Toujours s'assurer que les étiquettes par défaut existent (creer_etiquette gère les doublons)
+        gestionnaire_bdd.creer_etiquettes_par_defaut(user_id)
         etiquettes = gestionnaire_bdd.obtenir_toutes_etiquettes(user_id)
-        if not any(et.utilisateur_id == user_id for et in etiquettes):
-            gestionnaire_bdd.creer_etiquettes_par_defaut(user_id)
-            etiquettes = gestionnaire_bdd.obtenir_toutes_etiquettes(user_id)
         return etiquettes
     return []
 
@@ -689,24 +696,40 @@ def visualiser_document(doc_id):
         )
         
         if success and chemin_dechiffre:
-            from flask import send_file, after_this_request
-            
-            @after_this_request
-            def remove_file(response):
-                try:
-                    if chemin_dechiffre.exists():
-                        chemin_dechiffre.unlink()
-                except Exception as e:
-                    logger.error(f"Erreur nettoyage fichier temp: {e}")
-                return response
-            import mimetypes
-            mime_type = mimetypes.guess_type(str(chemin_dechiffre))[0] or 'application/octet-stream'
-            
-            return send_file(
-                chemin_dechiffre,
-                as_attachment=False,
-                mimetype=mime_type
-            )
+            try:
+                import base64
+                import mimetypes
+                
+                # Determine MIME type
+                ext = chemin_dechiffre.suffix.lower()
+                if ext == '.docx':
+                    mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                elif ext == '.xlsx':
+                    mime_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                else:
+                    mime_type = mimetypes.guess_type(str(chemin_dechiffre))[0] or 'application/octet-stream'
+
+                # Read and encode
+                with open(chemin_dechiffre, "rb") as f:
+                    file_content = f.read()
+                    encoded_content = base64.b64encode(file_content).decode('utf-8')
+
+                # Cleanup immediately
+                if chemin_dechiffre.exists():
+                    chemin_dechiffre.unlink()
+
+                return jsonify({
+                    "status": "success",
+                    "filename": chemin_dechiffre.name.replace("dechiffre_", ""),
+                    "mime_type": mime_type,
+                    "content": encoded_content
+                })
+
+            except Exception as e:
+                logger.error(f"Erreur encodage document: {e}")
+                if chemin_dechiffre.exists():
+                     chemin_dechiffre.unlink()
+                return jsonify({"status": "error", "message": str(e)}), 500
         else:
             flash(f"❌ Erreur visualisation: {message}", "danger")
             return redirect(url_for('voir_document', doc_id=doc_id))
@@ -984,6 +1007,45 @@ def api_request_verification():
     except Exception as e:
         logger.error(f"Erreur envoi code vérification: {e}")
         return jsonify({'success': False, 'error': "Erreur lors de l'envoi de l'e-mail"}), 500
+
+@app.route('/api/etiquettes/creer', methods=['POST'])
+@login_required
+def api_creer_etiquette():
+    """Crée une étiquette via AJAX et retourne ses infos"""
+    user = get_utilisateur_session()
+    data = request.json
+    nom = data.get('nom', '').strip()
+    couleur = data.get('couleur', '#6366f1') # Indigo par défaut
+    
+    if not nom:
+        return jsonify({'success': False, 'error': 'Nom requis'}), 400
+        
+    if BDD_AVAILABLE:
+        try:
+            etiquette_obj = gestionnaire_bdd.creer_etiquette(nom, couleur, user.id)
+            if not etiquette_obj:
+                return jsonify({'success': False, 'error': 'Erreur lors de la création'}), 500
+                
+            return jsonify({
+                'success': True, 
+                'etiquette': {
+                    'id': etiquette_obj.id, 
+                    'nom': etiquette_obj.nom, 
+                    'couleur': etiquette_obj.couleur
+                }
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    else:
+        # Mode Démo
+        global ETIQUETTES_DB, ETIQUETTES_ID_COUNTER
+        if any(et['nom'].lower() == nom.lower() for et in ETIQUETTES_DB):
+            return jsonify({'success': False, 'error': 'Existe déjà'}), 400
+            
+        new_et = {'id': ETIQUETTES_ID_COUNTER, 'nom': nom, 'couleur': couleur}
+        ETIQUETTES_DB.append(new_et)
+        ETIQUETTES_ID_COUNTER += 1
+        return jsonify({'success': True, 'etiquette': new_et})
 
 @app.route('/api/auth/change-password', methods=['POST'])
 def api_change_password():

@@ -36,20 +36,25 @@
                         <div class="d-flex flex-column align-items-center mb-4">
                             <div class="d-flex justify-content-center gap-4 mb-4">
                                 <!-- Local Filesystem Entry -->
+                                <input type="file" id="file" name="file" class="d-none"
+                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
                                 <label for="file" class="cursor-pointer mb-0">
                                     <div class="bg-indigo-glow rounded-circle d-flex align-items-center justify-content-center shadow-glow-indigo transition-premium hover-up"
                                         style="width: 86px; height: 86px; border: 1px solid rgba(255,255,255,0.1);">
                                         <i class="fas fa-file-export text-indigo fs-3"></i>
                                     </div>
+                                    <p class="x-small text-center text-muted mt-2 fw-bold opacity-75">TÉLÉVERSER</p>
                                 </label>
 
                                 <!-- Optical Logic Entry -->
-                                <button type="button" class="btn p-0 border-0" data-bs-toggle="modal"
-                                    data-bs-target="#scannerModal">
+                                <input type="hidden" id="scanned_file" name="scanned_file">
+                                <button type="button" class="btn p-0 border-0 d-flex flex-column align-items-center"
+                                    data-bs-toggle="modal" data-bs-target="#scannerModal">
                                     <div class="bg-indigo-glow rounded-circle d-flex align-items-center justify-content-center shadow-glow-indigo transition-premium hover-up"
                                         style="width: 86px; height: 86px; border: 1px solid rgba(255,255,255,0.1);">
                                         <i class="fas fa-camera text-indigo fs-3"></i>
                                     </div>
+                                    <p class="x-small text-center text-muted mt-2 fw-bold opacity-75">SCANNER</p>
                                 </button>
                             </div>
 
@@ -57,7 +62,8 @@
                             <p class="text-muted small mb-0 font-monospace opacity-75">SÉLECTIONNEZ : FICHIER_SYSTEME
                                 OU CAPTURE_OPTIQUE</p>
                             <div id="file-name-preview"
-                                class="mt-4 badge bg-indigo-glow text-indigo p-2 animate-in d-none"></div>
+                                class="mt-4 badge bg-indigo-glow text-indigo p-2 animate-in d-none border-indigo-glow">
+                            </div>
                         </div>
                     </div>
 
@@ -87,8 +93,21 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label class="x-small text-muted text-uppercase fw-800 tracking-widest ps-1">Attribution des
                                 Étiquettes</label>
-                            <a href="{{ url_for('etiquettes') }}"
-                                class="x-small text-indigo text-decoration-none fw-bold">ÉDITER_TAXONOMIE</a>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="quick-tag-box d-flex align-items-center bg-white-5 rounded-pill border-slate px-2 py-1"
+                                    style="max-width: 200px;">
+                                    <input type="text" id="quick-tag-input"
+                                        class="form-control form-control-sm bg-transparent border-0 text-white x-small font-monospace p-0 ps-2"
+                                        placeholder="NOUVELLE_TAG...">
+                                    <button type="button"
+                                        class="btn btn-icon-indigo btn-xs rounded-circle flex-shrink-0"
+                                        onclick="createQuickTag()">
+                                        <i class="fas fa-plus x-small"></i>
+                                    </button>
+                                </div>
+                                <a href="{{ url_for('etiquettes') }}"
+                                    class="x-small text-indigo text-decoration-none fw-bold">ÉDITER_TAXONOMIE</a>
+                            </div>
                         </div>
                         <div class="d-flex flex-wrap gap-2" id="tag-container">
                             {% for et in etiquettes %}
@@ -97,11 +116,11 @@
                                     class="btn-check label-checkbox">
                                 <label
                                     class="btn btn-glass-node d-flex align-items-center gap-3 px-3 py-2 rounded-3 border-slate"
-                                    for="et-{{ et.id }}">
+                                    for="et-{{ et.id }}" style="pointer-events: auto;">
                                     <div class="node-dot"
-                                        style="background: {{ et.couleur }}; box-shadow: 0 0 10px {{ et.couleur }}80;">
+                                        style="background: {{ et.couleur }}; box-shadow: 0 0 10px {{ et.couleur }}cc; pointer-events: none;">
                                     </div>
-                                    <span class="x-small fw-800">{{ et.nom }}</span>
+                                    <span class="x-small fw-800" style="pointer-events: none;">{{ et.nom }}</span>
                                 </label>
                             </div>
                             {% endfor %}
@@ -221,21 +240,24 @@
 
 <style>
     .btn-glass-node {
-        background: rgba(255, 255, 255, 0.02);
-        color: var(--text-muted);
-        transition: var(--transition-premium);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02) !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        cursor: pointer !important;
     }
 
     .btn-glass-node:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: white;
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: white !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
     }
 
     .btn-check:checked+.btn-glass-node {
-        background: var(--primary-indigo-glow);
-        border-color: var(--primary-indigo);
-        color: white;
+        background: rgba(99, 102, 241, 0.15) !important;
+        border-color: var(--primary-indigo) !important;
+        color: white !important;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
         transform: translateY(-2px);
     }
 
@@ -250,21 +272,6 @@
     }
 </style>
 
-{% if infos and infos.get('texte_extrait') %}
-<div class="mt-4">
-    <p class="text-muted x-small text-uppercase mb-2">Aperçu métadonnées extraites</p>
-    <div class="p-3 rounded"
-        style="background: #09090b; border: 1px solid #27272a; max-height: 150px; overflow-y: auto;">
-        <pre class="x-small text-muted mb-0"
-            style="white-space: pre-wrap;">{{ infos.texte_extrait[:300] }}{% if infos.texte_extrait|length > 300 %}...{% endif %}</pre>
-    </div>
-</div>
-{% endif %}
-
-<div class="mt-4 pt-3 border-top border-slate d-flex gap-2">
-    <a href="{{ url_for('bibliotheque') }}" class="btn btn-outline-secondary btn-sm px-4">Vault</a>
-    <a href="{{ url_for('upload') }}" class="btn btn-emerald btn-sm px-4">Nouveau scan</a>
-</div>
 {% include 'scanner_modal.html' %}
 {% endblock %}
 
@@ -274,8 +281,10 @@
     document.getElementById('file').addEventListener('change', function (e) {
         const file = e.target.files[0];
         const preview = document.getElementById('file-name-preview');
+        const formatSelect = document.getElementById('format_document');
+
         if (file) {
-            preview.textContent = file.name;
+            preview.textContent = "SÉLECTION : " + file.name;
             preview.classList.remove('d-none');
             document.getElementById('scanned_file').value = ""; // Clear scan if file chosen
 
@@ -283,6 +292,16 @@
             if (!nomPersonnalise.value) {
                 const nomSansExtension = file.name.replace(/\.[^/.]+$/, "");
                 nomPersonnalise.value = nomSansExtension;
+            }
+
+            // Auto-detect format
+            const extension = file.name.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png'].includes(extension)) {
+                formatSelect.value = 'jpg';
+            } else if (['xlsx', 'xls'].includes(extension)) {
+                formatSelect.value = 'xlsx';
+            } else {
+                formatSelect.value = extension;
             }
         }
     });
@@ -309,8 +328,31 @@
         // document.getElementById('upload-form').submit();
     });
 
-    // Form Validation
-    document.getElementById('upload-form').addEventListener('submit', function (e) {
+    // Smart Form Validation & Submission
+    document.getElementById('upload-form').addEventListener('submit', async function (e) {
+
+        // 1. Check for pending quick tag (Smart Add)
+        const quickInput = document.getElementById('quick-tag-input');
+        if (quickInput && quickInput.value.trim() !== "") {
+            e.preventDefault(); // Must stop submission to create tag
+
+            // Visual Feedback
+            const btn = document.querySelector('.quick-tag-box button');
+            if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin text-indigo"></i>';
+
+            try {
+                await createQuickTag();
+            } catch (err) {
+                console.error("Auto-add tag failed", err);
+            }
+
+            // Re-trigger submission after tag creation
+            // We use submit() to bypass this listener to avoid loop/issues
+            this.submit();
+            return;
+        }
+
+        // 2. Standard Validation
         const file = document.getElementById('file').files[0];
         const scan = document.getElementById('scanned_file').value;
         const format = document.getElementById('format_document').value;
@@ -340,6 +382,114 @@
         if (!valid) {
             e.preventDefault();
             alert(messages.join("\n"));
+            // Restore button state
+            const btn = document.querySelector('.quick-tag-box button');
+            if (btn) btn.innerHTML = '<i class="fas fa-plus x-small"></i>';
+            if (btn) btn.disabled = false;
+        }
+        // If valid and no quick tag pending, we let default behavior happen (sending file)
+    });
+
+    // Ensure tags are clickable and provide feedback
+    document.querySelectorAll('.btn-glass-node').forEach(node => {
+        setupNodeInteraction(node);
+    });
+
+    function setupNodeInteraction(node) {
+        node.addEventListener('click', function () {
+            const input = document.getElementById(this.getAttribute('for'));
+            if (input) {
+                console.log('Tag interaction detected:', input.id);
+            }
+        });
+    }
+
+    // Quick Tag Creation Logic
+    async function createQuickTag() {
+        const input = document.getElementById('quick-tag-input');
+        const nom = input.value.trim();
+        const btn = document.querySelector('.quick-tag-box button');
+
+        if (!nom) return;
+
+        // Visual Feedback
+        btn.innerHTML = '<i class="fas fa-sync-alt fa-spin x-small"></i>';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('/api/etiquettes/creer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nom: nom, couleur: '#6366f1' })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const et = data.etiquette;
+                const container = document.getElementById('tag-container');
+
+                // Create DOM elements for the new tag
+                const nodeDiv = document.createElement('div');
+                nodeDiv.className = 'tax-node animate-in';
+                nodeDiv.innerHTML = `
+                    <input type="checkbox" name="etiquettes" value="${et.id}" id="et-${et.id}" class="btn-check label-checkbox" checked>
+                    <label class="btn btn-glass-node d-flex align-items-center gap-3 px-3 py-2 rounded-3 border-slate" for="et-${et.id}" style="pointer-events: auto;">
+                        <div class="node-dot" style="background: ${et.couleur}; box-shadow: 0 0 10px ${et.couleur}cc; pointer-events: none;"></div>
+                        <span class="x-small fw-800" style="pointer-events: none;">${et.nom.toUpperCase()}</span>
+                    </label>
+                `;
+
+                container.appendChild(nodeDiv);
+                setupNodeInteraction(nodeDiv.querySelector('.btn-glass-node'));
+
+                // Reset input
+                input.value = '';
+                btn.innerHTML = '<i class="fas fa-plus x-small"></i>';
+                btn.disabled = false;
+
+                // Hide error if visible
+                document.getElementById('tag-error').classList.add('d-none');
+            } else {
+                alert("Erreur : " + data.error);
+                btn.innerHTML = '<i class="fas fa-plus x-small"></i>';
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Quick Tag Error:', error);
+            btn.innerHTML = '<i class="fas fa-plus x-small"></i>';
+            btn.disabled = false;
+        }
+    }
+
+    // Auto-retry selection to ensure UI update
+    function ensureTagSelected(id) {
+        const checkbox = document.getElementById(id);
+        if (checkbox && !checkbox.checked) {
+            checkbox.checked = true;
+            // Force redraw/check
+            setTimeout(() => {
+                if (!checkbox.checked) checkbox.checked = true;
+            }, 50);
+        }
+    }
+
+    // Allow Enter key for quick tag
+    document.getElementById('quick-tag-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            createQuickTag();
+            return false;
+        }
+    });
+
+    // Add visual check for debugging
+    document.getElementById('upload-form').addEventListener('change', function (e) {
+        if (e.target.classList.contains('label-checkbox')) {
+            const tags = document.querySelectorAll('.label-checkbox:checked');
+            if (tags.length > 0) {
+                document.getElementById('tag-error').classList.add('d-none');
+            }
         }
     });
 </script>

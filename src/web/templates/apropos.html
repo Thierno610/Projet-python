@@ -40,7 +40,7 @@
                 <span class="tracking-tight">Directives Fondamentales</span>
             </h4>
             <div class="mb-5">
-                <p class="text-white-50 lead opacity-75">
+                <p class="text-white-75 lead" style="color: rgba(255,255,255,0.8) !important;">
                     SafeDoc comble le fossé entre la fragmentation physique chaotique et la précision absolue de la
                     souveraineté numérique. Nous concevons des environnements où les ressources ne sont pas seulement
                     stockées, mais protégées par les lois des mathématiques.
@@ -54,7 +54,8 @@
                             <i class="fas fa-vault text-indigo fs-4"></i>
                             <h6 class="fw-800 text-white mb-0 tracking-widest uppercase">Coffre Zéro-Accès</h6>
                         </div>
-                        <p class="x-small text-muted mb-0 font-monospace opacity-75">Déploiement d'une entropie AES-256
+                        <p class="x-small mb-0 font-monospace" style="color: rgba(255,255,255,0.7) !important;">
+                            Déploiement d'une entropie AES-256
                             de niveau militaire. Vos clés, vos données, exclusion absolue des entités externes.</p>
                     </div>
                 </div>
@@ -64,7 +65,8 @@
                             <i class="fas fa-brain text-emerald fs-4"></i>
                             <h6 class="fw-800 text-white mb-0 tracking-widest uppercase">Indexation Neuronale</h6>
                         </div>
-                        <p class="x-small text-muted mb-0 font-monospace opacity-75">Synthèse avancée OCR et NLP pour
+                        <p class="x-small mb-0 font-monospace" style="color: rgba(255,255,255,0.7) !important;">Synthèse
+                            avancée OCR et NLP pour
                             une catégorisation autonome des ressources et des capacités de recherche approfondie.</p>
                     </div>
                 </div>
@@ -79,14 +81,14 @@
                 <div class="bg-indigo-glow d-inline-flex p-4 rounded-circle mb-4 border-indigo-glow">
                     <i class="fas fa-compass text-indigo display-5"></i>
                 </div>
-                <h5 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Protocole d'Origine</h5>
+                <h5 class="x-small text-muted text-uppercase fw-800 tracking-widest mb-4">Initiateur du Projet</h5>
 
-                <h4 class="fw-800 text-white mb-1">Dr. Castro</h4>
-                <p class="x-small text-indigo font-monospace tracking-tighter opacity-75 mb-4">ARCHITECTE_EN_CHEF</p>
+                <h4 class="fw-800 text-white mb-1">Dr. Ing. HOUNMENOU CASTRO</h4>
+                <p class="x-small text-indigo font-monospace tracking-tighter opacity-75 mb-4">DIRECTEUR_DE_PROJET</p>
 
                 <div class="p-4 rounded-4 bg-black-20 border-slate position-relative">
                     <i class="fas fa-quote-left position-absolute top-0 start-0 m-3 opacity-10"></i>
-                    <p class="small text-white-50 italic mb-0 opacity-75">
+                    <p class="small italic mb-0" style="color: rgba(255,255,255,0.85) !important;">
                         "L'avenir de la connaissance humaine dépend de notre capacité à garantir cryptographiquement
                         l'intégrité de nos enregistrements individuels et collectifs."
                     </p>
@@ -99,32 +101,34 @@
     <div class="col-12">
         <div class="glass-card p-5">
             <div class="d-flex justify-content-between align-items-center mb-5">
-                <h4 class="fw-800 text-white mb-0 d-flex align-items-center gap-3">
-                    <i class="fas fa-users-gear text-indigo opacity-50"></i>
-                    <span class="tracking-tight">Équipe d'Architecture</span>
-                </h4>
-                <div class="x-small text-muted font-monospace opacity-50 text-end d-none d-sm-block">
-                    DEP: INFORMATIQUE<br>UNI: LABÉ_CONSTEL
+                <div>
+                    <h4 class="fw-800 text-white mb-1 d-flex align-items-center gap-3">
+                        <i class="fas fa-users-gear text-indigo opacity-50"></i>
+                        <span class="tracking-tight">Équipe de Développement</span>
+                    </h4>
+                    <p class="x-small mb-0 ms-5 ps-2" style="color: rgba(255,255,255,0.7) !important;">Étudiants —
+                        Université de Labé, Département Informatique</p>
+                </div>
+                <div class="x-small text-white-75 font-monospace fw-semibold text-end d-none d-sm-block">
+                    DEP: INFORMATIQUE<br>UNIV: LABÉ
                 </div>
             </div>
 
             <div class="row g-4">
                 {% for membre in [
-                {'nom': 'Thierno Mouctar DIALLO', 'role': 'Architecte Principal', 'icon': 'fa-code'},
-                {'nom': 'Aboubacar YOULA', 'role': 'Spécialiste Sécurité', 'icon': 'fa-user-lock'},
-                {'nom': 'Moussa SIDIBE', 'role': 'Designer d\'Interface', 'icon': 'fa-bezier-curve'},
-                {'nom': 'Oumar SOUMAH', 'role': 'Ingénieur Backend', 'icon': 'fa-server'}
+                {'nom': 'Thierno Mouctar DIALLO', 'icon': 'fa-user-graduate'},
+                {'nom': 'Aboubacar YOULA', 'icon': 'fa-user-graduate'},
+                {'nom': 'Moussa SIDIBE', 'icon': 'fa-user-graduate'},
+                {'nom': 'Oumar SOUMAH', 'icon': 'fa-user-graduate'}
                 ] %}
                 <div class="col-md-3">
                     <div
                         class="member-card p-4 rounded-4 border-slate bg-white-5 text-center transition-premium hover-lift">
                         <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center bg-black-20 border-slate"
                             style="width: 70px; height: 70px;">
-                            <i class="fas {{ membre.icon }} text-muted"></i>
+                            <i class="fas {{ membre.icon }} text-indigo"></i>
                         </div>
-                        <h6 class="fw-800 text-white mb-1 tracking-tight">{{ membre.nom }}</h6>
-                        <p class="x-small text-indigo font-monospace tracking-widest opacity-75 mb-0">{{
-                            membre.role|upper }}</p>
+                        <h6 class="fw-800 text-white mb-0 tracking-tight">{{ membre.nom }}</h6>
                     </div>
                 </div>
                 {% endfor %}

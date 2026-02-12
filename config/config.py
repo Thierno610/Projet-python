@@ -90,7 +90,7 @@ MAX_UPLOAD_SIZE_MB = int(os.getenv('MAX_UPLOAD_SIZE_MB', '50'))
 MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
 
 # Extensions de fichiers autorisées
-ALLOWED_EXTENSIONS = os.getenv('ALLOWED_EXTENSIONS', 'pdf,png,jpg,jpeg,tiff,bmp').split(',')
+ALLOWED_EXTENSIONS = os.getenv('ALLOWED_EXTENSIONS', 'pdf,png,jpg,jpeg,tiff,bmp,doc,docx,xls,xlsx').split(',')
 
 # ===== GOOGLE DRIVE (PREMIUM) =====
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
