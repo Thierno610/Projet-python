@@ -5,6 +5,12 @@ Version optimisée pour un démarrage instantané
 """
 
 import sys
+import io
+
+# Correction des problèmes d'encodage sur Windows
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 import os
 from pathlib import Path
 
@@ -37,10 +43,10 @@ def verifier_dependances():
             manquantes.append(dep)
     
     if manquantes:
-        print("🔧 Installation des dépendances manquantes...")
+        print("[PROCESS] Installation des dépendances manquantes...")
         for dep in manquantes:
             os.system(f"pip install {dep}")
-        print("✅ Dépendances installées")
+        print("[OK] Dépendances installées")
 
 def initialiser_config():
     """Crée les fichiers de configuration si nécessaires"""
@@ -52,14 +58,14 @@ def initialiser_config():
         if env_example.exists():
             import shutil
             shutil.copy(env_example, env_file)
-            print("✅ Fichier .env créé")
+            print("[OK] Fichier .env créé")
     
     # Créer les dossiers nécessaires
     dossiers = ['data', 'temp', 'logs']
     for dossier in dossiers:
         Path(dossier).mkdir(exist_ok=True)
     
-    print("✅ Configuration initialisée")
+    print("[OK] Configuration initialisée")
 
 def lancer_application():
     """Lance l'application Flask optimisée"""
@@ -67,14 +73,14 @@ def lancer_application():
     # Importer après vérification des dépendances
     try:
         from src.web.app_flask_optimized import app
-        print("🚀 Lancement de SafeDoc...")
+        print("[LANCEMENT] Lancement de SafeDoc...")
         print("=" * 50)
-        print("🌐 URL: http://127.0.0.1:5001")
-        print("💡 CONSEIL: Utilisez http://127.0.0.1:5001 si localhost ne répond pas")
-        print("🔒 SafeDoc - Coffre-fort Numérique Intelligent")
+        print("URL: http://127.0.0.1:5001")
+        print("CONSEIL: Utilisez http://127.0.0.1:5001 si localhost ne répond pas")
+        print("SafeDoc - Coffre-fort Numérique Intelligent")
         print("=" * 50)
-        print("⚠️  Mode développement - Ne pas utiliser en production")
-        print("🛑 Appuyez sur Ctrl+C pour arrêter")
+        print("Mode développement - Ne pas utiliser en production")
+        print("Appuyez sur Ctrl+C pour arrêter")
         print("=" * 50)
         
         app.run(debug=True, host='0.0.0.0', port=5001, use_reloader=True)
@@ -85,16 +91,16 @@ def lancer_application():
         
         # Fallback vers la version simplifiée
         from src.web.app_flask_simple import app
-        print("🚀 Lancement de SafeDoc (Mode Démonstration)...")
+        print("[LANCEMENT] Lancement de SafeDoc (Mode Démonstration)...")
         print("=" * 50)
-        print("🌐 URL: http://127.0.0.1:5000")
-        print("🔒 SafeDoc - Coffre-fort Numérique Intelligent")
+        print("URL: http://127.0.0.1:5000")
+        print("SafeDoc - Coffre-fort Numérique Intelligent")
         print("=" * 50)
         
         app.run(debug=True, host='0.0.0.0', port=5001, use_reloader=True)
 
 if __name__ == '__main__':
-    print("🔒 SafeDoc - Initialisation...")
+    print("[INIT] SafeDoc - Initialisation...")
     
     # Étape 1: Vérifier les dépendances
     verifier_dependances()
